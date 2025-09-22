@@ -2,6 +2,24 @@
   --account-dropdown-arrow: url("/assets/buttons/droparrowgray.gif");
   --background: #0f0f0f;
   --background-contrast: #141414;
+  
+  /* Modern UI Design Tokens */
+  --modern-primary: #ffffff;
+  --modern-primary-hover: #e5e5e5;
+  --modern-secondary: #1a1a1a;
+  --modern-secondary-hover: #2a2a2a;
+  --modern-border: #333333;
+  --modern-text: #ffffff;
+  --modern-text-muted: #a0a0a0;
+  --modern-card-bg: #1a1a1a;
+  --modern-card-border: #333333;
+  --modern-hover-bg: #2a2a2a;
+  --modern-radius: 8px;
+  --modern-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --modern-transition: all 0.2s ease;
+  
+  /* Test visibility - this should be very obvious */
+  --test-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --background-markdown: #1f1f1f;
   --background-primary: #1f1f1f;
   --background-secondary: #3e3e3e;
@@ -100,10 +118,32 @@
   --x-button-hover: url('/assets/buttons/close-x-button.png');
 }
 
+/* Twitter-like base styling */
+body {
+  background: #000000 !important;
+  color: #ffffff !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+}
+
 :root .light {
   --account-dropdown-arrow: url("/assets/buttons/droparrowblue.gif");
   --background: white;
   --background-contrast: #E4F2FB;
+  
+  /* Modern UI Design Tokens - Light Theme */
+  --modern-primary: #000000;
+  --modern-primary-hover: #333333;
+  --modern-secondary: #f5f5f5;
+  --modern-secondary-hover: #e5e5e5;
+  --modern-border: #e0e0e0;
+  --modern-text: #000000;
+  --modern-text-muted: #666666;
+  --modern-card-bg: #ffffff;
+  --modern-card-border: #e0e0e0;
+  --modern-hover-bg: #f5f5f5;
+  --modern-radius: 8px;
+  --modern-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --modern-transition: all 0.2s ease;
   --background-markdown: #fafafa;
   --background-orange: #f6e69f;
   --background-primary: #cee3f8;

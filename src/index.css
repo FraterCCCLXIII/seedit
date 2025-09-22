@@ -1,3 +1,5 @@
+@import './twitter-seedit.css';
+
 html, body {
   max-width: 100%;
   overflow-x: hidden;
@@ -5,6 +7,186 @@ html, body {
 
 body {
   background-color: var(--background);
+}
+
+/* Modern UI Enhancements */
+.modern-card {
+  background: var(--modern-card-bg);
+  border: 1px solid var(--modern-card-border);
+  border-radius: var(--modern-radius);
+  box-shadow: var(--modern-shadow);
+  transition: var(--modern-transition);
+}
+
+.modern-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.modern-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--modern-radius);
+  border: 1px solid var(--modern-border);
+  background: var(--modern-secondary);
+  color: var(--modern-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--modern-transition);
+  text-decoration: none;
+}
+
+.modern-button:hover {
+  background: var(--modern-secondary-hover);
+  transform: translateY(-1px);
+}
+
+.modern-button-primary {
+  background: var(--modern-primary);
+  color: var(--modern-card-bg);
+  border-color: var(--modern-primary);
+}
+
+.modern-button-primary:hover {
+  background: var(--modern-primary-hover);
+}
+
+.modern-post {
+  border-bottom: 1px solid var(--modern-border);
+  background: var(--modern-card-bg);
+  padding: 1rem;
+  transition: var(--modern-transition);
+}
+
+.modern-post:hover {
+  background: var(--modern-hover-bg);
+}
+
+.modern-post-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--modern-primary), var(--modern-primary-hover));
+  flex-shrink: 0;
+}
+
+.modern-post-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.modern-post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.modern-post-author {
+  font-weight: bold;
+  color: var(--modern-text);
+  text-decoration: none;
+}
+
+.modern-post-author:hover {
+  text-decoration: underline;
+}
+
+.modern-post-username {
+  color: var(--modern-text-muted);
+}
+
+.modern-post-time {
+  color: var(--modern-text-muted);
+  text-decoration: none;
+}
+
+.modern-post-time:hover {
+  text-decoration: underline;
+}
+
+.modern-post-text {
+  color: var(--modern-text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-bottom: 0.75rem;
+}
+
+.modern-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 28rem;
+}
+
+.modern-post-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  color: var(--modern-text-muted);
+  text-decoration: none;
+  border-radius: var(--modern-radius);
+  transition: var(--modern-transition);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.modern-post-action:hover {
+  background: var(--modern-hover-bg);
+  color: var(--modern-text);
+}
+
+.modern-post-action.liked {
+  color: #ef4444;
+}
+
+.modern-post-action.reposted {
+  color: #22c55e;
+}
+
+/* Modern layout improvements */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Enhance existing post styling */
+.post {
+  border-bottom: 1px solid var(--modern-border);
+  transition: var(--modern-transition);
+}
+
+.post:hover {
+  background: var(--modern-hover-bg);
+}
+
+/* Modern sidebar enhancements */
+.sidebar {
+  border-right: 1px solid var(--modern-border);
+  background: var(--modern-card-bg);
+}
+
+/* Modern header enhancements */
+.header {
+  border-bottom: 1px solid var(--modern-border);
+  background: var(--modern-card-bg);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .modern-post-actions {
+    gap: 0.5rem;
+  }
+  
+  .modern-post-action {
+    padding: 0.25rem;
+  }
 }
 
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td, iframe {

@@ -1,0 +1,464 @@
+/* Modern UI Design System - Inspired by shadcn/ui and Twitter */
+
+:root {
+  /* Modern design tokens */
+  --background: 0 0% 100%;
+  --foreground: 210 24% 16%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 210 24% 16%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 24% 16%;
+
+  /* Black as primary for monochromatic design */
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 100%;
+  --primary-hover: 0 0% 15%;
+
+  /* Light grays for secondary elements */
+  --secondary: 210 20% 96%;
+  --secondary-foreground: 210 24% 16%;
+
+  --muted: 220 13% 96%;
+  --muted-foreground: 220 9% 46%;
+
+  --accent: 210 20% 96%;
+  --accent-foreground: 210 24% 16%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 203 89% 53%;
+
+  --radius: 0.75rem;
+
+  /* Twitter-inspired tokens */
+  --twitter-blue: 0 0% 9%;
+  --twitter-blue-hover: 0 0% 15%;
+  --twitter-gray: 0 0% 46%;
+  --twitter-light-gray: 0 0% 96%;
+  --twitter-border: 0 0% 91%;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, hsl(0 0% 9%), hsl(0 0% 15%));
+  --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 98%));
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 hsl(0 0% 91% / 0.5);
+  --shadow-md: 0 4px 6px -1px hsl(0 0% 91% / 0.5);
+  --shadow-hover: 0 8px 25px -8px hsl(0 0% 9% / 0.3);
+  
+  /* Transitions */
+  --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+.dark {
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+
+  --card: 0 0% 3.9%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 0 0% 3.9%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 0 0% 98%;
+  --primary-foreground: 0 0% 9%;
+
+  --secondary: 0 0% 14.9%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+
+  --accent: 0 0% 14.9%;
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+
+  /* Dark mode tokens */
+  --twitter-blue: 0 0% 98%;
+  --twitter-blue-hover: 0 0% 83%;
+  --twitter-gray: 0 0% 63.9%;
+  --twitter-light-gray: 0 0% 14.9%;
+  --twitter-border: 0 0% 14.9%;
+
+  --gradient-primary: linear-gradient(135deg, hsl(0 0% 98%), hsl(0 0% 83%));
+  --gradient-subtle: linear-gradient(180deg, hsl(0 0% 3.9%), hsl(0 0% 6%));
+
+  --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.5);
+  --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.5);
+  --shadow-hover: 0 8px 25px -8px hsl(0 0% 98% / 0.3);
+
+  --sidebar-background: 0 0% 5%;
+  --sidebar-foreground: 0 0% 95%;
+  --sidebar-primary: 0 0% 98%;
+  --sidebar-primary-foreground: 0 0% 9%;
+  --sidebar-accent: 0 0% 15%;
+  --sidebar-accent-foreground: 0 0% 95%;
+  --sidebar-border: 0 0% 15%;
+  --sidebar-ring: 0 0% 83%;
+}
+
+/* Modern utility classes */
+.modern-card {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+}
+
+.modern-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+
+.modern-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.modern-button:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.modern-button:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.modern-button-primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.modern-button-primary:hover {
+  background: hsl(var(--primary-hover));
+}
+
+.modern-button-secondary {
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+
+.modern-button-secondary:hover {
+  background: hsl(var(--secondary) / 0.8);
+}
+
+.modern-button-ghost {
+  color: hsl(var(--foreground));
+}
+
+.modern-button-ghost:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.modern-button-sm {
+  height: 2.25rem;
+  padding: 0 0.75rem;
+}
+
+.modern-button-md {
+  height: 2.5rem;
+  padding: 0 1rem;
+}
+
+.modern-button-lg {
+  height: 2.75rem;
+  padding: 0 2rem;
+}
+
+.modern-input {
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  transition: var(--transition-smooth);
+}
+
+.modern-input:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+.modern-input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Modern layout utilities */
+.modern-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.modern-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 16rem;
+  background: hsl(var(--sidebar-background));
+  border-right: 1px solid hsl(var(--sidebar-border));
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
+}
+
+.modern-main {
+  flex: 1;
+  margin-left: 16rem;
+  min-height: 100vh;
+}
+
+.modern-main-content {
+  max-width: 42rem;
+  margin: 0 auto;
+  border-left: 1px solid hsl(var(--twitter-border));
+  border-right: 1px solid hsl(var(--twitter-border));
+  min-height: 100vh;
+}
+
+.modern-right-sidebar {
+  width: 20rem;
+  padding: 1rem;
+}
+
+/* Modern post styles */
+.modern-post {
+  border-bottom: 1px solid hsl(var(--twitter-border));
+  background: hsl(var(--background));
+  padding: 1rem;
+  transition: var(--transition-smooth);
+}
+
+.modern-post:hover {
+  background: hsl(var(--muted) / 0.5);
+}
+
+.modern-post-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  flex-shrink: 0;
+}
+
+.modern-post-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.modern-post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.modern-post-author {
+  font-weight: bold;
+  color: hsl(var(--foreground));
+  text-decoration: none;
+}
+
+.modern-post-author:hover {
+  text-decoration: underline;
+}
+
+.modern-post-username {
+  color: hsl(var(--twitter-gray));
+}
+
+.modern-post-time {
+  color: hsl(var(--twitter-gray));
+  text-decoration: none;
+}
+
+.modern-post-time:hover {
+  text-decoration: underline;
+}
+
+.modern-post-text {
+  color: hsl(var(--foreground));
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-bottom: 0.75rem;
+}
+
+.modern-post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 28rem;
+}
+
+.modern-post-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: hsl(var(--twitter-gray));
+  text-decoration: none;
+  border-radius: calc(var(--radius) - 2px);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.modern-post-action:hover {
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+}
+
+.modern-post-action.liked {
+  color: rgb(239 68 68);
+}
+
+.modern-post-action.liked:hover {
+  background: rgb(239 68 68 / 0.1);
+}
+
+.modern-post-action.reposted {
+  color: rgb(34 197 94);
+}
+
+.modern-post-action.reposted:hover {
+  background: rgb(34 197 94 / 0.1);
+}
+
+/* Modern navigation */
+.modern-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  width: 100%;
+  text-align: left;
+  font-size: 1.125rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+  text-decoration: none;
+  color: hsl(var(--foreground));
+  border-radius: calc(var(--radius) - 2px);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.modern-nav-item:hover {
+  background: hsl(var(--twitter-light-gray));
+  color: hsl(var(--primary));
+}
+
+.modern-nav-item.active {
+  background: hsl(var(--twitter-light-gray));
+  color: hsl(var(--primary));
+}
+
+.modern-nav-item .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .modern-sidebar {
+    width: 4rem;
+    padding: 1rem 0.5rem;
+  }
+  
+  .modern-sidebar .modern-nav-item span {
+    display: none;
+  }
+  
+  .modern-main {
+    margin-left: 4rem;
+  }
+  
+  .modern-right-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-sidebar {
+    display: none;
+  }
+  
+  .modern-main {
+    margin-left: 0;
+  }
+  
+  .modern-main-content {
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* Animation utilities */
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes hover-lift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-2px); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+.animate-hover-lift {
+  animation: hover-lift 0.2s ease-out;
+}

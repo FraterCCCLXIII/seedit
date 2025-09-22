@@ -1,0 +1,260 @@
+/* Modern UI Enhancements for Seedit */
+
+/* Enhanced post styling - targeting actual Seedit classes */
+[class*="post_"] {
+  border-bottom: 1px solid var(--modern-border) !important;
+  background: var(--modern-card-bg) !important;
+  padding: 1rem !important;
+  transition: var(--modern-transition) !important;
+  border-radius: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+[class*="post_"]:hover {
+  background: var(--modern-hover-bg) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--modern-shadow);
+}
+
+/* Target the main post container */
+[class*="post_"][class*="content"] {
+  background: var(--modern-card-bg) !important;
+  border: 1px solid var(--modern-card-border) !important;
+  border-radius: var(--modern-radius) !important;
+  padding: 1rem !important;
+  margin: 0.5rem 0 !important;
+  box-shadow: var(--modern-shadow) !important;
+  transition: var(--modern-transition) !important;
+}
+
+[class*="post_"][class*="content"]:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Enhanced post content */
+.post .post-content {
+  color: var(--modern-text) !important;
+  line-height: 1.6 !important;
+}
+
+.post .post-author {
+  color: var(--modern-text) !important;
+  font-weight: 600 !important;
+}
+
+.post .post-time {
+  color: var(--modern-text-muted) !important;
+}
+
+/* Enhanced post actions */
+.post .post-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  margin-top: 0.75rem !important;
+}
+
+.post .post-action {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem !important;
+  color: var(--modern-text-muted) !important;
+  text-decoration: none !important;
+  border-radius: var(--modern-radius) !important;
+  transition: var(--modern-transition) !important;
+  cursor: pointer !important;
+  border: none !important;
+  background: none !important;
+}
+
+.post .post-action:hover {
+  background: var(--modern-hover-bg) !important;
+  color: var(--modern-text) !important;
+  transform: scale(1.05);
+}
+
+/* Enhanced sidebar */
+.sidebar {
+  background: var(--modern-card-bg) !important;
+  border-right: 1px solid var(--modern-border) !important;
+  box-shadow: var(--modern-shadow) !important;
+}
+
+.sidebar .sidebar-item {
+  padding: 0.75rem 1rem !important;
+  margin: 0.25rem 0 !important;
+  border-radius: var(--modern-radius) !important;
+  transition: var(--modern-transition) !important;
+  color: var(--modern-text) !important;
+  text-decoration: none !important;
+}
+
+.sidebar .sidebar-item:hover {
+  background: var(--modern-hover-bg) !important;
+  transform: translateX(4px);
+}
+
+.sidebar .sidebar-item.active {
+  background: var(--modern-primary) !important;
+  color: var(--modern-card-bg) !important;
+}
+
+/* Enhanced header */
+.header {
+  background: var(--modern-card-bg) !important;
+  border-bottom: 1px solid var(--modern-border) !important;
+  box-shadow: var(--modern-shadow) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Enhanced buttons */
+button, .button, input[type="button"], input[type="submit"] {
+  background: var(--modern-secondary) !important;
+  color: var(--modern-text) !important;
+  border: 1px solid var(--modern-border) !important;
+  border-radius: var(--modern-radius) !important;
+  padding: 0.5rem 1rem !important;
+  transition: var(--modern-transition) !important;
+  cursor: pointer !important;
+}
+
+button:hover, .button:hover, input[type="button"]:hover, input[type="submit"]:hover {
+  background: var(--modern-secondary-hover) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--modern-shadow) !important;
+}
+
+/* Enhanced cards */
+.card, .post-card, .community-card {
+  background: var(--modern-card-bg) !important;
+  border: 1px solid var(--modern-card-border) !important;
+  border-radius: var(--modern-radius) !important;
+  box-shadow: var(--modern-shadow) !important;
+  transition: var(--modern-transition) !important;
+}
+
+.card:hover, .post-card:hover, .community-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Enhanced form elements */
+input, textarea, select {
+  background: var(--modern-card-bg) !important;
+  border: 1px solid var(--modern-border) !important;
+  border-radius: var(--modern-radius) !important;
+  color: var(--modern-text) !important;
+  padding: 0.5rem 0.75rem !important;
+  transition: var(--modern-transition) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none !important;
+  border-color: var(--modern-primary) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Enhanced links */
+a {
+  color: var(--modern-primary) !important;
+  text-decoration: none !important;
+  transition: var(--modern-transition) !important;
+}
+
+a:hover {
+  color: var(--modern-primary-hover) !important;
+  text-decoration: underline !important;
+}
+
+/* Enhanced scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--modern-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--modern-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--modern-text-muted);
+}
+
+/* Enhanced loading states */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--modern-border);
+  border-radius: 50%;
+  border-top-color: var(--modern-primary);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Enhanced focus states */
+*:focus {
+  outline: 2px solid var(--modern-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Enhanced transitions */
+* {
+  transition: var(--modern-transition) !important;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .post {
+    padding: 0.75rem !important;
+  }
+  
+  .post .post-actions {
+    gap: 0.5rem !important;
+  }
+  
+  .post .post-action {
+    padding: 0.25rem !important;
+  }
+  
+  .sidebar {
+    width: 100% !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: -100% !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+    transition: left 0.3s ease !important;
+  }
+  
+  .sidebar.open {
+    left: 0 !important;
+  }
+}
+
+/* Dark mode specific enhancements */
+.dark .modern-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .modern-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Light mode specific enhancements */
+.light .modern-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.light .modern-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}

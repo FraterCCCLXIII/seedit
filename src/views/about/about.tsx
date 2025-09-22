@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import useIsMobile from '../../hooks/use-is-mobile';
-import Sidebar, { Footer } from '../../components/sidebar';
+import { Footer } from '../../components/sidebar';
 import styles from './about.module.css';
 import { useAccount, useComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
 import { Capacitor } from '@capacitor/core';
@@ -170,20 +170,7 @@ const About = () => {
 
   return (
     <div className={styles.content}>
-      {isMobile ? (
-        isInHomeAboutView ? (
-          <>
-            <Sidebar comment={comment} subplebbit={subplebbit} />
-          </>
-        ) : (
-          <Sidebar comment={comment} subplebbit={subplebbit} />
-        )
-      ) : (
-        <>
-          <Sidebar />
-          <FAQ />
-        </>
-      )}
+      <FAQ />
     </div>
   );
 };
