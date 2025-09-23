@@ -1,4 +1,3 @@
-import styles from './flair.module.css';
 
 interface FlairProps {
   flair: {
@@ -22,8 +21,6 @@ const Flair = ({ flair }: FlairProps) => {
   };
 
   return (
-    <span className={styles.wrapper}>
-      <span className={styles.flair} style={flairStyle}>
         {flair.text}
       </span>
     </span>

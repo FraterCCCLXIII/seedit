@@ -15,7 +15,6 @@ import LoadingEllipsis from '../../components/loading-ellipsis';
 import Markdown from '../../components/markdown';
 import Embed from '../../components/post/embed';
 import { FormattingHelpTable } from '../../components/reply-form/reply-form';
-import styles from './submit-page.module.css';
 import InfoTooltip from '../../components/info-tooltip';
 
 const isAndroid = Capacitor.getPlatform() === 'android';
@@ -46,24 +45,23 @@ const UrlField = () => {
   }
 
   return (
-    <div className={styles.box}>
+    <div>
       {url && isValidURL(url) ? (
-        <span className={styles.boxTitleOptional}>{mediaType}</span>
+        <div>
+          {/* URL preview content */}
+        </div>
       ) : (
         <>
-          <span className={styles.boxTitleOptional}>url</span>
-          <span className={styles.optional}> ({t('optional')})</span>
+          {/* Form content */}
         </>
       )}
-      <div className={styles.boxContent}>
-        {url && (
-          <span className={styles.urlCancelButton} onClick={() => setPublishPostStore({ link: undefined })}>
-            x
-          </span>
-        )}
-        <input
-          className={`${styles.input} ${styles.inputUrl}`}
-          type='text'
+      {url && (
+        <span>
+          x
+        </span>
+      )}
+      <input
+        type='text'
           value={url ?? ''}
           autoCorrect='off'
           autoComplete='off'
@@ -74,9 +72,11 @@ const UrlField = () => {
           }}
         />
         {url && isValidURL(url) ? (
-          <div className={styles.mediaPreview}>{mediaError ? <span className={styles.mediaError}>{t('no_media_found')}</span> : mediaComponent}</div>
+          <div>
+            {/* URL preview or validation message */}
+          </div>
         ) : (
-          <div className={styles.description}>
+          <div>
             {t('submit_url_description')}
             <InfoTooltip
               content={`Seedit also supports links from the following sites: YouTube, Twitter/X, Reddit, Twitch, TikTok, Instagram, Odysee, Bitchute, Streamable, Spotify, and SoundCloud.`}
@@ -210,25 +210,21 @@ const UploadMediaForm = () => {
   };
 
   return (
-    <div className={styles.box}>
-      <span className={styles.boxTitleOptional}>image/video/audio/pdf</span>
-      <div className={styles.boxContent}>
         {isUploading ? (
-          <div className={styles.uploading}>
             <LoadingEllipsis string={t('uploading')} />
-          </div>
+
+    </div>
         ) : (
-          <div {...getRootProps()} className={`${styles.uploadBox} ${isDragActive ? styles.dragging : ''}`}>
             <input {...getInputProps()} />
-            <div className={styles.cameraIcon} />
-            <div className={styles.dropText}>{t('drop_here_or')}</div>
             <label onClick={() => (isUploading || isChoosingFile ? null : handleUpload())}>
-              <div className={styles.fileUploadIcon} />
               {t('choose_file')}
             </label>
-          </div>
+
+    </div>
         )}
-      </div>
+
+    </div>
+
     </div>
   );
 };
@@ -238,17 +234,15 @@ const TitleField = () => {
   const { title, setPublishPostStore } = usePublishPostStore();
 
   return (
-    <div className={styles.box}>
-      <span className={styles.boxTitleRequired}>{t('title')}</span>
-      <div className={styles.boxContent}>
         <textarea
-          className={`${styles.input} ${styles.inputTitle}`}
           value={title}
           onChange={(e) => {
             setPublishPostStore({ title: e.target.value });
           }}
         />
-      </div>
+
+    </div>
+
     </div>
   );
 };
@@ -261,33 +255,25 @@ const ContentField = () => {
   const { content, setPublishPostStore } = usePublishPostStore();
 
   return (
-    <div className={styles.box}>
-      <span className={styles.boxTitleOptional}>{t('text')}</span>
-      <span className={styles.optional}> ({t('optional')})</span>
-      <div className={styles.boxContent}>
         {!showPreview ? (
           <textarea
-            className={`${styles.input} ${styles.inputText}`}
             value={content || ''}
             onChange={(e) => {
               setPublishPostStore({ content: e.target.value });
             }}
           />
         ) : (
-          <div className={styles.contentPreview}>
-            <div className={styles.contentPreviewMarkdown}>
               <Markdown content={content || ''} />
-            </div>
-          </div>
+
+    </div>
+
+    </div>
         )}
-        <div className={styles.contentActions}>
           {showFormattingHelp && (
-            <button className={styles.previewButton} disabled={!content} onClick={() => setShowPreview(!showPreview)}>
               {showPreview ? t('edit') : t('preview')}
             </button>
           )}
           <span
-            className={styles.formattingHelpButton}
             onClick={() => {
               if (showFormattingHelp && showPreview) {
                 setShowPreview(false);
@@ -296,10 +282,14 @@ const ContentField = () => {
             }}
           >
             {showFormattingHelp ? t('hide_help') : t('formatting_help')}
-          </span>
-        </div>
+
+    </span>
+
+    </div>
         {showFormattingHelp && <FormattingHelpTable />}
-      </div>
+
+    </div>
+
     </div>
   );
 };
@@ -359,27 +349,21 @@ const SubplebbitAddressField = () => {
   };
 
   const defaultSubplebbitsDropdown = (
-    <ul className={styles.dropdown}>
       {filteredSubplebbitAddresses.map((subplebbitAddress, index) => (
         <li
           key={subplebbitAddress}
-          className={`${styles.dropdownItem} ${index === activeDropdownIndex ? styles.activeDropdownItem : ''}`}
           onClick={() => handleSubplebbitSelect(subplebbitAddress)}
           onMouseEnter={() => setActiveDropdownIndex(index)}
         >
           {subplebbitAddress}
-        </li>
+
+    </li>
       ))}
     </ul>
   );
 
   return (
-    <div className={styles.box}>
-      <span className={styles.boxTitleRequired}>{t('submit_choose')}</span>
-      <div className={styles.boxContent}>
-        <span className={styles.boxSubtitle}>{t('community_address')}:</span>
         <input
-          className={`${styles.input} ${styles.inputCommunity}`}
           type='text'
           value={inputAddress ?? ''}
           onChange={(e) => {
@@ -398,21 +382,22 @@ const SubplebbitAddressField = () => {
           }}
         />
         {inputAddress && isInputAddressFocused && filteredSubplebbitAddresses.length > 0 && defaultSubplebbitsDropdown}
-        <div className={styles.subsDescription}>{subscriptions?.length > 5 ? t('submit_subscriptions') : t('submit_subscriptions_notice')}</div>
-        <div className={styles.subs}>
           {listSource.map((subscription: string) => (
             <span
               key={subscription}
-              className={styles.sub}
               onClick={() => {
                 setPublishPostStore({ subplebbitAddress: subscription });
               }}
             >
               {Plebbit.getShortAddress(subscription)}
-            </span>
+
+    </span>
           ))}
-        </div>
-      </div>
+
+    </div>
+
+    </div>
+
     </div>
   );
 };
@@ -421,15 +406,14 @@ const RulesInfo = ({ shortAddress, rules }: { shortAddress: string; rules: strin
   const { t } = useTranslation();
 
   return (
-    <div className={styles.box}>
-      <span className={`${styles.boxTitle} ${styles.rulesTitle}`}>
         {t('rules_for')} p/{shortAddress}
-      </span>
-      <div className={styles.boxContent}>
-        <div className={styles.description}>
-          <ol className={styles.rules}>{rules?.map((rule: string, index: number) => <li key={index}>{rule}</li>)}</ol>
-        </div>
-      </div>
+
+    </span>
+
+    </div>
+
+    </div>
+
     </div>
   );
 };
@@ -439,24 +423,23 @@ const SubmitOptions = () => {
   const { setPublishPostStore } = usePublishPostStore();
 
   return (
-    <div className={styles.box}>
-      <div className={styles.boxTitle}>{t('options')}</div>
-      <div className={styles.boxContent}>
-        <div className={styles.options}>
-          <div className={styles.option}>
             <label>
               <input type='checkbox' onChange={(e) => setPublishPostStore({ spoiler: e.target.checked })} />
               {t('spoiler')}
             </label>
-          </div>
-          <div className={styles.option}>
+
+    </div>
             <label>
               <input type='checkbox' onChange={(e) => setPublishPostStore({ nsfw: e.target.checked })} />
               {t('nsfw')}
             </label>
-          </div>
-        </div>
-      </div>
+
+    </div>
+
+    </div>
+
+    </div>
+
     </div>
   );
 };
@@ -518,7 +501,6 @@ const SubmitPage = () => {
   }, [documentTitle]);
 
   return (
-    <div className={styles.content}>
       <h1>
         <Trans
           i18nKey='submit_to'
@@ -527,13 +509,9 @@ const SubmitPage = () => {
             link: subplebbitTitle || shortAddress || 'seedit',
           }}
           components={{
-            1: shortAddress ? <Link key='submit_to_link' to={`/p/${subplebbitAddress}`} className={styles.location} /> : <span key='submit_to_span' />,
           }}
         />
       </h1>
-      <div className={styles.form}>
-        <div className={styles.formContent}>
-          {isOffline && subplebbitAddress && <div className={styles.infobar}>{offlineTitle}</div>}
           <UrlField />
           {!link && <UploadMediaForm />}
           <TitleField />
@@ -541,15 +519,16 @@ const SubmitPage = () => {
           <SubplebbitAddressField />
           {rules?.length > 0 && <RulesInfo shortAddress={shortAddress || ''} rules={rules} />}
           <SubmitOptions />
-          <div className={`${styles.box} ${styles.notice}`}>{t('submit_notice')}</div>
           <div>*{t('required')}</div>
-          <div className={styles.submit}>
-            <button className={styles.submitButton} onClick={onPublish}>
               {t('submit')}
             </button>
-          </div>
-        </div>
-      </div>
+
+    </div>
+
+    </div>
+
+    </div>
+
     </div>
   );
 };

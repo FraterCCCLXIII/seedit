@@ -4,7 +4,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { isAllView, isModView } from '../../lib/utils/view-utils';
 import { useFeedStateString } from '../../hooks/use-state-string';
 import LoadingEllipsis from '../loading-ellipsis';
-import styles from './feed-footer.module.css';
 import React from 'react';
 
 interface FeedFooterProps {
@@ -70,18 +69,13 @@ const FeedFooter = ({
   // Handle search state
   if (isSearching) {
     footerContent = (
-      <div className={styles.stateString}>
         <LoadingEllipsis string={t('searching')} />
       </div>
     );
   } else if (showNoResults && searchQuery) {
     footerContent = (
-      <div className={styles.stateString}>
-        <span className={styles.noMatchesFound}>{t('no_matches_found_for', { query: searchQuery })}</span>
         <br />
         <br />
-        <div className={styles.morePostsSuggestion}>
-          <span className={styles.link} onClick={onClearSearch}>
             {t('clear_search')}
           </span>
         </div>
@@ -90,12 +84,8 @@ const FeedFooter = ({
   } else if (searchQuery && feedLength > 0) {
     // When search results are found
     footerContent = (
-      <div className={styles.stateString}>
-        <span className={styles.searchResults}>{t('found_n_results_for', { count: feedLength, query: searchQuery })}</span>
         <br />
         <br />
-        <div className={styles.morePostsSuggestion}>
-          <span className={styles.link} onClick={onClearSearch}>
             {t('clear_search')}
           </span>
         </div>
@@ -115,7 +105,6 @@ const FeedFooter = ({
     footerContent = (
       <>
         {weeklyFeedLength > feedLength && !searchQuery ? (
-          <div className={styles.morePostsSuggestion}>
             <Trans
               i18nKey='more_posts_last_week'
               values={{ currentTimeFilterName, count: feedLength }}
@@ -125,7 +114,6 @@ const FeedFooter = ({
             />
           </div>
         ) : monthlyFeedLength > feedLength && !searchQuery ? (
-          <div className={styles.morePostsSuggestion}>
             <Trans
               i18nKey='more_posts_last_month'
               values={{ currentTimeFilterName, count: feedLength }}
@@ -135,7 +123,6 @@ const FeedFooter = ({
             />
           </div>
         ) : yearlyFeedLength > feedLength && !searchQuery ? (
-          <div className={styles.morePostsSuggestion}>
             <Trans
               i18nKey='more_posts_last_year'
               values={{ currentTimeFilterName, count: feedLength }}
@@ -145,10 +132,8 @@ const FeedFooter = ({
             />
           </div>
         ) : null}
-        <div className={styles.stateString}>
           {subplebbitAddresses.length === 0 ? (
             isInModView ? (
-              <div className={styles.notModerator}>{t('not_moderator')}</div>
             ) : (
               <div>
                 <Trans i18nKey='no_communities_found' components={[<a href='https://github.com/plebbit/lists'>https://github.com/plebbit/lists</a>]} />
@@ -163,7 +148,6 @@ const FeedFooter = ({
       </>
     );
   }
-  return <div className={styles.footer}>{footerContent}</div>;
 };
 
 export default React.memo(FeedFooter);

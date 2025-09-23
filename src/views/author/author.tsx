@@ -9,7 +9,6 @@ import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
 import Reply from '../../components/reply/';
 import AuthorSidebar from '../../components/author-sidebar';
-import styles from './author.module.css';
 import ErrorDisplay from '../../components/error-display';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
@@ -42,7 +41,7 @@ const Author = () => {
 
   const Footer = () => {
     return hasMore ? (
-      <span className={styles.loadingString}>
+      <span>
         <LoadingEllipsis string={loadingString || t('loading')} />
       </span>
     ) : null;
@@ -97,12 +96,12 @@ const Author = () => {
   }, [error, virtuosoData]);
 
   return (
-    <div className={styles.content}>
-      <div className={isMobile ? styles.sidebarMobile : styles.sidebarDesktop}>
+    <>
+      <div>
         <AuthorSidebar />
       </div>
       {shouldShowErrorToUser && (
-        <div className={styles.error}>
+        <div>
           <ErrorDisplay error={error} />
         </div>
       )}
@@ -121,8 +120,7 @@ const Author = () => {
         restoreStateFrom={lastVirtuosoState}
         initialScrollTop={lastVirtuosoState?.scrollTop}
       />
-      {virtuosoData?.length === 0 && !hasMore && <div className={styles.noPosts}>{t('nothing_found')}</div>}
-    </div>
+    </>
   );
 };
 

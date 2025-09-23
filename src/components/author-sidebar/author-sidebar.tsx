@@ -13,7 +13,6 @@ import {
   useSubplebbits,
 } from '@plebbit/plebbit-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
-import styles from './author-sidebar.module.css';
 import { getFormattedTimeDuration } from '../../lib/utils/time-utils';
 import { isAuthorView, isProfileView } from '../../lib/utils/view-utils';
 import { findAuthorSubplebbits, estimateAuthorKarma } from '../../lib/utils/user-utils';
@@ -33,9 +32,6 @@ const AuthorModeratingList = ({ accountSubplebbits, authorSubplebbits, isAuthor 
 
   return (
     subplebbitAddresses.length > 0 && (
-      <div className={styles.modList}>
-        <div className={styles.modListTitle}>{t('moderator_of')}</div>
-        <ul className={`${styles.modListContent} ${styles.modsList}`}>
           {subplebbitAddresses.map((address, index) => (
             <li key={index}>
               <Link to={`/p/${address}`}>p/{Plebbit.getShortAddress(address)}</Link>
@@ -112,59 +108,43 @@ const AuthorSidebar = () => {
   };
 
   return (
-    <div className={styles.sidebar}>
       {((isInAuthorView && authorPageAvatar) || (isInProfileView && profilePageAvatar)) && (
-        <div className={styles.avatar}>
           <img src={isInAuthorView ? authorPageAvatar : profilePageAvatar} alt='' />
         </div>
       )}
-      <div className={styles.titleBox}>
-        <div className={styles.title}>
           {address}
           {isInProfileView && !displayName && (
-            <span className={styles.editButtonWrapper}>
               {' '}
               (
-              <span className={styles.editButton}>
                 <Link to='/settings#displayName'>{t('edit')}</Link>
               </span>
               )
             </span>
           )}
         </div>
-        {displayName && <div className={styles.displayName}>{displayName}</div>}
         {/*  TODO: implement functionality for subscribing to users
         {isInAuthorView && authorAddress !== userAccount?.author?.address && (
-          <div className={styles.friends}>
             <SubscribeButton address={address} />
           </div>
         )} */}
         <div>
-          <span className={styles.karma}>{postScore + 1}</span> {t('post_karma')}
         </div>
         <div>
-          <span className={styles.karma}>{replyScore}</span> {t('comment_karma')}
         </div>
-        <div className={styles.bottom}>
           {isInAuthorView &&
             authorAddress !== userAccount?.author?.address &&
             (showBlockConfirm ? (
-              <span className={styles.blockConfirm}>
                 {t('are_you_sure')}{' '}
-                <span className={styles.confirmButton} onClick={handleBlock}>
                   {t('yes')}
                 </span>
                 {' / '}
-                <span className={styles.cancelButton} onClick={cancelBlock}>
                   {t('no')}
                 </span>
               </span>
             ) : (
-              <span className={styles.blockUser} onClick={blockConfirm}>
                 {blocked ? t('unblock_user') : t('block_user')}
               </span>
             ))}
-          <span className={styles.age}>{t('user_since', { time: getFormattedTimeDuration(oldestCommentTimestamp) })}</span>
         </div>
       </div>
       {(Object.keys(accountSubplebbits).length > 0 || authorSubplebbits.length > 0) && (

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import styles from './thumbnail.module.css';
 import { Link, useParams } from 'react-router-dom';
 import { CommentMediaInfo } from '../../../lib/utils/media-utils';
 import useFetchGifFirstFrame from '../../../hooks/use-fetch-gif-first-frame';
@@ -42,7 +41,6 @@ const Thumbnail = ({
   const [isNotFound, setIsNotFound] = useState(false);
   const iframeThumbnail = commentMediaInfo?.patternThumbnailUrl || commentMediaInfo?.thumbnail;
   let displayWidth, displayHeight, hasLinkDimensions;
-  const thumbnailClass = expanded ? styles.thumbnailHidden : styles.thumbnailVisible;
 
   const { blurNsfwThumbnails } = useContentOptionsStore();
   const pageSubplebbitAddress = useParams().subplebbitAddress;
@@ -99,13 +97,11 @@ const Thumbnail = ({
             onError={handleNotFound}
           />
         )}
-        <span className={styles.durationOverlay}>{videoDuration}</span>
       </>
     );
   } else if (commentMediaInfo?.type === 'webpage') {
     mediaComponent = <img src={commentMediaInfo.thumbnail} alt='' onError={handleNotFound} />;
   } else if (commentMediaInfo?.type === 'iframe') {
-    mediaComponent = iframeThumbnail ? <img src={iframeThumbnail} alt='' onError={handleNotFound} /> : <span className={`${styles.iconThumbnail} ${styles.linkIcon}`} />;
   } else if (commentMediaInfo?.type === 'gif') {
     if (gifFrameUrl) {
       mediaComponent = <img src={gifFrameUrl} alt='' onError={handleNotFound} />;
@@ -113,14 +109,12 @@ const Thumbnail = ({
       displayWidth = '50px';
       displayHeight = '50px';
       hasLinkDimensions = false;
-      mediaComponent = <span className={`${styles.iconThumbnail} ${styles.imageIcon}`} />;
     } else {
       // Chrome has strong CORS restrictions that prevent frame extraction, so we show a placeholder
       if (isChromium) {
         displayWidth = '50px';
         displayHeight = '50px';
         hasLinkDimensions = true;
-        mediaComponent = <span className={`${styles.iconThumbnail} ${styles.imageIcon}`} />;
       } else {
         mediaComponent = <img src={commentMediaInfo.url} alt='' onError={handleNotFound} />;
       }
@@ -128,40 +122,32 @@ const Thumbnail = ({
   }
 
   if (isText) {
-    mediaComponent = <span className={`${styles.iconThumbnail} ${styles.textIcon}`} />;
     noMediaLinkIcon = 'text';
   }
 
   if (isLink) {
-    mediaComponent = <span className={`${styles.iconThumbnail} ${styles.linkIcon}`} />;
     noMediaLinkIcon = 'link';
   }
 
   if (isPdf) {
-    mediaComponent = <span className={`${styles.iconThumbnail} ${styles.imageIcon}`} />;
     noMediaLinkIcon = 'pdf';
   }
 
   if (isSpoiler) {
-    mediaComponent = <span className={`${styles.iconThumbnail} ${styles.spoilerIcon}`} />;
     noMediaLinkIcon = 'spoiler';
   }
 
   if (isNsfw && blurNsfwThumbnails && !isNsfwSubplebbit) {
-    mediaComponent = <span className={`${styles.iconThumbnail} ${styles.nsfwIcon}`} />;
     noMediaLinkIcon = 'nsfw';
   }
 
   if (isNotFound) {
-    mediaComponent = <span className={`${styles.iconThumbnail} ${styles.linkIcon}`} />;
     noMediaLinkIcon = 'notfound';
   }
 
   const style = hasLinkDimensions ? ({ '--width': displayWidth, '--height': displayHeight } as React.CSSProperties) : {};
 
   return (
-    <span className={`${styles.thumbnail} ${thumbnailClass}`} style={style}>
-      <span className={hasLinkDimensions ? styles.transparentThumbnailWrapper : styles.thumbnailWrapper}>
         {isReply || commentMediaInfo?.type === 'webpage' ? (
           <a
             href={link}

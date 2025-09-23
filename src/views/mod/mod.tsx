@@ -10,7 +10,6 @@ import FeedFooter from '../../components/feed-footer';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
 import { sortTypes } from '../../constants/sort-types';
-import styles from '../home/home.module.css';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
 
@@ -184,34 +183,30 @@ const Mod = () => {
 
   return (
     <div>
-      <div className={styles.content}>
         {isSearching ? (
-          <div className={styles.feed}>
-            <div className={styles.footer}>
-              <div className={styles.stateString}>
+          <div>
+            <div>
+              <div>
                 <LoadingEllipsis string={t('searching')} />
               </div>
             </div>
           </div>
         ) : showNoResults && searchQuery ? (
-          <div className={styles.feed}>
-            <div className={styles.footer}>
-              <div className={styles.stateString}>
-                <span className={styles.noMatchesFound}>{t('no_matches_found_for', { query: searchQuery })}</span>
+          <div>
+            <div>
+              <div>
                 <br />
                 <br />
-                <div className={styles.morePostsSuggestion}>
-                  <span className={styles.link} onClick={handleClearSearch}>
-                    {t('clear_search')}
-                  </span>
-                </div>
+                <span>
+                  {t('clear_search')}
+                </span>
               </div>
             </div>
           </div>
         ) : (
-          <div className={styles.feed}>
+          <div>
             {process.env.NODE_ENV !== 'production' && (
-              <button className={styles.debugButton} onClick={reset}>
+              <button>
                 Reset Feed
               </button>
             )}
@@ -228,9 +223,12 @@ const Mod = () => {
               restoreStateFrom={lastVirtuosoState}
               initialScrollTop={lastVirtuosoState?.scrollTop}
             />
-          </div>
+
+    </div>
         )}
-      </div>
+
+    </div>
+
     </div>
   );
 };

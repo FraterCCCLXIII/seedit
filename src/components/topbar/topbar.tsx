@@ -10,7 +10,6 @@ import useTimeFilter, { setSessionTimeFilterPreference } from '../../hooks/use-t
 import { sortTypes } from '../../constants/sort-types';
 import { sortLabels } from '../../constants/sort-labels';
 import { handleNSFWSubscriptionPrompt } from '../../lib/utils/nsfw-subscription-utils';
-import styles from './topbar.module.css';
 
 const CommunitiesDropdown = () => {
   const { t } = useTranslation();
@@ -22,7 +21,6 @@ const CommunitiesDropdown = () => {
   const toggleSubsDropdown = () => setIsSubsDropdownOpen(!isSubsDropdownOpen);
   const subsDropdownRef = useRef<HTMLDivElement>(null);
   const subsdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const subsDropdownClass = isSubsDropdownOpen ? styles.visible : styles.hidden;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (subsDropdownRef.current && !subsDropdownRef.current.contains(event.target as Node)) {
@@ -37,15 +35,10 @@ const CommunitiesDropdown = () => {
   }, [isSubsDropdownOpen]);
 
   return (
-    <div className={`${styles.dropdown} ${styles.subsDropdown}`} ref={subsDropdownRef} onClick={toggleSubsDropdown}>
-      <span className={styles.selectedTitle}>{t('my_communities')}</span>
-      <div className={`${styles.dropChoices} ${styles.subsDropChoices} ${subsDropdownClass}`} ref={subsdropdownItemsRef}>
         {reversedSubscriptions?.map((subscription: string, index: number) => (
-          <Link key={index} to={`/p/${subscription}`} className={styles.dropdownItem}>
             {Plebbit.getShortAddress(subscription)}
           </Link>
         ))}
-        <Link to='/communities/subscriber' className={`${styles.dropdownItem} ${styles.myCommunitiesItemButtonDotted}`}>
           {t('edit_subscriptions')}
         </Link>
       </div>
@@ -91,7 +84,6 @@ const TagFilterDropdown = () => {
   const toggleTagFilterDropdown = () => setIsTagFilterDropdownOpen(!isTagFilterDropdownOpen);
   const tagFilterDropdownRef = useRef<HTMLDivElement>(null);
   const tagFilterdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const tagFilterDropdownClass = isTagFilterDropdownOpen ? styles.visible : styles.hidden;
 
   const allHidden = hideAdultCommunities && hideGoreCommunities && hideAntiCommunities && hideVulgarCommunities;
 
@@ -143,20 +135,12 @@ const TagFilterDropdown = () => {
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={tagFilterDropdownRef} onClick={toggleTagFilterDropdown}>
-      <span className={styles.selectedTitle}>{t('tags')}</span>
-      <div className={`${styles.dropChoices} ${styles.filterDropChoices} ${tagFilterDropdownClass}`} ref={tagFilterdropdownItemsRef}>
-        <div className={styles.dropdownItem} onClick={handleToggleAll} style={{ cursor: 'pointer' }}>
-          <span className={styles.dropdownItemText}>{allHidden ? t('show_all_nsfw') : t('hide_all_nsfw')}</span>
         </div>
         {tags.map((tag, index) => (
-          <div key={index} className={styles.dropdownItem} onClick={(e) => handleToggleTag(e, tag.setter, tag.isHidden, tag.name)} style={{ cursor: 'pointer' }}>
-            <span className={styles.dropdownItemText}>
               {tag.isHidden ? t('show') : t('hide')} <i>{tag.name}</i>
             </span>
           </div>
         ))}
-        <Link to='/settings/content-options' className={`${styles.dropdownItem} ${styles.myCommunitiesItemButtonDotted}`}>
           {t('content_options')}
         </Link>
       </div>
@@ -183,7 +167,6 @@ const SortTypesDropdown = () => {
   const toggleSortsDropdown = () => setIsSortsDropdownOpen(!isSortsDropdownOpen);
   const sortsDropdownRef = useRef<HTMLDivElement>(null);
   const sortsdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const sortsDropdownClass = isSortsDropdownOpen ? styles.visible : styles.hidden;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -199,16 +182,12 @@ const SortTypesDropdown = () => {
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={sortsDropdownRef} onClick={toggleSortsDropdown}>
-      <span className={styles.selectedTitle}>{t(getSelectedSortLabel())}</span>
-      <div className={`${styles.dropChoices} ${styles.sortsDropChoices} ${sortsDropdownClass}`} ref={sortsdropdownItemsRef}>
         {sortTypes.map((sortType, index) => {
           let dropdownLink = isInSubplebbitView ? `/p/${params.subplebbitAddress}/${sortType}` : isinAllView ? `/p/all/${sortType}` : sortType;
           if (timeFilterName) {
             dropdownLink += `/${timeFilterName}`;
           }
           return (
-            <Link to={dropdownLink} key={index} className={styles.dropdownItem}>
               {t(sortLabels[index])}
             </Link>
           );
@@ -232,7 +211,6 @@ const TimeFilterDropdown = () => {
   const toggleTimeFilterDropdown = () => setIsTimeFilterDropdownOpen(!isTimeFilterDropdownOpen);
   const timeFilterDropdownRef = useRef<HTMLDivElement>(null);
   const timeFilterdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const timeFilterDropdownClass = isTimeFilterDropdownOpen ? styles.visible : styles.hidden;
 
   const selectedSortType = params.sortType || 'hot';
 
@@ -262,14 +240,10 @@ const TimeFilterDropdown = () => {
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={timeFilterDropdownRef} onClick={toggleTimeFilterDropdown}>
-      <span className={styles.selectedTitle}>{selectedTimeFilter}</span>
-      <div className={`${styles.dropChoices} ${styles.filterDropChoices} ${timeFilterDropdownClass}`} ref={timeFilterdropdownItemsRef}>
         {timeFilterNames.slice(0, -1).map((timeFilterName, index) => (
           <Link
             to={getTimeFilterLink(timeFilterName)}
             key={index}
-            className={styles.dropdownItem}
             onClick={() => setSessionTimeFilterPreference(sessionKey, timeFilterName)}
           >
             {timeFilterNames[index]}
@@ -288,7 +262,6 @@ const TopBar = memo(() => {
   const isinAllView = isAllView(location.pathname);
   const isInHomeView = isHomeView(location.pathname);
   const isInModView = isModView(location.pathname);
-  const homeButtonClass = isInHomeView ? styles.selected : styles.choice;
 
   const { hideDefaultCommunities } = useContentOptionsStore();
   const subplebbitAddresses = useDefaultSubplebbitAddresses();
@@ -302,47 +275,34 @@ const TopBar = memo(() => {
   const filteredSubplebbitAddresses = useMemo(() => subplebbitAddresses?.filter((address) => !subscriptions?.includes(address)), [subplebbitAddresses, subscriptions]);
 
   return (
-    <div className={styles.headerArea}>
-      <div className={styles.widthClip}>
         <CommunitiesDropdown />
         <TagFilterDropdown />
         <SortTypesDropdown />
         <TimeFilterDropdown />
-        <div className={styles.srList}>
-          <ul className={styles.srBar}>
             <li>
-              <Link to='/' className={`${styles.homeButton} ${homeButtonClass}`}>
                 {t('home')}
               </Link>
             </li>
             <li>
-              <span className={styles.separator}>-</span>
-              <Link to='/p/all' className={isinAllView ? styles.selected : styles.choice}>
                 {t('all')}
               </Link>
             </li>
             {accountSubplebbitAddresses.length > 0 && (
               <li>
-                <span className={styles.separator}>-</span>
-                <Link to='/p/mod' className={isInModView ? styles.selected : styles.choice}>
                   {t('mod')}
                 </Link>
               </li>
             )}
-            {subscriptions?.length > 0 && <span className={styles.separator}> | </span>}
             {reversedSubscriptions?.map((subscription: string, index: number) => {
               const shortAddress = Plebbit.getShortAddress(subscription);
               const displayAddress = shortAddress.includes('.eth') ? shortAddress.slice(0, -4) : shortAddress.includes('.sol') ? shortAddress.slice(0, -4) : shortAddress;
               return (
                 <li key={index}>
-                  {index !== 0 && <span className={styles.separator}>-</span>}
-                  <Link to={`/p/${subscription}`} className={params.subplebbitAddress === subscription ? styles.selected : styles.choice}>
                     {displayAddress}
                   </Link>
                 </li>
               );
             })}
-            {!hideDefaultCommunities && filteredSubplebbitAddresses?.length > 0 && <span className={styles.separator}> | </span>}
             {!hideDefaultCommunities &&
               filteredSubplebbitAddresses?.map((address, index) => {
                 const shortAddress = Plebbit.getShortAddress(address);
@@ -353,8 +313,6 @@ const TopBar = memo(() => {
                   : shortAddress;
                 return (
                   <li key={index}>
-                    {index !== 0 && <span className={styles.separator}>-</span>}
-                    <Link to={`/p/${address}`} className={params.subplebbitAddress === address ? styles.selected : styles.choice}>
                       {displayAddress}
                     </Link>
                   </li>
@@ -362,7 +320,6 @@ const TopBar = memo(() => {
               })}
           </ul>
         </div>
-        <Link to='/communities/vote' className={styles.editLink}>
           {t('edit')} »
         </Link>
       </div>

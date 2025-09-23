@@ -1,4 +1,3 @@
-import styles from './embed.module.css';
 
 interface EmbedProps {
   url: string;
@@ -95,7 +94,6 @@ const YoutubeEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   if (embedSrc) {
     return (
       <iframe
-        className={styles.videoEmbed}
         height='100%'
         width='100%'
         referrerPolicy='origin'
@@ -114,7 +112,6 @@ const xHosts = new Set<string>(['twitter.com', 'www.twitter.com', 'x.com', 'www.
 const XEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   return (
     <iframe
-      className={styles.xEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -135,7 +132,6 @@ const redditHosts = new Set<string>(['reddit.com', 'www.reddit.com', 'old.reddit
 const RedditEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   return (
     <iframe
-      className={styles.redditEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -170,7 +166,6 @@ const TwitchEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   }
   return (
     <iframe
-      className={styles.videoEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -188,7 +183,6 @@ const TiktokEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   const videoId = parsedUrl.pathname.replace(/.+\/video\//, '').replaceAll('/', '');
   return (
     <iframe
-      className={styles.tiktokEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -211,7 +205,6 @@ const InstagramEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   const id = pathNames[pathNames.length - 1];
   return (
     <iframe
-      className={styles.instagramEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -233,7 +226,6 @@ const OdyseeEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   const iframeUrl = `https://odysee.com/$/embed${parsedUrl.pathname}`;
   return (
     <iframe
-      className={styles.videoEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -251,7 +243,6 @@ const BitchuteEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   const videoId = parsedUrl.pathname.replace(/\/video\//, '').replaceAll('/', '');
   return (
     <iframe
-      className={styles.videoEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -269,7 +260,6 @@ const StreamableEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   const videoId = parsedUrl.pathname.replaceAll('/', '');
   return (
     <iframe
-      className={styles.videoEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -287,7 +277,6 @@ const SpotifyEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   const iframeUrl = `https://open.spotify.com/embed${parsedUrl.pathname}?theme=0`;
   return (
     <iframe
-      className={styles.audioEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -306,7 +295,6 @@ const SoundcloudEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   const isSet = parsedUrl.pathname.includes('/sets/');
   return (
     <iframe
-      className={isSet ? styles.soundcloudSetsEmbed : styles.soundcloudEmbed}
       height='100%'
       width='100%'
       referrerPolicy='no-referrer'
@@ -346,7 +334,6 @@ export const canEmbed = (parsedUrl: URL): boolean => {
 };
 
 const PdfEmbed = ({ parsedUrl }: EmbedComponentProps) => {
-  return <iframe className={styles.pdfEmbed} height='100%' width='100%' referrerPolicy='origin' allowFullScreen title={parsedUrl.href} src={parsedUrl.href} />;
 };
 
 export default Embed;

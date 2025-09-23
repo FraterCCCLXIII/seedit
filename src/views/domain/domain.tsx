@@ -9,7 +9,6 @@ import useTimeFilter, { isValidTimeFilterName } from '../../hooks/use-time-filte
 import FeedFooter from '../../components/feed-footer';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
-import styles from '../home/home.module.css';
 import { sortTypes } from '../../constants/sort-types';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
@@ -167,35 +166,34 @@ const Domain = () => {
 
   return (
     <div>
-      <div className={styles.content}>
+      <div>
+        <div>
         {isSearching ? (
-          <div className={styles.feed}>
-            <div className={styles.footer}>
-              <div className={styles.stateString}>
+          <div>
+            <div>
+              <div>
                 <LoadingEllipsis string='searching' />
               </div>
             </div>
           </div>
         ) : showNoResults ? (
-          <div className={styles.feed}>
-            <div className={styles.footer}>
-              <div className={styles.stateString}>
+          <div>
+            <div>
+              <div>
                 {searchQuery ? (
-                  <span className={styles.noMatchesFound}>
+                  <span>
                     No matches found for "{searchQuery}" on {domain}
                   </span>
-                ) : (
-                  <span className={styles.noMatchesFound}>No posts found from {domain}</span>
-                )}
+                ) : null}
                 <br />
                 <br />
-                <div className={styles.morePostsSuggestion}>
+                <span>
                   {searchQuery && (
-                    <span className={styles.link} onClick={handleClearSearch}>
+                    <span>
                       Clear search
                     </span>
                   )}
-                </div>
+                </span>
               </div>
             </div>
           </div>

@@ -3,7 +3,6 @@ import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAccountComments, useBlock, useFeed, useSubplebbit } from '@plebbit/plebbit-react-hooks';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
 import { Trans, useTranslation } from 'react-i18next';
-import styles from '../home/home.module.css';
 import { useFeedStateString } from '../../hooks/use-state-string';
 import { commentMatchesPattern } from '../../lib/utils/pattern-utils';
 import useContentOptionsStore from '../../stores/use-content-options-store';
@@ -83,7 +82,6 @@ const Footer = ({
 
   const loadingString = (
     <>
-      <div className={styles.stateString}>{loadingStateString === 'Failed' ? 'failed' : <LoadingEllipsis string={loadingStateString} />}</div>
     </>
   );
 
@@ -112,18 +110,18 @@ const Footer = ({
     footerSecondLine = (
       <>
         {showBlockConfirm ? (
-          <span className={styles.blockConfirm}>
+          <span>
             {t('are_you_sure')}{' '}
-            <span className={styles.confirmButton} onClick={handleBlock}>
+            <span>
               {t('yes')}
             </span>
             {' / '}
-            <span className={styles.cancelButton} onClick={() => setShowBlockConfirm(false)}>
+            <span>
               {t('no')}
             </span>
           </span>
         ) : (
-          <span className={styles.blockSub} onClick={() => setShowBlockConfirm(true)}>
+          <span>
             {blocked ? t('unblock_community') : t('block_community')}
           </span>
         )}
@@ -132,47 +130,45 @@ const Footer = ({
   } else if (searchQuery) {
     if (isSearching) {
       footerFirstLine = (
-        <div className={styles.stateString}>
+        <div>
           <LoadingEllipsis string={t('searching')} />
         </div>
       );
     } else if (showNoResults) {
       footerFirstLine = (
-        <div className={styles.stateString}>
-          <span className={styles.noMatchesFound}>{t('no_matches_found_for', { query: searchQuery })}</span>
           <br />
           <br />
-          <div className={styles.morePostsSuggestion}>
-            <span className={styles.link} onClick={handleClearSearch}>
               {t('clear_search')}
-            </span>
-          </div>
-        </div>
+
+    </span>
+
+    </div>
+
+    </div>
       );
     } else if (feedLength > 0) {
       footerFirstLine = (
-        <div className={styles.stateString}>
-          <span className={styles.searchResults}>{t('found_n_results_for', { count: feedLength, query: searchQuery })}</span>
           <br />
           <br />
-          <div className={styles.morePostsSuggestion}>
-            <span className={styles.link} onClick={handleClearSearch}>
               {t('clear_search')}
-            </span>
-          </div>
-        </div>
+
+    </span>
+
+    </div>
+
+    </div>
       );
     } else if (feedLength === 0 && searchAttemptCompleted) {
       footerFirstLine = (
-        <div className={styles.stateString}>
           <LoadingEllipsis string={t('searching')} />
-        </div>
+
+    </div>
       );
     } else if (feedLength === 0 && !searchAttemptCompleted) {
       footerFirstLine = (
-        <div className={styles.stateString}>
           <LoadingEllipsis string={t('searching')} />
-        </div>
+
+    </div>
       );
     }
   } else if (feedLength === 0 && isOnline && !hasMore) {
@@ -185,7 +181,6 @@ const Footer = ({
 
   if (timeFilterName !== 'all' && !blocked && !searchQuery) {
     footerSecondLine = (
-      <div className={styles.morePostsSuggestion}>
         <Trans
           i18nKey='show_all_instead'
           values={{ timeFilterName }}
@@ -193,12 +188,12 @@ const Footer = ({
             1: <Link key='show_all_instead_link' to={`/p/${subplebbitAddress}`} />,
           }}
         />
-      </div>
+
+    </div>
     );
   }
 
   return (
-    <div className={styles.footer}>
       {footerFirstLine && (
         <>
           {footerFirstLine}
@@ -207,6 +202,7 @@ const Footer = ({
         </>
       )}
       {footerSecondLine}
+
     </div>
   );
 };
@@ -380,16 +376,13 @@ const Subplebbit = () => {
   return isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity ? (
     <Over18Warning />
   ) : (
-    <div className={styles.content}>
       {shouldShowErrorToUser && (
-        <div className={styles.error}>
           <ErrorDisplay error={error} />
-        </div>
+
+    </div>
       )}
-      <div className={styles.feed}>
         {process.env.NODE_ENV !== 'production' && (
-          <button className={styles.debugButton} onClick={reset}>
-            Reset Feed
+            Reset Feed</button>
           </button>
         )}
         <Virtuoso
@@ -405,7 +398,9 @@ const Subplebbit = () => {
           restoreStateFrom={lastVirtuosoState}
           initialScrollTop={lastVirtuosoState?.scrollTop}
         />
-      </div>
+
+    </div>
+
     </div>
   );
 };

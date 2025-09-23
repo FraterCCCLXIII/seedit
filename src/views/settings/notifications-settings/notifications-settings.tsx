@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { requestNotificationPermission, showLocalNotification } from '../../../lib/push';
 import useContentOptionsStore from '../../../stores/use-content-options-store';
-import styles from './notifications-settings.module.css';
 
 const NotificationsSettings = () => {
   const { t } = useTranslation();
@@ -143,7 +142,6 @@ const NotificationsSettings = () => {
   };
 
   return (
-    <div className={styles.notificationsSettings}>
       <div>
         <input
           type='checkbox'
@@ -156,15 +154,11 @@ const NotificationsSettings = () => {
 
         {/* Not supported message */}
         {permissionStatus === 'not-supported' && (
-          <span className={styles.permissionStatus} data-status='not-supported'>
-            <span className={styles.permissionStatusDenied}>Notifications are not supported on this system.</span>
           </span>
         )}
 
         {/* Permission status messages */}
         {showDeniedMessage && permissionStatus === 'denied' && (
-          <span className={styles.permissionStatus} data-status={permissionStatus}>
-            <span className={styles.permissionStatusDenied}>
               {window.electronApi?.isElectron && platform === 'darwin'
                 ? 'Permission denied. Please go to System Settings > Notifications > Seedit and enable notifications.'
                 : window.electronApi?.isElectron
@@ -174,15 +168,10 @@ const NotificationsSettings = () => {
           </span>
         )}
         {permissionStatus === 'requesting...' && (
-          <span className={styles.permissionStatus} data-status={permissionStatus}>
-            <span className={styles.permissionStatusRequesting}>Click "Allow" to enable notifications</span>
           </span>
         )}
         {showSuccessMessage && permissionStatus === 'granted' && enableLocalNotifications && (
-          <span className={styles.permissionStatus} data-status={permissionStatus}>
-            <span className={styles.permissionStatusSuccess}>
               Success! You're done.
-              <span className={styles.permissionStatusTestButton} onClick={showTestNotification}>
                 (Test)
               </span>
             </span>

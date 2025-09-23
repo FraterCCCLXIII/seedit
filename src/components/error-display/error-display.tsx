@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { copyToClipboard } from '../../lib/utils/clipboard-utils';
-import styles from './error-display.module.css';
 
 const ErrorDisplay = ({ error }: { error: any }) => {
   const { t } = useTranslation();
@@ -29,24 +28,20 @@ const ErrorDisplay = ({ error }: { error: any }) => {
   };
 
   let currentDisplayMessage = '';
-  const classNames = [styles.errorMessage];
   let isClickable = false;
 
   if (feedbackMessageKey === 'copied') {
     currentDisplayMessage = t('fullErrorCopiedToClipboard', 'full error copied to the clipboard');
     classNames.pop();
-    classNames.push(styles.feedbackSuccessMessage);
   } else if (feedbackMessageKey === 'failed') {
     currentDisplayMessage = t('copyFailed', 'copy failed');
   } else if (originalDisplayMessage) {
     currentDisplayMessage = originalDisplayMessage;
     isClickable = true;
-    classNames.push(styles.clickableErrorMessage);
   }
 
   return (
     (error?.message || error?.stack || error?.details || error) && (
-      <div className={styles.error}>
         {currentDisplayMessage && (
           <span
             className={classNames.join(' ')}

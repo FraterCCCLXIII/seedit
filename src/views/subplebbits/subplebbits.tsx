@@ -2,7 +2,6 @@ import { Fragment, useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { Subplebbit as SubplebbitType, useAccount, useAccountSubplebbits, useSubplebbits, useSubplebbitStats } from '@plebbit/plebbit-react-hooks';
-import styles from './subplebbits.module.css';
 import { getFormattedTimeDuration } from '../../lib/utils/time-utils';
 import {
   isSubplebbitsView,
@@ -37,7 +36,6 @@ interface SubplebbitProps {
 
 const NoCommunitiesMessage = () => {
   const { t } = useTranslation();
-  return <div className={styles.noSubsMessage}>{t('nothing_found')}</div>;
 };
 
 const MyCommunitiesTabs = () => {
@@ -51,24 +49,20 @@ const MyCommunitiesTabs = () => {
     isSubplebbitsView(location.pathname) && !isInSubplebbitsSubscriberView && !isInSubplebbitsModeratorView && !isInSubplebbitsAdminView && !isInSubplebbitsOwnerView;
 
   return (
-    <div className={styles.subplebbitsTabs}>
-      <Link to='/communities' className={isInSubplebbitsView ? styles.selected : styles.choice}>
+    <div>
+      <Link to='/subplebbits'>
         {t('all')}
       </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/subscriber' className={isInSubplebbitsSubscriberView ? styles.selected : styles.choice}>
+      <Link to='/subplebbits/subscriber'>
         {t('subscriber')}
       </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/moderator' className={isInSubplebbitsModeratorView ? styles.selected : styles.choice}>
+      <Link to='/subplebbits/moderator'>
         {t('moderator')}
       </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/admin' className={isInSubplebbitsAdminView ? styles.selected : styles.choice}>
+      <Link to='/subplebbits/admin'>
         {t('admin')}
       </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/owner' className={isInSubplebbitsOwnerView ? styles.selected : styles.choice}>
+      <Link to='/subplebbits/owner'>
         {t('owner')}
       </Link>
     </div>
@@ -83,14 +77,12 @@ const VoteTabs = () => {
   const isInSubplebbitsVoteRejectingView = isSubplebbitsVoteRejectingView(location.pathname);
 
   return (
-    <div className={styles.subplebbitsTabs}>
-      <Link to='/communities/vote' className={isInSubplebbitsVoteView ? styles.selected : styles.choice}>
+    <div>
+      <Link to='/communities/vote'>
         {t('all')}
       </Link>
-      <span className={styles.separator}>|</span>
       <Link
         to='/communities/vote/passing'
-        className={isInSubplebbitsVotePassingView ? styles.selected : styles.choice}
         onClick={(e) => {
           e.preventDefault();
           alert('This feature is not available yet.');
@@ -99,10 +91,8 @@ const VoteTabs = () => {
       >
         {t('passing')}
       </Link>
-      <span className={styles.separator}>|</span>
       <Link
         to='/communities/vote/rejecting'
-        className={isInSubplebbitsVoteRejectingView ? styles.selected : styles.choice}
         onClick={(e) => {
           e.preventDefault();
           alert('This feature is not available yet.');
@@ -111,6 +101,7 @@ const VoteTabs = () => {
       >
         {t('rejecting')}
       </Link>
+
     </div>
   );
 };
@@ -155,16 +146,15 @@ const Infobar = () => {
 
   return (
     <>
-      <div className={styles.infobar}>
         <div>{mainInfobarText}</div>
-      </div>
+
+    </div>
       {currentTag && (
-        <div className={styles.infobar}>
           {currentTag === 'nsfw' ? t('filtering_by_nsfw') + ' ("adult", "gore", "vulgar", "anti") —' : t('filtering_by_tag', { tag: currentTag }) + ' —'}{' '}
-          <Link className={styles.undoLink} to={basePath}>
             {t('undo')}
           </Link>
-        </div>
+
+    </div>
       )}
     </>
   );
@@ -215,97 +205,90 @@ const Subplebbit = ({ subplebbit, tags, index, isUnsubscribed, onUnsubscribe }: 
       : description);
 
   return (
-    <div className={`${styles.subplebbit} ${isUnsubscribed ? styles.unsubscribed : ''}`}>
-      <div className={styles.row}>
-        {!isMobile && <div className={styles.rank}>{(index ?? 0) + 1}</div>}
-        <div className={styles.leftcol}>
-          <div className={styles.midcol}>
-            <div className={styles.arrowWrapper}>
               <div
-                className={`${styles.arrowCommon} ${upvoted ? styles.upvoted : styles.arrowUp}`}
                 style={{ cursor: 'not-allowed' }}
                 onClick={(e) => {
                   e.preventDefault();
                   alert('This feature is not available yet.');
                 }}
               />
-            </div>
-            <div className={styles.score}>{postScore}</div>
-            <div className={styles.arrowWrapper}>
+
+    </div>
               <div
-                className={`${styles.arrowCommon} ${downvoted ? styles.downvoted : styles.arrowDown}`}
                 style={{ cursor: 'not-allowed' }}
                 onClick={(e) => {
                   e.preventDefault();
                   alert('This feature is not available yet.');
                 }}
               />
-            </div>
-          </div>
-          <div className={`${styles.avatar} ${showSprout ? styles.defaultAvatar : ''}`}>
+
+    </div>
+
+    </div>
             <Link to={`/p/${address}`}>
               {suggested?.avatarUrl ? (
                 <img
                   key={suggested.avatarUrl}
                   src={suggested.avatarUrl}
                   alt=''
-                  className={styles.customAvatarImg}
                   onError={() => {
                     setAvatarLoadFailed(true);
                   }}
                 />
               ) : (
-                <div key='holons-fallback' className={`${styles.sproutImg} flex items-center justify-center bg-muted text-muted-foreground font-inter font-bold text-xs`}>
                   H
-                </div>
+
+    </div>
               )}
             </Link>
-          </div>
-        </div>
-        <div className={styles.entry}>
-          <div className={styles.title}>
-            <div className={styles.titleWrapper}>
+
+    </div>
+
+    </div>
               <Link to={`/p/${address}`}>
                 p/{address?.includes('.') ? address : shortAddress}
                 {title && `: ${title}`}
               </Link>
-            </div>
-          </div>
-          <div className={styles.tagline}>
+
+    </div>
+
+    </div>
             {t('members_count', { count: allActiveUserCount })}, {t('community_for', { date: getFormattedTimeDuration(createdAt) })}
-            <div className={styles.taglineSecondLine}>
-              <span className={styles.subscribeButton}>
                 <SubscribeButton address={address} onUnsubscribe={onUnsubscribe} />
-              </span>
+
+    </span>
               {(userRole || isUserOwner) && (
                 <Link to={`/p/${address}/settings`}>
-                  <span className={`${styles.moderatorIcon} ${isNsfw ? styles.addMarginRight : ''}`} title={userRole || 'owner'} />
                 </Link>
               )}
               {isNsfw && (
                 <Link to={getTagFilterRoute('nsfw')}>
-                  <span className={styles.over18icon} title='Filter NSFW communities' />
                 </Link>
               )}
               {isOffline && !isOnlineStatusLoading && <Label color='red' title={offlineTitle} text={t('offline')} />}
               {tags && tags.length > 0 && (
-                <span className={styles.tags}>
                   {tags.map((tag, index) => (
                     <Fragment key={index}>
                       <Link to={getTagFilterRoute(tag)}>{tag}</Link>
                     </Fragment>
                   ))}
-                </span>
+
+    </span>
               )}
-            </div>
-          </div>
+
+    </div>
+
+    </div>
           {description && (
-            <div className={styles.description}>
               <Markdown content={descriptionText} />
-            </div>
+
+    </div>
           )}
-        </div>
-      </div>
+
+    </div>
+
+    </div>
+
     </div>
   );
 };
@@ -609,17 +592,15 @@ const Subplebbits = () => {
   };
 
   return (
-    <div className={styles.content}>
-      <div className={styles.sidebar}>
         <Sidebar />
-      </div>
+
+    </div>
       {isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView || isInSubplebbitsView ? (
         <MyCommunitiesTabs />
       ) : (
         <VoteTabs />
       )}
       <Infobar />
-      <div className={styles.error}>{renderErrors()}</div>
       {isInSubplebbitsVoteView && <AllDefaultSubplebbits />}
       {(isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView) && <AccountSubplebbits viewRole={viewRole} />}
       {isInSubplebbitsSubscriberView && <SubscriberSubplebbits />}

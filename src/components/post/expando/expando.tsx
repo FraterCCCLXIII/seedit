@@ -6,7 +6,6 @@ import useContentOptionsStore from '../../../stores/use-content-options-store';
 import { useIsNsfwSubplebbit } from '../../../hooks/use-is-nsfw-subplebbit';
 import Markdown from '../../markdown';
 import Embed from '../embed';
-import styles from './expando.module.css';
 import _ from 'lodash';
 
 interface ExpandoProps {
@@ -83,15 +82,10 @@ const Expando = ({
   const isNsfwSubplebbit = useIsNsfwSubplebbit(pageSubplebbitAddress || '');
 
   return (
-    <div className={expanded ? styles.expando : styles.expandoHidden}>
       {link && !removed && commentMediaInfo?.type !== 'webpage' && (
-        <div className={`${styles.mediaPreview} ${isReply ? styles.mediaPreviewReply : ''}`} onClick={() => setHideContent(false)}>
           {((nsfw && blurNsfwThumbnails && !isNsfwSubplebbit) || spoiler) && hideContent && link && commentMediaInfo?.type !== 'webpage' && !(deleted || removed) && (
             <>
-              <div className={styles.blurContent} />
-              <span className={styles.unblurButton}>{nsfw && spoiler ? t('see_nsfw_spoiler') : spoiler ? t('view_spoiler') : nsfw ? t('see_nsfw') : ''}</span>
               {nsfw && (
-                <span className={styles.alwaysShowNsfwButton} onClick={handleAlwaysShowNsfw}>
                   {t('always_show_nsfw')}
                 </span>
               )}
@@ -111,19 +105,14 @@ const Expando = ({
         </div>
       )}
       {alwaysShowNsfw && (
-        <div className={styles.alwaysShowNsfwContainer}>
-          <div className={styles.alwaysShowNsfwNotice}>
             <p>{t('always_show_nsfw_notice')}</p>
             <button onClick={handleUndoAlwaysShowNsfw}>{t('undo')}</button>
           </div>
         </div>
       )}
       {content && showContent && (
-        <div className={styles.usertext}>
-          <div className={styles.markdown}>
             <Markdown content={content} />
             {modEditReason && (
-              <p className={styles.modReason}>
                 {_.lowerCase(t('mod_edit_reason'))}: {modEditReason}
               </p>
             )}

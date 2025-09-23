@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { setAccount, useAccount, useResolvedAuthorAddress } from '@plebbit/plebbit-react-hooks';
 import { useTranslation } from 'react-i18next';
-import styles from './address-settings.module.css';
 
 const AddressSettings = () => {
   const { t } = useTranslation();
@@ -31,16 +30,12 @@ const AddressSettings = () => {
 
     if (state === 'failed') {
       resolveString = error instanceof Error ? `failed to resolve crypto address, error: ${error.message}` : 'cannot resolve crypto address, unknown error';
-      resolveClass = styles.red;
     } else if (state === 'resolving') {
       resolveString = `resolving from ${chainProvider?.urls}`;
-      resolveClass = styles.yellow;
     } else if (resolvedAddress && resolvedAddress === account?.signer?.address) {
       resolveString = t('crypto_address_yours');
-      resolveClass = styles.green;
     } else if (resolvedAddress && resolvedAddress !== account?.signer?.address) {
       resolveString = t('crypto_address_not_yours');
-      resolveClass = styles.red;
     } else {
       resolveString = t('crypto_address_verification');
       resolveClass = '';
@@ -107,9 +102,6 @@ const AddressSettings = () => {
   const [showCryptoAddressInfo, setShowCryptoAddressInfo] = useState(false);
 
   return (
-    <div className={styles.addressSettings}>
-      <div className={styles.cryptoAddressSetting}>
-        <div className={styles.usernameInput}>
           <input
             type='text'
             placeholder='address.eth/.sol'
@@ -119,14 +111,11 @@ const AddressSettings = () => {
             value={cryptoState.cryptoAddress}
             onChange={(e) => setCryptoState((prevState) => ({ ...prevState, cryptoAddress: e.target.value }))}
           />
-          <button className={styles.infoButton} onClick={() => setShowCryptoAddressInfo(!showCryptoAddressInfo)}>
             {showCryptoAddressInfo ? 'x' : '?'}
           </button>
-          <button className={styles.button} onClick={saveCryptoAddress}>
             {t('save')}
           </button>
           {showCryptoAddressInfo && (
-            <div className={styles.cryptoAddressInfo}>
               steps to set a .eth user address:
               <br />
               <ol>
@@ -156,10 +145,7 @@ const AddressSettings = () => {
               </ol>
             </div>
           )}
-          {savedCryptoAddress && <span className={styles.saved}>{t('saved')}</span>}
         </div>
-        <div className={styles.checkCryptoAddress}>
-          <button className={styles.button} onClick={checkCryptoAddress}>
             {t('check')}
           </button>{' '}
           <span className={cryptoState.resolveClass}>{cryptoState.resolveString}</span>

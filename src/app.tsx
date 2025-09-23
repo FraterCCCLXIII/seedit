@@ -28,7 +28,6 @@ import MiddleColumn from './components/MiddleColumn';
 import NotificationHandler from './components/notification-handler';
 import RightColumn from './components/RightColumn';
 import StickyHeader from './components/sticky-header';
-import styles from './app.module.css';
 
 initializeNotificationSystem();
 
@@ -77,7 +76,7 @@ const App = () => {
   }, [theme]);
 
   return (
-    <div className={`${styles.app} ${theme}`}>
+    <>
       <div className='asset-preloader'>
         <div className='asset-preloader-delete-button-hover'></div>
         <div className='asset-preloader-close-x-button-large-hover'></div>
@@ -162,7 +161,7 @@ const App = () => {
           </Route>
         </Route>
       </Routes>
-    </div>
+    </>
   );
 };
 

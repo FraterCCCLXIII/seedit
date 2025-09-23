@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { useAccount, useNotifications } from '@plebbit/plebbit-react-hooks';
-import styles from './inbox.module.css';
 import Reply from '../../components/reply/reply';
 import { isInboxCommentRepliesView, isInboxPostRepliesView, isInboxUnreadView } from '../../lib/utils/view-utils';
 import { useTranslation } from 'react-i18next';
@@ -20,20 +19,17 @@ const InboxTabs = () => {
   const isInAllView = !isInInboxCommentRepliesView && !isInInboxPostRepliesView && !isInInboxUnreadView;
 
   return (
-    <div className={styles.inboxTabs}>
-      <Link to='/inbox' className={isInAllView ? styles.selected : styles.choice}>
+    <div>
+      <Link to='/inbox'>
         {t('all')}
       </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/inbox/unread' className={isInInboxUnreadView ? styles.selected : styles.choice}>
+      <Link to='/inbox/unread'>
         {t('unread')}
       </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/inbox/commentreplies' className={isInInboxCommentRepliesView ? styles.selected : styles.choice}>
+      <Link to='/inbox/comment-replies'>
         {t('comment_replies')}
       </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/inbox/postreplies' className={isInInboxPostRepliesView ? styles.selected : styles.choice}>
+      <Link to='/inbox/post-replies'>
         {t('post_replies')}
       </Link>
     </div>
@@ -108,36 +104,37 @@ const Inbox = () => {
   }, [error, comments]);
 
   return (
-    <div className={styles.content}>
+    <div>
       <InboxTabs />
-      <div className={styles.markAllAsReadButton}>
-        {account && notifications.length ? (
-          <button onClick={markAsRead} disabled={!unreadNotificationCount} className={styles.markAsReadButton}>
-            {t('mark_all_read')}
-          </button>
-        ) : (
-          <div className={styles.noNotifications}>{t('nothing_found')}</div>
-        )}
-      </div>
+      {account && notifications.length ? (
+        <button>
+          {t('mark_all_read')}
+        </button>
+      ) : (
+        null
+      )}
+
       {shouldShowErrorToUser && (
-        <div className={styles.error}>
+        <div>
           <ErrorDisplay error={error} />
         </div>
       )}
+      
       <Virtuoso
         increaseViewportBy={{ bottom: 1200, top: 600 }}
         totalCount={notifications?.length || 0}
         data={comments}
         itemContent={(index, notification) => (
-          <div className={styles.notification}>
             <Reply index={index} isSingleReply={true} reply={notification} isNotification={true} />
-          </div>
+
+    </div>
         )}
         useWindowScroll={true}
         ref={virtuosoRef}
         restoreStateFrom={lastVirtuosoState}
         initialScrollTop={lastVirtuosoState?.scrollTop}
       />
+
     </div>
   );
 };

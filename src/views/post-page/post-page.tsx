@@ -16,7 +16,6 @@ import Over18Warning from '../../components/over-18-warning';
 import PostComponent from '../../components/post';
 import Reply from '../../components/reply';
 import ReplyForm from '../../components/reply-form';
-import styles from './post-page.module.css';
 import _ from 'lodash';
 
 type SortDropdownProps = {
@@ -42,22 +41,18 @@ const SortDropdown = ({ sortBy, onSortChange }: SortDropdownProps) => {
   }, [handleGlobalClick]);
 
   return (
-    <div className={styles.spacer}>
-      <span className={styles.dropdownTitle}>{t('reply_sorted_by')}: </span>
+    <div>
       <div
         ref={dropdownRef}
-        className={styles.dropdown}
         onClick={(e) => {
           e.stopPropagation();
           setOpenDropdown(!openDropdown);
         }}
       >
-        <span className={styles.selected}>{t(sortBy)}</span>
         {openDropdown && (
-          <div className={styles.dropdownItems}>
+          <div>
             {dropdownItems.map((item) => (
               <div
-                className={styles.dropdownItem}
                 key={item}
                 onClick={() => {
                   setOpenDropdown(false);
@@ -134,16 +129,12 @@ const Post = ({ post }: { post: Comment }) => {
   return (
     <>
       {(deleted || locked || removed) && (
-        <div className={styles.lockedInfobar}>
-          <div className={styles.lockedInfobarText}>{t('post_locked_info', { state: _.lowerCase(lockedState) })}</div>
-        </div>
+
+    </div>
       )}
       {isSingleComment ? <PostComponent post={postComment} /> : <PostComponent post={post} />}
       {timestamp && (
-        <div className={styles.replyArea}>
           {!isSingleComment && (
-            <div className={styles.repliesTitle}>
-              <span className={styles.title}>
                 {replyCount !== undefined
                   ? commentCount
                   : state === 'failed'
@@ -151,45 +142,45 @@ const Post = ({ post }: { post: Comment }) => {
                   : cid
                   ? `${t('downloading_comments')}...`
                   : `${t('post_is_pending')}...`}
-              </span>
-            </div>
+
+    </span>
+
+    </div>
           )}
           {!isSingleComment && (
-            <div className={styles.menuArea}>
               <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
-              <div className={styles.spacer} />
               {subplebbitAddress && cid && <ReplyForm cid={cid} subplebbitAddress={subplebbitAddress} postCid={postCid} />}
-            </div>
+
+    </div>
           )}
           {isSingleComment && (
-            <div className={styles.singleCommentInfobar}>
-              <div className={styles.singleCommentInfobarText}>{t('single_comment_notice')}</div>
-              <div className={styles.singleCommentInfobarLink}>
                 <Link to={`/p/${subplebbitAddress}/c/${postCid}`}>{t('single_comment_link')}</Link> →
-              </div>
-            </div>
+
+    </div>
+
+    </div>
           )}
-          <div className={styles.replies}>
             {replies.length === 0 && replyCount !== undefined && !(isInPostContextView || isSingleComment) && (
-              <div className={styles.noReplies}>{t('nothing_found')}</div>
             )}
             {isSingleComment ? (
               <Reply key={`singleComment-${cid}`} reply={post} depth={0} isSingleComment={true} />
             ) : (
               replies.map((reply, index) => <Reply key={`${index}${reply.cid}`} reply={reply} depth={depth} />)
             )}
-          </div>
-        </div>
+
+    </div>
+
+    </div>
       )}
-      <span className={styles.loadingString}>
         {stateString && stateString !== 'Failed' ? (
-          <div className={styles.stateString}>
             <LoadingEllipsis string={stateString || t('loading')} />
-          </div>
+
+    </div>
         ) : (
           state === 'failed' && t('failed')
         )}
-      </span>
+
+    </span>
     </>
   );
 };
@@ -206,31 +197,29 @@ const PostWithContext = ({ post }: { post: Comment }) => {
   return (
     <>
       {(deleted || locked || removed) && (
-        <div className={styles.lockedInfobar}>
-          <div className={styles.lockedInfobarText}>{t('post_locked_info', { state: deleted ? t('deleted') : locked ? t('locked') : removed ? t('removed') : '' })}</div>
-        </div>
+
+    </div>
       )}
       <PostComponent post={postComment} />
-      <div className={styles.replyArea}>
-        <div className={styles.menuArea}>
           {stateString && stateString !== 'Failed' ? (
-            <div className={styles.stateString}>
               <LoadingEllipsis string={stateString} />
-            </div>
+
+    </div>
           ) : (
             state === 'failed' && t('failed')
           )}
-        </div>
-        <div className={styles.singleCommentInfobar}>
-          <div className={styles.singleCommentInfobarText}>{t('single_comment_notice')}</div>
-          <div className={styles.singleCommentInfobarLink}>
+
+    </div>
             <Link to={`/p/${subplebbitAddress}/c/${postCid}`}>{t('single_comment_link')}</Link> →
-          </div>
-        </div>
-        <div className={styles.replies}>
+
+    </div>
+
+    </div>
           <Reply key={`contextComment-${topParentComment?.cid}`} reply={topParentComment} depth={0} cidOfReplyWithContext={params.commentCid} />
-        </div>
-      </div>
+
+    </div>
+
+    </div>
     </>
   );
 };
@@ -313,13 +302,13 @@ const PostPage = () => {
   return isBroadlyNsfwSubplebbit && !hasAcceptedWarning ? (
     <Over18Warning />
   ) : (
-    <div className={styles.content}>
       {isInPendingPostView && params?.accountCommentIndex ? <Post post={pendingPost} /> : isInPostContextView ? <PostWithContext post={post} /> : <Post post={post} />}
       {shouldShowErrorToUser && (
-        <div className={styles.error}>
           <ErrorDisplay error={post.error} />
-        </div>
+
+    </div>
       )}
+
     </div>
   );
 };

@@ -36,71 +36,71 @@ function LeftNavigation() {
   const displayedCommunities = showAllCommunities ? allCommunities : topCommunities;
 
   return (
-    <div className='h-full bg-background border-r border-border flex flex-col overflow-y-auto w-64'>
+    <div className='h-full bg-background border-r border-border flex flex-col overflow-y-auto w-72'>
       {/* Logo Section */}
-      <div className='px-6 py-5 border-b border-border'>
+      <div className='px-6 py-6 border-b border-border'>
         <div className='flex items-center justify-center'>
           <h1 className='text-2xl font-bold text-foreground font-inter tracking-tight'>Holons</h1>
         </div>
       </div>
 
       {/* Navigation Menu */}
-      <nav className='flex-1 px-6 py-4 space-y-2'>
+      <nav className='flex-1 px-4 py-6 space-y-1'>
         <a
           href='#/'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <Home className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>Home</span>
+          <Home className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>Home</span>
         </a>
         <a
           href='#/search'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <Search className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>Explore</span>
+          <Search className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>Explore</span>
         </a>
         <a
           href='#/notifications'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <Bell className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>Notifications</span>
+          <Bell className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>Notifications</span>
         </a>
         <a
           href='#/inbox'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <Mail className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>Messages</span>
+          <Mail className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>Messages</span>
         </a>
         <a
           href='#/bookmarks'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <Bookmark className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>Bookmarks</span>
+          <Bookmark className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>Bookmarks</span>
         </a>
         <a
           href='#/lists'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <List className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>Lists</span>
+          <List className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>Lists</span>
         </a>
         <a
           href='#/profile'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <User className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>Profile</span>
+          <User className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>Profile</span>
         </a>
         <a
           href='#/settings'
-          className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
+          className='nav-item hover-lift'
         >
-          <MoreHorizontal className='w-6 h-6 text-foreground group-hover:text-accent-foreground transition-colors' />
-          <span className='text-xl font-medium'>More</span>
+          <MoreHorizontal className='w-6 h-6 mr-4' />
+          <span className='text-lg font-semibold'>More</span>
         </a>
 
         <Separator className='my-6 mx-3' />

@@ -4,7 +4,6 @@ import remarkGfm from 'remark-gfm';
 import supersub from 'remark-supersub';
 import ReactMarkdown, { Components } from 'react-markdown';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
-import styles from './markdown.module.css';
 import rehypeRaw from 'rehype-raw';
 import SpoilerTooltip from '../spoiler-tooltip';
 import { isSeeditLink, transformSeeditLinkToInternal, preprocessSeeditPatterns } from '../../lib/utils/url-utils';
@@ -125,7 +124,6 @@ const Markdown = ({ content }: MarkdownProps) => {
   );
 
   return (
-    <span className={styles.markdown}>
       <ReactMarkdown
         children={preprocessedContent}
         remarkPlugins={remarkPlugins}

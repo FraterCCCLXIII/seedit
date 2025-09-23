@@ -1,7 +1,6 @@
 import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSubscribe } from '@plebbit/plebbit-react-hooks';
-import styles from './subscribe-button.module.css';
 import { isAuthorView, isProfileView, isPendingPostView } from '../../lib/utils/view-utils';
 
 interface subscribeButtonProps {
@@ -35,7 +34,6 @@ const SubscribeButton = ({ address, onUnsubscribe }: subscribeButtonProps) => {
 
   return (
     <span
-      className={`${isInProfileView && !isInPendingPostView ? styles.hidden : ''} ${styles.subscribeButton} ${subscribed ? styles.leaveButton : styles.joinButton}`}
       onClick={handleSubscribe}
     >
       {isInAuthorView ? authorPageString : subplebbitPageString}

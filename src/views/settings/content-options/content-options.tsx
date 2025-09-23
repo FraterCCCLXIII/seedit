@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { useAccount } from '@plebbit/plebbit-react-hooks';
-import styles from './content-options.module.css';
 import useContentOptionsStore from '../../../stores/use-content-options-store';
 import { useDefaultSubplebbits } from '../../../hooks/use-default-subplebbits';
 import { handleNSFWSubscriptionPrompt } from '../../../lib/utils/nsfw-subscription-utils';
@@ -23,8 +22,6 @@ const MediaOptions = () => {
   } = useContentOptionsStore();
 
   return (
-    <div className={styles.contentOptions}>
-      <div className={styles.contentOptionTitle}>thumbnails</div>
       <div>
         <label>
           <input type='radio' name='thumbnailOption' value='show' checked={thumbnailDisplayOption === 'show'} onChange={() => setThumbnailDisplayOption('show')} />
@@ -57,7 +54,6 @@ const MediaOptions = () => {
         </label>
       </div>
       <br />
-      <div className={styles.contentOptionTitle}>{t('media_previews')}</div>
       <div>
         <label>
           <input
@@ -102,7 +98,6 @@ const MediaOptions = () => {
         </label>
       </div>
       <br />
-      <div className={styles.contentOptionTitle}>{t('video_player')}</div>
       <div>
         <label>
           <input type='checkbox' checked={autoplayVideosOnComments} onChange={(e) => setAutoplayVideosOnComments(e.target.checked)} />
@@ -116,7 +111,6 @@ const MediaOptions = () => {
         </label>
       </div>
       <br />
-      <div className={styles.contentOptionTitle}>{t('nsfw_content')}</div>
       <div>
         <label>
           <input type='checkbox' checked={blurNsfwThumbnails} onChange={(e) => setBlurNsfwThumbnails(e.target.checked)} />
@@ -124,7 +118,6 @@ const MediaOptions = () => {
         </label>
       </div>
       <br />
-      <div className={styles.contentOptionTitle}>{t('avatars')}</div>
       <div>
         <label>
           <input type='checkbox' checked={hideAvatars} onChange={(e) => setHideAvatars(e.target.checked)} />
@@ -153,8 +146,6 @@ const CommunitiesOptions = () => {
   } = useContentOptionsStore();
 
   return (
-    <div className={styles.contentOptions}>
-      <div className={styles.contentOptionTitle}>{t('default_communities')}</div>
       <div>
         <input
           type='checkbox'
@@ -189,7 +180,6 @@ const CommunitiesOptions = () => {
         />
         <label htmlFor='hideAdultCommunities'>{t('hide_communities_tagged_as_nsfw')}</label>
       </div>
-      <div className={styles.nsfwTag}>
         <label>
           <input
             type='checkbox'
@@ -212,7 +202,6 @@ const CommunitiesOptions = () => {
           {t('tagged_as_adult')}
         </label>
       </div>
-      <div className={styles.nsfwTag}>
         <label>
           <input
             type='checkbox'
@@ -235,7 +224,6 @@ const CommunitiesOptions = () => {
           {t('tagged_as_gore')}
         </label>
       </div>
-      <div className={styles.nsfwTag}>
         <label>
           <input
             type='checkbox'
@@ -258,7 +246,6 @@ const CommunitiesOptions = () => {
           {t('tagged_as_anti')}
         </label>
       </div>
-      <div className={styles.nsfwTag}>
         <label>
           <input
             type='checkbox'
@@ -282,7 +269,6 @@ const CommunitiesOptions = () => {
         </label>
       </div>
       <br />
-      <div className={styles.contentOptionTitle}>topbar</div>
       <label>
         <input type='checkbox' checked={hideDefaultCommunities} onChange={(e) => setHideDefaultCommunities(e.target.checked)} />
         {t('hide_default_communities_from_topbar')}
@@ -295,16 +281,9 @@ const ContentOptions = () => {
   const { t } = useTranslation();
 
   return (
-    <div className={styles.content}>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('media')}</span>
-        <span className={styles.categorySettings}>
           <MediaOptions />
         </span>
       </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('communities')}</span>
-        <span className={styles.categorySettings}>
           <CommunitiesOptions />
         </span>
       </div>

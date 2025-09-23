@@ -48,7 +48,6 @@ import useNotFoundStore from '../../stores/use-not-found-store';
 import { useIsBroadlyNsfwSubplebbit } from '../../hooks/use-is-broadly-nsfw-subplebbit';
 import useTheme from '../../hooks/use-theme';
 import useWindowWidth from '../../hooks/use-window-width';
-import styles from './header.module.css';
 
 const AboutButton = () => {
   const { t } = useTranslation();
@@ -60,7 +59,6 @@ const AboutButton = () => {
   const isInSubplebbitAboutView = isSubplebbitAboutView(location.pathname, params);
 
   return (
-    <li className={`${styles.about} ${isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? styles.selected : styles.choice}`}>
       <Link to={aboutLink}>{t('about')}</Link>
     </li>
   );
@@ -76,7 +74,6 @@ const CommentsButton = () => {
   const isInPostPageAboutView = isPostPageAboutView(location.pathname, params);
 
   return (
-    <li className={(isInPostPageView || isInPendingPostView) && !isInHomeAboutView && !isInPostPageAboutView ? styles.selected : styles.choice}>
       <Link to={`/p/${params.subplebbitAddress}/c/${params.commentCid}`} onClick={(e) => isInPendingPostView && e.preventDefault()}>
         {t('comments')}
       </Link>
@@ -122,7 +119,6 @@ const SortItems = () => {
       sortLink = sortLink + `/${timeFilterName}`;
     }
     return (
-      <li key={sortType} className={selectedSortType === sortType ? styles.selected : styles.choice}>
         <Link to={sortLink} onClick={() => setSelectedSortType(sortType)}>
           {t(sortLabels[index])}
         </Link>
@@ -155,34 +151,26 @@ const AuthorHeaderTabs = () => {
     !isInAuthorCommentsView &&
     !isInProfileHiddenView &&
     !isInAuthorSubmittedView
-      ? styles.selected
-      : styles.choice;
 
   return (
     <>
       <li className={overviewSelectedClass}>
         <Link to={isInAuthorView ? authorRoute : '/profile'}>{t('overview')}</Link>
       </li>
-      <li className={isInProfileCommentsView || isInAuthorCommentsView ? styles.selected : styles.choice}>
         <Link to={isInAuthorView ? authorRoute + '/comments' : '/profile/comments'}>{t('comments')}</Link>
       </li>
-      <li className={isInProfileSubmittedView || isInAuthorSubmittedView ? styles.selected : styles.choice}>
         <Link to={isInAuthorView ? authorRoute + '/submitted' : '/profile/submitted'}>{t('submitted')}</Link>
       </li>
       {isInProfileView && (
         <>
-          <li className={isInProfileUpvotedView ? styles.selected : styles.choice}>
             <Link to='/profile/upvoted'>{t('upvoted')}</Link>
           </li>
-          <li className={isInProfileDownvotedView ? styles.selected : styles.choice}>
             <Link to='/profile/downvoted'>{t('downvoted')}</Link>
           </li>
-          <li className={isInProfileHiddenView ? styles.selected : styles.choice}>
             <Link to={'/profile/hidden'}>{t('hidden')}</Link>
           </li>
           {/* TODO: implement functionality from API once available
           <li>
-            <Link to={'/'} className={styles.choice} onClick={(e) => e.preventDefault()}>
               {t('saved')}
             </Link>
           </li> */}
@@ -197,7 +185,6 @@ const InboxHeaderTabs = () => {
 
   return (
     <>
-      <li className={styles.selected}>
         <Link to={'/inbox'}>{t('inbox')}</Link>
       </li>
       {/* TODO: add tabs for messaging when available in the API */}
@@ -223,14 +210,11 @@ const SubplebbitsHeaderTabs = () => {
 
   return (
     <>
-      <li className={`${isInSubplebbitsVoteView ? styles.selected : styles.choice}`}>
         <Link to={'/communities/vote'}>{t('vote')}</Link>
       </li>
       <li
         className={
           isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView || isInSubplebbitsView
-            ? styles.selected
-            : styles.choice
         }
       >
         <Link to={'/communities'}>{t('my_communities')}</Link>
@@ -248,13 +232,10 @@ const SettingsHeaderTabs = () => {
 
   return (
     <>
-      <li className={isInSettingsPlebbitOptionsView || isInSettingsContentOptionsView || isInSettingsAccountDataView ? styles.choice : styles.selected}>
         <Link to={'/settings'}>{t('general')}</Link>
       </li>
-      <li className={isInSettingsContentOptionsView ? styles.selected : styles.choice}>
         <Link to={'/settings/content-options'}>{t('content_options')}</Link>
       </li>
-      <li className={isInSettingsPlebbitOptionsView ? styles.selected : styles.choice}>
         <Link to={'/settings/plebbit-options'}>{t('plebbit_options')}</Link>
       </li>
     </>
@@ -300,7 +281,6 @@ const HeaderTabs = () => {
   } else if (isInProfileView || isInAuthorView) {
     return <AuthorHeaderTabs />;
   } else if (isInPendingPostView) {
-    return <span className={styles.pageName}>{t('pending')}</span>;
   } else if (isInInboxView) {
     return <InboxHeaderTabs />;
   } else if (isInSubplebbitsView && !isInCreateSubplebbitView) {
@@ -349,7 +329,6 @@ const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; p
     </Link>
   );
   const domainTitle = <Link to={`/domain/${params.domain}`}>{params.domain}</Link>;
-  const submitTitle = <span className={styles.submitTitle}>{t('submit')}</span>;
   const profileTitle = <Link to='/profile'>{account?.author?.shortAddress}</Link>;
   const authorTitle = <Link to={`/u/${params.authorAddress}/c/${params.commentCid}`}>{params.authorAddress && Plebbit.getShortAddress(params.authorAddress)}</Link>;
 
@@ -364,7 +343,6 @@ const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; p
   } else if (isInSubplebbitSettingsView) {
     return (
       <>
-        {subplebbitTitle}: <span className={styles.lowercase}>{t('community_settings')}</span>
       </>
     );
   } else if (isInSubmitView) {
@@ -380,15 +358,12 @@ const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; p
   } else if (isInInboxView) {
     return t('messages');
   } else if (isInCreateSubplebbitView) {
-    return <span className={styles.lowercase}>{t('create_community')}</span>;
   } else if (isInSubplebbitsView) {
     return t('communities');
   } else if (isInNotFoundView) {
-    return <span className={styles.lowercase}>{t('page_not_found')}</span>;
   } else if (isInAllView) {
     return t('all');
   } else if (isInModView) {
-    return <span className={styles.lowercase}>{t('communities_you_moderate')}</span>;
   } else if (isInDomainView) {
     return domainTitle;
   }
@@ -469,46 +444,33 @@ const Header = () => {
       : '/submit';
 
   return (
-    <div className={styles.header}>
       <div
-        className={`${styles.container} ${hasFewTabs && styles.reducedHeight} ${
-          isInSubmitView && isInSubplebbitSubmitView && !isInSubplebbitView && isMobile && styles.reduceSubmitPageHeight
-        } ${hasStickyHeader && styles.increasedHeight}`}
       >
-        <div className={styles.logoContainer}>
-          <Link to={logoLink} className={styles.logoLink}>
             {(logoIsAvatar || (!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-              <img className={`${logoIsAvatar ? styles.avatar : styles.logo}`} src={logoSrc} alt='' />
             )}
             {((!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-              <img src={`assets/sprout/seedit-text-${theme === 'dark' ? 'dark' : 'light'}.svg`} className={styles.logoText} alt='' />
             )}
           </Link>
         </div>
         {!isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
-          <span className={`${styles.pageName} ${!logoIsAvatar && styles.soloPageName}`}>
             <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
           </span>
         )}
         {(isInModView || isInAllView) && (
-          <div className={`${styles.pageName} ${styles.allOrModPageName}`}>
             <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
           </div>
         )}
         {!isMobile && !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) && (
-          <ul className={styles.tabMenu}>
             <HeaderTabs />
             {(isInHomeView || isInHomeAboutView) && <AboutButton />}
           </ul>
         )}
       </div>
       {isMobile && !isInSubplebbitSubmitView && !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) && (
-        <ul className={`${styles.tabMenu} ${isInProfileView ? styles.horizontalScroll : ''}`}>
           <HeaderTabs />
           {(isInHomeView || isInHomeAboutView || isInSubplebbitView || isInHomeAboutView || isInPostPageView) && <AboutButton />}
           {!isInSubmitView && !isInSettingsView && (
             <li>
-              <Link to={mobileSubmitButtonRoute} className={styles.submitButton}>
                 {t('submit')}
               </Link>
             </li>

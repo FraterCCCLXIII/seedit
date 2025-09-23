@@ -2,7 +2,6 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import useIsMobile from '../../hooks/use-is-mobile';
 import Sidebar, { Footer } from '../../components/sidebar';
-import styles from './about.module.css';
 import { useAccount, useComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
 import { Capacitor } from '@capacitor/core';
 import { isHomeAboutView } from '../../lib/utils/view-utils';
@@ -18,8 +17,7 @@ export const FAQ = () => {
 
   return (
     <>
-      <div className={styles.about}>
-        <ul className={isMobile ? styles.tocMobile : styles.toc}>
+      <ul>
           <li>
             <HashLink to='/about#newUsers'>New Users:</HashLink>
           </li>
@@ -43,7 +41,7 @@ export const FAQ = () => {
               <HashLink to='/about#usefulLinks'>Useful links</HashLink>
             </li>
           )}
-        </ul>
+      </ul>
         <h3 id='newUsers' style={{ marginTop: '0' }}>
           New Users:
         </h3>
@@ -141,8 +139,8 @@ export const FAQ = () => {
       </div>
       {isInHomeAboutView && isMobile && (
         <>
-          <hr />
-          <div id='usefulLinks' className={styles.aboutFooter}>
+          <div>
+            <hr />
             <Footer />
           </div>
         </>
@@ -169,7 +167,6 @@ const About = () => {
   }, [isMobile, location.pathname, navigate, isInHomeAboutView]);
 
   return (
-    <div className={styles.content}>
       {isMobile ? (
         isInHomeAboutView ? (
           <>
@@ -184,7 +181,7 @@ const About = () => {
           <FAQ />
         </>
       )}
-    </div>
+    </>
   );
 };
 

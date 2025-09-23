@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { isCreateSubplebbitView } from '../../../lib/utils/view-utils';
 import useSubplebbitSettingsStore, { SubplebbitSettingsState } from '../../../stores/use-subplebbit-settings-store';
 import useChallengesOptions from '../../../hooks/use-challenges-options';
-import styles from '../subplebbit-settings.module.css';
 
 interface ChallengeSettingsProps {
   challenge: any;
@@ -166,19 +165,12 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
   };
 
   return (
-    <div className={showSettings || isReadOnly ? styles.visible : styles.hidden}>
       {isReadOnly ? (
         <>
-          <div className={styles.readOnlyChallengeType}>type: {(challengeSettings?.type || readOnlyFallback?.type) ?? 'unknown'}</div>
-          <div className={styles.readOnlyChallengeDescription}>{challengeSettings?.description || readOnlyFallback?.description || ''}</div>
         </>
       ) : (
-        <div className={styles.challengeDescription}>{challengeSettings?.description}</div>
       )}
       {challengeSettings?.optionInputs?.map((setting: OptionInput) => (
-        <div key={setting?.option} className={styles.challengeOption}>
-          <div className={styles.challengeOptionLabel}>{setting?.label}</div>
-          <div className={styles.challengeOptionDescription}>
             {setting?.description} {setting?.default && `(default: "${setting?.default}")`}
           </div>
           {isReadOnly ? (
@@ -193,28 +185,20 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
           )}
         </div>
       ))}
-      <div className={styles.challengeDescription}>Exclude groups for challenge #{index + 1}</div>
-      <div className={styles.excludeGroupSection}>
         {!isReadOnly && (
-          <button className={`${styles.addButton} ${styles.addExclude}`} onClick={addExcludeGroup} disabled={isReadOnly}>
             Add Group
           </button>
         )}
         {excludeArray.map((exclude: any, excludeIndex: number) => (
-          <div key={excludeIndex} className={styles.excludeGroup}>
             Exclude group #{excludeIndex + 1}
-            {!isReadOnly && <span className={styles.deleteButton} onClick={() => deleteExcludeGroup(excludeIndex)} title='delete group' />}
             {!isReadOnly && (
-              <button className={styles.hideCombo} onClick={() => toggleExcludeSettings(excludeIndex)} disabled={isReadOnly}>
                 {showExcludeSettings?.[excludeIndex] ?? false ? 'Hide' : 'Show'} Group Settings
               </button>
             )}
             {showExcludeSettings[excludeIndex] && (
               <>
                 {isReadOnly && !exclude?.address ? null : (
-                  <div className={styles.challengeOption}>
                     User's address
-                    <div className={styles.challengeOptionDescription}>Is one of the following:</div>
                     <ExcludeAddressesFromChallengeInput
                       exclude={exclude}
                       excludeIndex={excludeIndex}
@@ -224,11 +208,9 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                   </div>
                 )}
                 {isReadOnly && !(exclude?.postScore || exclude?.replyScore) ? null : (
-                  <div className={styles.challengeOption}>
                     User's karma
                     {isReadOnly && !exclude?.postScore ? null : (
                       <>
-                        <div className={styles.challengeOptionDescription}>Post karma is at least:</div>
                         {isReadOnly ? (
                           <span>{exclude?.postScore}</span>
                         ) : (
@@ -246,7 +228,6 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                     )}
                     {isReadOnly && !exclude?.replyScore ? null : (
                       <>
-                        <div className={styles.challengeOptionDescription}>Comment karma is at least:</div>
                         {isReadOnly ? (
                           <span>{exclude?.replyScore}</span>
                         ) : (
@@ -265,9 +246,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                   </div>
                 )}
                 {isReadOnly && !exclude?.firstCommentTimestamp ? null : (
-                  <div className={styles.challengeOption}>
                     User's account age
-                    <div className={styles.challengeOptionDescription}>In seconds (eg. 86400 = 24h) is at least:</div>
                     {isReadOnly ? (
                       <span>{exclude?.firstCommentTimestamp}</span>
                     ) : (
@@ -284,14 +263,11 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                   </div>
                 )}
                 {isReadOnly && !exclude?.role ? null : (
-                  <div className={styles.challengeOption}>
                     User's role
-                    <div className={styles.challengeOptionDescription}>Is any of the following:</div>
                     {rolesToExclude?.map((role) =>
                       isReadOnly && !exclude?.role?.includes(role) ? null : (
                         <div key={role}>
                           {isReadOnly ? (
-                            <span className={styles.readOnlyRoleExclude}>{role} excluded</span>
                           ) : (
                             <label>
                               <input
@@ -309,14 +285,11 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                   </div>
                 )}
                 {isReadOnly && !actionsToExclude.some((action) => exclude[action] === true) ? null : (
-                  <div className={styles.challengeOption}>
                     User's action
-                    <div className={styles.challengeOptionDescription}>Is all of the following:</div>
                     {actionsToExclude?.map((action) =>
                       isReadOnly && !exclude?.[action] ? null : (
                         <div key={action}>
                           {isReadOnly ? (
-                            <span className={styles.readOnlyActionExclude}>{action} excluded</span>
                           ) : (
                             <label>
                               <input
@@ -335,7 +308,6 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                       isReadOnly && exclude?.[nonAction.replace('not ', '')] !== null ? null : (
                         <div key={nonAction}>
                           {isReadOnly ? (
-                            <span className={styles.readOnlyActionExclude}>{nonAction} excluded</span>
                           ) : (
                             <label>
                               <input
@@ -353,9 +325,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                   </div>
                 )}
                 {isReadOnly && !exclude?.rateLimit ? null : (
-                  <div className={styles.challengeOption}>
                     Rate limit
-                    <div className={styles.challengeOptionDescription}>Number of free user actions per hour:</div>
                     {isReadOnly ? (
                       <div>{exclude?.rateLimit}</div>
                     ) : (
@@ -386,7 +356,6 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                           />
                           apply rate limit only on challenge success
                         </label>
-                        <label className={styles.rateLimitChallengeFail}>
                           <input
                             type='checkbox'
                             checked={exclude?.rateLimitChallengeSuccess === false}
@@ -497,23 +466,14 @@ const Challenges = ({
   };
 
   return (
-    <div className={`${styles.box} ${isReadOnly && !challenges ? styles.hidden : styles.visible}`}>
-      <div className={styles.boxTitle}>{t('anti_spam_challenges')}</div>
-      <div className={styles.boxSubtitle}>{t('anti_spam_challenges_subtitle')}</div>
-      <div className={styles.boxInput}>
         {!isReadOnly && (
-          <button className={styles.addButton} onClick={handleAddChallenge} disabled={isReadOnly}>
             {t('add_a_challenge')}
           </button>
         )}
-        {challenges.length === 0 && !isInCreateSubplebbitView && <span className={styles.noChallengeWarning}>{t('warning_spam')}</span>}
         {challenges?.map((challenge: any, index: number) => (
-          <div key={index} className={styles.challenge}>
             Challenge #{index + 1}
-            {!isReadOnly && <span className={styles.deleteButton} title='delete challenge' onClick={() => (isReadOnly ? {} : handleDeleteChallenge(index))} />}
             <br />
             {isReadOnly ? (
-              <span className={styles.readOnlyChallenge}>{challenge?.name}</span>
             ) : (
               <select value={challenge?.name} onChange={(e) => handleChallengeTypeChange(index, e.target.value)} disabled={isReadOnly}>
                 {challengeNames?.map((challenge) => (
@@ -524,7 +484,6 @@ const Challenges = ({
               </select>
             )}
             {!isReadOnly && (
-              <button className={styles.challengeEditButton} onClick={() => toggleSettings(index)} disabled={isReadOnly}>
                 {showSettings[index] ? t('hide_settings') : t('show_settings')}
               </button>
             )}

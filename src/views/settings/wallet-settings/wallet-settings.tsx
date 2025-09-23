@@ -1,6 +1,5 @@
 import { Fragment, useState } from 'react';
 import { Account, setAccount, useAccount } from '@plebbit/plebbit-react-hooks';
-import styles from './wallet-settings.module.css';
 import { Trans, useTranslation } from 'react-i18next';
 import InfoTooltip from '../../../components/info-tooltip';
 
@@ -105,17 +104,11 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
 
   const walletsInputs = walletsArray.map((wallet, index) => (
     <Fragment key={index}>
-      <div className={styles.walletTitle}>
         <Trans i18nKey='wallet_number' values={{ index: index + 1 }} />
       </div>
-      <div key={index} className={styles.walletBox}>
-        <button className={styles.toggleWallet} onClick={() => toggleShowWallet(index)}>
           {showWallet[index] ? t('hide') : t('show')}
         </button>
         <button onClick={() => handleRemove(index)}>{t('remove')}</button>
-        <div className={`${showWallet[index] ? styles.show : styles.hide}`}>
-          <div className={styles.walletField}>
-            <div className={styles.walletFieldTitle}>{t('chain_ticker')}</div>
             <input
               autoCorrect='off'
               autoCapitalize='off'
@@ -125,8 +118,6 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               placeholder='eth/sol/avax'
             />
           </div>
-          <div className={styles.walletField}>
-            <div className={styles.walletFieldTitle}>{t('wallet_address')}</div>
             <input
               autoCorrect='off'
               autoCapitalize='off'
@@ -136,7 +127,6 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               placeholder='0x...'
             />
           </div>
-          <div className={`${styles.walletField} ${styles.copyMessage}`}>
             <Trans
               i18nKey='copy_message_etherscan'
               values={{ copy: hasCopied ? t('copied') : t('copy') }}
@@ -147,8 +137,6 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               }}
             />
           </div>
-          <div className={styles.walletField}>
-            <div className={styles.walletFieldTitle}>{t('timestamp')}</div>
             <input
               type='text'
               placeholder='Timestamp'
@@ -159,8 +147,6 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               onChange={(e) => setWalletsArrayProperty(index, 'timestamp', Number(e.target.value))}
             />
           </div>
-          <div className={styles.walletField}>
-            <div className={styles.walletFieldTitle}>{t('paste_signature')}</div>
             <input
               autoCorrect='off'
               autoCapitalize='off'
@@ -169,7 +155,6 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               value={wallet.signature}
               placeholder='0x...'
             />
-            <button className={styles.save} onClick={handleSave}>
               {t('save')}
             </button>
           </div>
@@ -180,7 +165,6 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
 
   return (
     <>
-      <div className={styles.addWallet}>
         <Trans
           i18nKey='add_wallet'
           components={{ 1: <button key={`addWalletButton-${walletsArray.length}`} onClick={() => setWalletsArray([...walletsArray, defaultWalletObject])} /> }}

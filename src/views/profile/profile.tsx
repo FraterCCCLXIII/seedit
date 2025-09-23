@@ -8,7 +8,6 @@ import useWindowWidth from '../../hooks/use-window-width';
 import AuthorSidebar from '../../components/author-sidebar';
 import Post from '../../components/post';
 import Reply from '../../components/reply';
-import styles from './profile.module.css';
 import ErrorDisplay from '../../components/error-display';
 
 const pageSize = 10;
@@ -26,7 +25,6 @@ const SortDropdown = ({ onSortChange }: SortDropdownProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownItemsRef = useRef<HTMLDivElement>(null);
-  const dropChoicesClass = isDropdownOpen ? styles.dropChoicesVisible : styles.dropChoicesHidden;
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (
@@ -53,14 +51,10 @@ const SortDropdown = ({ onSortChange }: SortDropdownProps) => {
   };
 
   return (
-    <div className={styles.sortDropdown}>
-      <span className={styles.dropdownTitle}>{t('sorted_by')}: </span>
-      <div className={styles.dropdown} onClick={() => setIsDropdownOpen(!isDropdownOpen)} ref={dropdownRef}>
-        <span className={styles.selected}>{t(selectedSort)}</span>
-      </div>
-      <div className={`${styles.dropChoices} ${dropChoicesClass}`} ref={dropdownItemsRef}>
+    <div>
+      <div>
         {sortLabels.map((label, index) => (
-          <div key={index} className={styles.filter} onClick={() => handleSortChange(sortTypes[index])}>
+          <div key={index}>
             {label}
           </div>
         ))}
@@ -72,24 +66,23 @@ const SortDropdown = ({ onSortChange }: SortDropdownProps) => {
 const PaginationControls = ({ currentPage, hasMore, onPageChange }: { currentPage: number; hasMore: boolean; onPageChange: (page: number) => void }) => {
   const { t } = useTranslation();
   return (
-    (hasMore || currentPage > 1) && (
-      <div className={styles.pagination}>
-        {t('view_more')}:{' '}
-        {currentPage > 1 && (
-          <span className={styles.button} onClick={() => onPageChange(currentPage - 1)}>
-            ‹ {t('previous')}
-          </span>
-        )}
-        {hasMore && (
-          <>
-            {currentPage > 1 && <span className={styles.separator} />}
-            <span className={styles.button} onClick={() => onPageChange(currentPage + 1)}>
+    <>
+      {(hasMore || currentPage > 1) && (
+        <span>
+          {t('view_more')}:{' '}
+          {currentPage > 1 && (
+            <span>
+              ‹ {t('previous')}
+            </span>
+          )}
+          {hasMore && (
+            <span>
               {t('next')} ›
             </span>
-          </>
-        )}
-      </div>
-    )
+          )}
+        </span>
+      )}
+    </>
   );
 };
 
@@ -163,12 +156,12 @@ const Overview = () => {
   return (
     <div>
       {shouldShowErrorToUserOverview && (
-        <div className={styles.error}>
           <ErrorDisplay error={error} />
-        </div>
+
+    </div>
       )}
       <SortDropdown onSortChange={setSortType} />
-      {sortedComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={sortedComments} />}
+
     </div>
   );
 };
@@ -204,12 +197,12 @@ const Comments = () => {
   return (
     <div>
       {shouldShowErrorToUserComments && (
-        <div className={styles.error}>
           <ErrorDisplay error={error} />
-        </div>
+
+    </div>
       )}
       <SortDropdown onSortChange={setSortType} />
-      {sortedComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={sortedComments} />}
+
     </div>
   );
 };
@@ -245,12 +238,12 @@ const Submitted = () => {
   return (
     <div>
       {shouldShowErrorToUserSubmitted && (
-        <div className={styles.error}>
           <ErrorDisplay error={error} />
-        </div>
+
+    </div>
       )}
       <SortDropdown onSortChange={setSortType} />
-      {sortedComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={sortedComments} />}
+
     </div>
   );
 };
@@ -290,13 +283,13 @@ const VotedComments = ({ voteType }: { voteType: 1 | -1 }) => {
   return (
     <div>
       {shouldShowErrorToUserVoted && (
-        <div className={styles.error}>
           <ErrorDisplay error={error} />
-        </div>
+
+    </div>
       )}
       <SortDropdown onSortChange={setSortType} />
-      {paginatedCids.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : paginatedCids.map((cid) => <CommentItem key={cid} cid={cid} />)}
       <PaginationControls currentPage={currentPage} hasMore={hasMore} onPageChange={setCurrentPage} />
+
     </div>
   );
 };
@@ -316,11 +309,11 @@ const HiddenComments = () => {
   return (
     <div>
       {hiddenCommentCids.length === 0 ? (
-        <div className={styles.nothingFound}>{t('nothing_found')}</div>
       ) : (
         hiddenCommentCids.map((cid) => <CommentItem key={cid} cid={cid} />)
       )}
       <PaginationControls currentPage={currentPage} hasMore={hasMore} onPageChange={setCurrentPage} />
+
     </div>
   );
 };
@@ -353,8 +346,6 @@ const Profile = () => {
   }, []);
 
   const infobar = showInfobar && (
-    <div className={styles.infobar}>
-      <div className={styles.infoContent}>
         <Trans
           i18nKey='profile_info'
           values={{ shortAddress: account?.author?.shortAddress }}
@@ -364,21 +355,23 @@ const Profile = () => {
             3: <HashLink key='newUsersLink' to='/about#newUsers' />,
           }}
         />
-      </div>
-      <span className={styles.closeButton} onClick={handleCloseInfobar}>
+
+    </div>
         ✕
-      </span>
+
+    </span>
+
     </div>
   );
 
   return (
-    <div className={styles.content}>
       {isMobile && infobar}
-      <div className={isMobile ? styles.sidebarMobile : styles.sidebarDesktop}>
         <AuthorSidebar />
         {!isMobile && infobar}
-      </div>
+
+    </div>
       <Outlet />
+
     </div>
   );
 };

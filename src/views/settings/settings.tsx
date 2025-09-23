@@ -13,7 +13,6 @@ import PlebbitOptions from './plebbit-options';
 import ContentOptions from './content-options';
 import WalletSettings from './wallet-settings';
 import NotificationsSettings from './notifications-settings';
-import styles from './settings.module.css';
 import packageJson from '../../../package.json';
 import _ from 'lodash';
 
@@ -77,10 +76,9 @@ const CheckForUpdates = () => {
   };
 
   return (
-    <div className={styles.checkForUpdates}>
+    <div>
       <Trans
         i18nKey='check_for_updates'
-        components={{ 1: <button key='checkForUpdatesButton' className={styles.checkForUpdatesButton} onClick={checkForUpdates} disabled={loading} /> }}
       />
     </div>
   );
@@ -99,7 +97,6 @@ const LanguageSettings = () => {
   };
 
   return (
-    <div className={styles.languageSettings}>
       <select value={language} onChange={onSelectLanguage}>
         {availableLanguages.map((lang) => (
           <option key={lang} value={lang}>
@@ -110,6 +107,7 @@ const LanguageSettings = () => {
       <a href='https://github.com/plebbit/seedit/tree/master/public/translations' target='_blank' rel='noopener noreferrer'>
         {t('contribute_on_github')}
       </a>
+
     </div>
   );
 };
@@ -147,14 +145,12 @@ const DisplayNameSetting = () => {
   };
 
   return (
-    <div className={styles.displayNameSetting}>
-      <div className={styles.usernameInput}>
         <input type='text' placeholder='My Name' value={displayName || account?.author?.displayName || ''} onChange={(e) => setDisplayName(e.target.value)} />
-        <button className={styles.button} onClick={saveUsername}>
           {t('save')}
         </button>
-        {savedDisplayName && <span className={styles.saved}>{t('saved')}</span>}
-      </div>
+
+    </div>
+
     </div>
   );
 };
@@ -165,68 +161,58 @@ const GeneralSettings = () => {
 
   return (
     <>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('version')}</span>
-        <span className={styles.categorySettings}>
-          <div className={styles.version}>
             <VersionWithCommit />
             {window.electronApi?.isElectron && (
-              <a className={styles.fullNodeStats} href='http://localhost:50019/webui/' target='_blank' rel='noreferrer'>
                 {t('node_stats')}
               </a>
             )}
-          </div>
+
+    </div>
           <CheckForUpdates />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('interface_language')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <LanguageSettings />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('theme')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <ThemeSettings />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('avatar')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <AvatarSettings />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#displayName' ? styles.highlightedSetting : ''}`} id='displayName'>
-        <span className={styles.categoryTitle}>{t('display_name')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <DisplayNameSetting />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#cryptoAddress' ? styles.highlightedSetting : ''}`} id='cryptoAddress'>
-        <span className={styles.categoryTitle}>{t('crypto_address')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <AddressSettings />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#cryptoWallets' ? styles.highlightedSetting : ''}`} id='cryptoWallets'>
-        <span className={styles.categoryTitle}>{t('crypto_wallets')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <WalletSettings />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('notifications')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <NotificationsSettings />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#exportAccount' ? styles.highlightedSetting : ''}`} id='exportBackup'>
-        <span className={styles.categoryTitle}>{t('account')}</span>
-        <span className={styles.categorySettings}>
+
+    </span>
+
+    </div>
           <AccountSettings />
-        </span>
-      </div>
+
+    </span>
+
+    </div>
     </>
   );
 };
@@ -248,8 +234,8 @@ const Settings = () => {
   }, [documentTitle]);
 
   return (
-    <div className={styles.content}>
       {isInSettingsPlebbitOptionsView ? <PlebbitOptions /> : isInSettingsContentOptionsView ? <ContentOptions /> : <GeneralSettings key={account?.id} />}
+
     </div>
   );
 };

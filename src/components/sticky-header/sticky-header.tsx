@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import styles from './sticky-header.module.css';
 import AccountBar from '../account-bar';
 import { debounce } from 'lodash';
 
@@ -23,7 +22,7 @@ const StickyHeader = () => {
   }, []);
 
   return (
-    <div className={styles.content} style={{ transform: visible ? 'translateY(0)' : 'translateY(-40px)' }}>
+    <div>
       <AccountBar />
     </div>
   );

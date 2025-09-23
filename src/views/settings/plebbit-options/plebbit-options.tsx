@@ -2,7 +2,6 @@ import { RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { setAccount, useAccount, usePlebbitRpcSettings } from '@plebbit/plebbit-react-hooks';
-import styles from './plebbit-options.module.css';
 
 interface SettingsProps {
   ipfsGatewayUrlsRef?: RefObject<HTMLTextAreaElement>;
@@ -24,8 +23,6 @@ const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: Se
   const ipfsGatewayUrlsDefaultValue = ipfsGatewayUrls?.join('\n');
 
   return (
-    <div className={styles.ipfsGatewaysSettings}>
-      <div className={styles.ipfsGatewaysSetting}>
         <textarea
           defaultValue={ipfsGatewayUrlsDefaultValue}
           ref={ipfsGatewayUrlsRef}
@@ -35,7 +32,6 @@ const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: Se
           rows={ipfsGatewayUrls?.length || 3}
         />
       </div>
-      <span className={styles.settingTitle}>nft profile pics gateway</span>
       <div>
         <input type='text' defaultValue={mediaIpfsGatewayUrl} ref={mediaIpfsGatewayUrlRef} />
       </div>
@@ -50,7 +46,6 @@ const PubsubProvidersSettings = ({ pubsubProvidersRef }: SettingsProps) => {
   const pubsubProvidersDefaultValue = pubsubHttpClientsOptions?.join('\n');
 
   return (
-    <div className={styles.pubsubProvidersSettings}>
       <textarea
         defaultValue={pubsubProvidersDefaultValue}
         ref={pubsubProvidersRef}
@@ -70,7 +65,6 @@ const HttpRoutersSettings = ({ httpRoutersRef }: SettingsProps) => {
   const httpRoutersDefaultValue = httpRoutersOptions?.join('\n');
 
   return (
-    <div className={styles.httpRoutersSettings}>
       <textarea
         defaultValue={httpRoutersDefaultValue}
         ref={httpRoutersRef}
@@ -93,16 +87,12 @@ const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRp
   const avaxRpcDefaultValue = chainProviders?.['avax']?.urls.join('\n');
 
   return (
-    <div className={styles.blockchainProvidersSettings}>
-      <span className={styles.settingTitle}>ethereum rpc, for .eth addresses</span>
       <div>
         <textarea defaultValue={ethRpcDefaultValue} ref={ethRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['eth']?.length || 3} />
       </div>
-      <span className={styles.settingTitle}>solana rpc, for .sol addresses</span>
       <div>
         <textarea defaultValue={solRpcDefaultValue} ref={solRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['sol']?.length || 1} />
       </div>
-      <span className={styles.settingTitle}>polygon rpc, for nft profile pics</span>
       <div>
         <textarea
           defaultValue={maticRpcDefaultValue}
@@ -113,7 +103,6 @@ const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRp
           rows={chainProviders?.['matic']?.length || 1}
         />
       </div>
-      <span className={styles.settingTitle}>avalanche rpc</span>
       <div>
         <textarea
           defaultValue={avaxRpcDefaultValue}
@@ -135,13 +124,11 @@ const PlebbitRPCSettings = ({ plebbitRpcRef }: SettingsProps) => {
   const { plebbitRpcClientsOptions } = plebbitOptions || {};
 
   return (
-    <div className={styles.plebbitRPCSettings}>
       <div>
         <input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={plebbitRpcClientsOptions} ref={plebbitRpcRef} />
         <button onClick={() => setShowInfo(!showInfo)}>{showInfo ? 'X' : '?'}</button>
       </div>
       {showInfo && (
-        <div className={styles.plebbitRpcSettingsInfo}>
           use a plebbit full node locally, or remotely with SSL
           <br />
           <ol>
@@ -165,7 +152,6 @@ const PlebbitDataPathSettings = ({ plebbitDataPathRef }: SettingsProps) => {
   const path = plebbitRpcSettings?.plebbitOptions?.dataPath || '';
 
   return (
-    <div className={styles.plebbitDataPathSettings}>
       <div>
         <input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={path} disabled={!isConnectedToRpc} ref={plebbitDataPathRef} />
       </div>
@@ -274,46 +260,26 @@ const PlebbitOptions = () => {
   };
 
   return (
-    <div className={styles.content}>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>ipfs gateways</span>
-        <span className={styles.categorySettings}>
           <IPFSGatewaysSettings ipfsGatewayUrlsRef={ipfsGatewayUrlsRef} mediaIpfsGatewayUrlRef={mediaIpfsGatewayUrlRef} />
         </span>
       </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>pubsub providers</span>
-        <span className={styles.categorySettings}>
           <PubsubProvidersSettings pubsubProvidersRef={pubsubProvidersRef} />
         </span>
       </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>http routers</span>
-        <span className={styles.categorySettings}>
           <HttpRoutersSettings httpRoutersRef={httpRoutersRef} />
         </span>
       </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>blockchain providers</span>
-        <span className={styles.categorySettings}>
           <BlockchainProvidersSettings ethRpcRef={ethRpcRef} solRpcRef={solRpcRef} maticRpcRef={maticRpcRef} avaxRpcRef={avaxRpcRef} />
         </span>
       </div>
-      <div className={`${styles.category} ${location.hash === '#plebbitRpc' ? styles.highlightedSetting : ''}`} id='plebbitRpc'>
-        <span className={styles.categoryTitle}>plebbit rpc</span>
-        <span className={styles.categorySettings}>
           <PlebbitRPCSettings plebbitRpcRef={plebbitRpcRef} />
         </span>
       </div>
       {isElectron && (
-        <div className={styles.category}>
-          <span className={styles.categoryTitle}>plebbit data path</span>
-          <span className={styles.categorySettings}>
             <PlebbitDataPathSettings plebbitDataPathRef={plebbitDataPathRef} />
           </span>
         </div>
       )}
-      <button className={styles.saveOptions} onClick={handleSave}>
         {t('save_options')}
       </button>
     </div>

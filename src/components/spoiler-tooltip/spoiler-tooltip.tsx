@@ -1,6 +1,5 @@
 import { useState, ReactNode } from 'react';
 import { useFloating, autoUpdate, offset, shift, useHover, useFocus, useDismiss, useRole, useInteractions, FloatingPortal } from '@floating-ui/react';
-import styles from './spoiler-tooltip.module.css';
 
 interface SpoilerTooltipProps {
   content: string;
@@ -34,7 +33,6 @@ const SpoilerTooltip = ({ content, children, showTooltip = true }: SpoilerToolti
       {showTooltip && (
         <FloatingPortal>
           {isOpen && (
-            <div className={styles.tooltip} ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
               {content}
             </div>
           )}

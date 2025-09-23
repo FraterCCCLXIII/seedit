@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { autoUpdate, flip, FloatingFocusManager, offset, shift, useClick, useDismiss, useFloating, useId, useInteractions, useRole } from '@floating-ui/react';
 import { Trans, useTranslation } from 'react-i18next';
 import { PublishCommentModerationOptions, useComment, useEditedComment, usePublishCommentModeration } from '@plebbit/plebbit-react-hooks';
-import styles from './mod-menu.module.css';
+import { Button } from '@/components/ui/button';
 import { alertChallengeVerificationFailed } from '../../../../lib/utils/challenge-utils';
 import challengesStore from '../../../../stores/use-challenges-store';
 

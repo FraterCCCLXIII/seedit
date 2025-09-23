@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState, useRef, lazy, Suspense, Component 
 import { Trans, useTranslation } from 'react-i18next';
 import { usePublishSubplebbitEdit, useSubplebbit } from '@plebbit/plebbit-react-hooks';
 import useTheme from '../../../stores/use-theme-store';
-import styles from '../../settings/account-data-editor/account-data-editor.module.css';
 import useIsMobile from '../../../hooks/use-is-mobile';
 import LoadingEllipsis from '../../../components/loading-ellipsis';
 import useSubplebbitSettingsStore from '../../../stores/use-subplebbit-settings-store';
@@ -45,8 +44,7 @@ const FallbackEditor = ({ value, onChange, height, disabled }: { value: string; 
 
   return (
     <div>
-      <div className={styles.infobar}>{t('editor_fallback_warning', 'Advanced editor failed to load. Using basic text editor as fallback.')}</div>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} className={styles.fallbackEditor} style={{ height }} spellCheck={false} disabled={disabled} />
+
     </div>
   );
 };
@@ -256,11 +254,11 @@ const SubplebbitDataEditor = () => {
     return (
       <>
         {error?.message && (
-          <div className={styles.error}>
+          <div>
             <ErrorDisplay error={error} />
           </div>
         )}
-        <div className={styles.loading}>
+        <div>
           <LoadingEllipsis string={loadingStateString || t('loading')} />
         </div>
       </>
@@ -268,13 +266,12 @@ const SubplebbitDataEditor = () => {
   }
 
   return (
-    <div className={styles.content}>
       <EditorErrorBoundary
         fallback={<FallbackEditor value={text} onChange={handleTextChange} height={isMobile ? 'calc(80vh - 95px)' : 'calc(90vh - 77px)'} disabled={showSaving} />}
       >
         <Suspense
           fallback={
-            <div className={styles.loading}>
+            <div>
               <LoadingEllipsis string={t('loading_editor')} />
             </div>
           }
@@ -286,7 +283,6 @@ const SubplebbitDataEditor = () => {
             onChange={handleTextChange}
             name='ACCOUNT_DATA_EDITOR'
             editorProps={{ $blockScrolling: true }}
-            className={styles.editor}
             width='100%'
             height={isMobile ? 'calc(80vh - 95px)' : 'calc(90vh - 77px)'}
             setOptions={{
@@ -306,16 +302,15 @@ const SubplebbitDataEditor = () => {
         </Suspense>
       </EditorErrorBoundary>
       {currentError && (
-        <div className={styles.error}>
           <ErrorDisplay error={currentError} />
-        </div>
+
+    </div>
       )}
       {showSaving ? (
-        <div className={styles.loading}>
           <LoadingEllipsis string={t('saving')} />
-        </div>
+
+    </div>
       ) : (
-        <div className={styles.buttons}>
           <Trans
             i18nKey='save_reset_changes'
             components={{
@@ -326,9 +321,12 @@ const SubplebbitDataEditor = () => {
           <div>
             <br />
             <button onClick={() => navigate(`/p/${subplebbitAddress}/settings`)}>return to settings</button>
-          </div>
-        </div>
+
+    </div>
+
+    </div>
       )}
+
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import styles from './loading-ellipsis.module.css';
 
 interface LoadingEllipsisProps {
   string: string;
@@ -13,9 +12,7 @@ const LoadingEllipsis = ({ string }: LoadingEllipsisProps) => {
     <span>
       {restOfString}
       {restOfString && ' '}
-      <span className={styles.nowrap}>
         {lastWord}
-        <span className={styles.ellipsis} />
       </span>
     </span>
   );

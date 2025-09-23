@@ -25,7 +25,6 @@ import Flair from '../post/flair/';
 import Label from '../post/label/';
 import Thumbnail from '../post/thumbnail/';
 import ReplyForm from '../reply-form';
-import styles from './reply.module.css';
 import _ from 'lodash';
 
 interface ReplyAuthorProps {
@@ -67,7 +66,6 @@ const ReplyAuthor = ({
   const isAuthorOwner = authorRole === 'owner';
   const isAuthorModerator = authorRole === 'moderator';
   const authorRoleInitial = (isAuthorOwner && 'O') || (isAuthorAdmin && 'A') || (isAuthorModerator && 'M') || '';
-  const moderatorClass = `${isAuthorOwner ? styles.owner : isAuthorAdmin ? styles.admin : isAuthorModerator ? styles.moderator : ''}`;
 
   const shortDisplayName = displayName?.length > 20 ? displayName?.slice(0, 20) + '...' : displayName;
   const isAuthorSubmitter = address === submitterAddress;
@@ -75,32 +73,26 @@ const ReplyAuthor = ({
   return (
     <>
       {removed || deleted ? (
-        <span className={styles.removedUsername}>[{removed ? t('removed') : deleted ? t('deleted') : ''}]</span>
       ) : (
         <>
           {!hideAvatars && isAvatarDefined && (
-            <span className={styles.authorAvatar}>
               <img src={imageUrl} alt='' />
             </span>
           )}
           {displayName && (
             <Link
               to={`/u/${address}/c/${cid}`}
-              className={`${styles.author} ${pinned && moderatorClass} ${!moderatorClass && isAuthorSubmitter ? styles.submitter : ''}`}
             >
               {shortDisplayName}{' '}
             </Link>
           )}
-          <Link to={`/u/${address}/c/${cid}`} className={`${styles.author} ${pinned && moderatorClass} ${!moderatorClass && isAuthorSubmitter ? styles.submitter : ''}`}>
             {displayName ? `u/${shortAuthorAddress}` : shortAuthorAddress}
           </Link>
           {/* TODO: implement comment.highlightRole once implemented in API */}
           {(authorRole || isAuthorSubmitter) && pinned && (
-            <span className={styles.moderatorBrackets}>
               {' '}
               [
               {isAuthorSubmitter && (
-                <Link to={`/p/${subplebbitAddress}/c/${postCid}`} className={styles.submitter} title={t('submitter')}>
                   S
                 </Link>
               )}
@@ -114,10 +106,8 @@ const ReplyAuthor = ({
             </span>
           )}
           {isAuthorSubmitter && !pinned && (
-            <span className={styles.moderatorBrackets}>
               {' '}
               [
-              <Link to={`/p/${subplebbitAddress}/c/${postCid}`} className={styles.submitter} title={t('submitter')}>
                 S
               </Link>
               ]
@@ -216,16 +206,12 @@ const ParentLink = ({ postCid }: ParentLinkProps) => {
   const postTitle = (title?.length > 300 ? title?.slice(0, 300) + '...' : title) || (content?.length > 300 ? content?.slice(0, 300) + '...' : content);
 
   return (
-    <div className={styles.parent}>
-      <Link to={`/p/${subplebbitAddress}/c/${cid}`} className={styles.parentLink}>
         {postTitle}{' '}
       </Link>
       {t('post_by')}{' '}
-      <Link to={`/u/${author?.address}/c/${cid}`} className={styles.parentAuthor}>
         u/{author?.shortAddress}{' '}
       </Link>
       {t('via')}{' '}
-      <Link to={`/p/${subplebbitAddress}`} className={styles.parentSubplebbit}>
         p/{subplebbitAddress}
       </Link>
     </div>
@@ -244,9 +230,6 @@ const InboxParentLink = ({ commentCid }: ParentLinkProps) => {
   const isInboxPostReply = postCid === parentCid;
 
   return (
-    <div className={styles.inboxParentLinkWrapper}>
-      <span className={styles.inboxParentLinkSubject}>{isInboxCommentReply ? t('comment_reply') : isInboxPostReply ? t('post_reply') : ''}</span>
-      <Link to={`/p/${subplebbitAddress}/c/${cid}`} className={styles.inboxParentLink}>
         {postTitle}
       </Link>
     </div>
@@ -260,7 +243,6 @@ const InboxParentComment = ({ parentCid }: { parentCid: string | undefined }) =>
   return (
     <>
       <Expando content={content} expanded={true} showContent={true} />
-      <Link className={styles.viewParentComment} to={`/p/${subplebbitAddress}/c/${parentCid}`}>
         {t('view_parent_comment')}
       </Link>
     </>
@@ -274,7 +256,6 @@ const InboxShowParentButton = ({ parentCid }: { parentCid: string | undefined })
   return showParent ? (
     <InboxParentComment parentCid={parentCid} />
   ) : (
-    <div className={styles.inboxParentInfoButton} onClick={() => setShowParent(true)}>
       {t('show_parent')}
     </div>
   );
@@ -286,13 +267,10 @@ const InboxParentInfo = ({ address, cid, markedAsRead, parentCid, postCid, short
 
   return (
     <>
-      <div className={`${styles.inboxParentInfo} ${markedAsRead ? styles.inboxParentRead : styles.inboxParentUnread}`}>
         {t('from')}{' '}
-        <Link to={`/u/${address}/c/${cid}`} className={styles.inboxParentAuthor}>
           u/{shortAddress}{' '}
         </Link>
         {t('via')}{' '}
-        <Link to={`/p/${subplebbitAddress}`} className={styles.inboxParentSubplebbit}>
           p/{shortSubplebbitAddress}{' '}
         </Link>
         {t('sent')} {timestamp && getFormattedTimeAgo(timestamp)}
@@ -378,7 +356,6 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
   const formattedScore = formatScore(score);
   const scoreString = score === 1 ? t('reply_score_singular') : t('reply_score_plural', { score: formattedScore });
   const stateString = useStateString(reply);
-  const loadingString = stateString && <span className={styles.stateString}>{stateString !== 'Failed' ? <LoadingEllipsis string={stateString} /> : ''}</span>;
 
   const [upvoted, upvote] = useUpvote(reply);
   const [downvoted, downvote] = useDownvote(reply);
@@ -402,7 +379,6 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
   };
 
   const stateLabel = (
-    <span className={styles.stateLabel}>
       {state === 'failed' && <Label color='red' text={t('failed')} />}
       {cid === undefined && state !== 'failed' && <Label color='yellow' text={t('pending')} />}
       {editState === 'failed' && <Label color='red' text={t('failed_edit')} />}
@@ -433,21 +409,12 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
   }, [cidOfReplyWithContext, cid, isInPostContextView]);
 
   return (
-    <div className={styles.reply} id={cidOfReplyWithContext === cid ? `reply-${cid}` : undefined}>
       {isSingleReply && !isInInboxView && <ParentLink postCid={cid ? postCid : parentOfPendingReply?.postCid} />}
       {isInInboxView && <InboxParentLink commentCid={cid} />}
-      <div className={`${!isSingleReply ? styles.replyWrapper : styles.singleReplyWrapper} ${depth > 0 && styles.nested}`}>
         {!collapsed && (
-          <div className={`${styles.midcol} ${removed || deleted ? styles.hiddenMidcol : ''}`}>
-            <div className={`${styles.arrow} ${upvoted ? styles.upvoted : styles.arrowUp}`} onClick={() => cid && upvote()} />
-            <div className={`${styles.arrow} ${downvoted ? styles.downvoted : styles.arrowDown}`} onClick={() => cid && downvote()} />
           </div>
         )}
-        <div className={`${isNotification && !markedAsRead ? styles.unreadNotification : ''}`}>
-          <div className={`${styles.entry} ${collapsed && styles.collapsedEntry}`}>
             {!isInInboxView && (
-              <p className={styles.tagline}>
-                <span className={styles.expand} onClick={handleCollapseButton}>
                   [{collapsed ? '+' : '–'}]
                 </span>
                 <ReplyAuthor
@@ -465,15 +432,10 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
                   pinned={pinned}
                   postCid={postCid}
                 />
-                <span className={styles.score}>{scoreString}</span>{' '}
-                <span className={styles.time}>
                   <span title={formatLocalizedUTCTimestamp(timestamp, language)}>{getFormattedTimeAgo(timestamp)}</span>
-                  {edit && <span className={styles.timeEdited}> {t('edited_timestamp', { timestamp: getFormattedTimeAgo(edit.timestamp) })}</span>}
                 </span>
-                {pinned && <span className={styles.pinned}> - {t('stickied_comment')}</span>}
                 {collapsed && (
                   <>
-                    <span className={styles.children}> ({childrenString})</span>
                     {stateLabel}
                     {state === 'pending' && loadingString}
                   </>
@@ -503,7 +465,6 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
             {!collapsed && (
               <div
                 ref={replyContextContentRef}
-                className={`${styles.usertext} ${cid && commentMediaInfo && (isSingleComment || cidOfReplyWithContext === cid) ? styles.highlightMedia : ''}`}
               >
                 {commentMediaInfo && !(removed || deleted) && (
                   <ReplyMedia
@@ -523,20 +484,15 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
                   <CommentEditForm commentCid={cid} hideCommentEditForm={hideCommentEditForm} />
                 ) : (
                   <div
-                    className={`${styles.md} ${cid && (isSingleComment || cidOfReplyWithContext === cid) ? styles.highlightContent : ''} ${
-                      removed || deleted ? styles.removedOrDeletedContent : ''
                     }`}
                   >
                     {content &&
                       (removed ? (
-                        <span className={styles.removedContent}>[{t('removed')}]</span>
                       ) : deleted ? (
-                        <span className={styles.deletedContent}>[{t('deleted')}]</span>
                       ) : (
                         <Markdown content={content} />
                       ))}
                     {reason && (
-                      <p className={styles.modReason}>
                         {_.lowerCase(t('mod_edit_reason'))}: {reason}
                       </p>
                     )}
@@ -551,7 +507,6 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
             )}
           </div>
           {!collapsed && (
-            <div className={isInInboxView && markedAsRead ? styles.addMargin : ''}>
               <CommentTools
                 author={author}
                 cid={cid}
@@ -582,7 +537,6 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
                           cidOfReplyWithContext={isInPostContextView ? params?.commentCid : undefined}
                         />
                       ) : (
-                        <div className={styles.continueThisThread}>
                           <Link to={`/p/${subplebbitAddress}/c/${cid}`}>{t('continue_thread')}</Link>
                         </div>
                       )}

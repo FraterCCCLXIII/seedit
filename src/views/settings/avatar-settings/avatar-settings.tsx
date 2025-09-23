@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { setAccount, useAccount, useAuthorAvatar } from '@plebbit/plebbit-react-hooks';
-import styles from './avatar-settings.module.css';
 import { Trans, useTranslation } from 'react-i18next';
 
 interface AvatarSettingsProps {
@@ -31,15 +30,12 @@ const AvatarPreview = ({ areSettingsShown, avatar, showSettings }: AvatarSetting
 
   return (
     <>
-      <div className={styles.avatar} onClick={showSettings}>
         {imageUrl && state !== 'initializing' ? (
           <img src={imageUrl} alt='' />
         ) : (
-          <span className={styles.emptyAvatar}>{areSettingsShown ? '–' + t('hide') : '+' + t('add')}</span>
         )}
       </div>
       {state !== 'succeeded' && account?.author?.avatar && (
-        <div className={styles.state}>
           {stateText} {error?.message}
         </div>
       )}
@@ -125,12 +121,8 @@ const AvatarSettings = () => {
   };
 
   return (
-    <div className={styles.avatarSettings}>
       <AvatarPreview avatar={avatar} showSettings={() => setShowSettings(!showSettings)} areSettingsShown={showSettings} />
       {showSettings && (
-        <div className={styles.avatarSettingsForm}>
-          <div className={styles.avatarSettingInput}>
-            <span className={styles.settingTitle}>{t('chain_ticker')}</span>
             <input
               type='text'
               placeholder='matic'
@@ -141,8 +133,6 @@ const AvatarSettings = () => {
               onChange={(e) => setChainTicker(e.target.value)}
             />
           </div>
-          <div className={styles.avatarSettingInput}>
-            <span className={styles.settingTitle}>
               <Trans
                 i18nKey='token_address_whitelist'
                 shouldUnescape={true}
@@ -168,8 +158,6 @@ const AvatarSettings = () => {
               onChange={(e) => setTokenAddress(e.target.value)}
             />
           </div>
-          <div className={styles.avatarSettingInput}>
-            <span className={styles.settingTitle}>{t('token_id')}</span>
             <input
               type='text'
               placeholder='Token ID'
@@ -180,7 +168,6 @@ const AvatarSettings = () => {
               onChange={(e) => setTokenId(e.target.value)}
             />
           </div>
-          <div className={styles.copyMessage}>
             <Trans
               i18nKey='copy_message_etherscan'
               values={{ copy: hasCopied ? t('copied') : t('copy') }}
@@ -191,8 +178,6 @@ const AvatarSettings = () => {
               }}
             />
           </div>
-          <div className={styles.avatarSettingInput}>
-            <span className={styles.settingTitle}>{t('timestamp')}</span>
             <input
               type='text'
               placeholder='Timestamp'
@@ -203,8 +188,6 @@ const AvatarSettings = () => {
               onChange={(e) => setTimestamp(Number(e.target.value))}
             />
           </div>
-          <div className={styles.pasteSignature}>
-            <span className={styles.settingTitle}>{t('paste_signature')}</span>
             <input
               type='text'
               placeholder='0x...'

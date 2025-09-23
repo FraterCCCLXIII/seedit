@@ -3,7 +3,6 @@ import { FloatingFocusManager, useClick, useDismiss, useFloating, useId, useInte
 import { Challenge as ChallengeType, useComment } from '@plebbit/plebbit-react-hooks';
 import { useTranslation } from 'react-i18next';
 import useChallenges from '../../stores/use-challenges-store';
-import styles from './challenge-modal.module.css';
 import { getPublicationPreview, getPublicationType, getVotePreview } from '../../lib/utils/challenge-utils';
 
 interface ChallengeProps {
@@ -70,32 +69,24 @@ const Challenge = ({ challenge, closeModal }: ChallengeProps) => {
   }, [closeModal]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.title}>{t('challenge_from', { subplebbit: shortSubplebbitAddress || subplebbitAddress })}</div>
-      <div className={styles.subTitle}>
+    <div>
+      <div>
         {publicationType === 'vote' && votePreview + ' '}
         {parentCid
           ? t('challenge_for_reply', { parentAddress, publicationContent, interpolation: { escapeValue: false } })
           : t('challenge_for_post', { publicationContent, interpolation: { escapeValue: false } })}
-      </div>
-      <div className={styles.challengeMediaWrapper}>
-        {isTextChallenge && <div className={styles.challengeMedia}>{challenges[currentChallengeIndex]?.challenge}</div>}
-        {isImageChallenge && <img alt={t('loading')} className={styles.challengeMedia} src={`data:image/png;base64,${challenges[currentChallengeIndex]?.challenge}`} />}
       </div>
       <div>
         <input
           onKeyDown={onEnterKey}
           onChange={onAnswersChange}
           value={answers[currentChallengeIndex] || ''}
-          className={styles.challengeInput}
           autoCorrect='off'
           autoComplete='off'
           spellCheck='false'
         />
-      </div>
-      <div className={styles.challengeFooter}>
-        <div className={styles.counter}>{t('challenge_counter', { index: currentChallengeIndex + 1, total: challenges?.length })}</div>
-        <span className={styles.buttons}>
+
+    </div>
           {!challenges[currentChallengeIndex + 1] && (
             <button onClick={onSubmit} disabled={!isValidAnswer(currentChallengeIndex)}>
               {t('submit')}
@@ -132,9 +123,9 @@ const ChallengeModal = () => {
     <>
       {isOpen && (
         <FloatingFocusManager context={context} modal={false}>
-          <div className={styles.modal} ref={refs.setFloating} aria-labelledby={headingId} {...getFloatingProps()}>
             <Challenge challenge={challenges[0]} closeModal={closeModal} />
-          </div>
+
+    </div>
         </FloatingFocusManager>
       )}
     </>

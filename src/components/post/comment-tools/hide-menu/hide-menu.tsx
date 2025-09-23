@@ -5,7 +5,7 @@ import { Author, useBlock } from '@plebbit/plebbit-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import { autoUpdate, flip, FloatingFocusManager, offset, shift, useClick, useDismiss, useFloating, useId, useInteractions, useRole } from '@floating-ui/react';
 import { isProfileHiddenView } from '../../../../lib/utils/view-utils';
-import styles from './hide-menu.module.css';
+import { Button } from '@/components/ui/button';
 
 type HideMenuProps = {
   author?: Author | undefined;

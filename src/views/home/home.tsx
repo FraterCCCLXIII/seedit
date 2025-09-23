@@ -281,16 +281,12 @@ const Home = () => {
 
   return (
     <div>
-      <div className={styles.content}>
-        <div className={`${styles.sidebar}`}>
-          <Sidebar />
-        </div>
-        {subscriptionState === 'loading' && !searchQuery ? (
-          <div className={styles.feed}>
-            <div className={styles.footer}>
-              <LoadingEllipsis string={t('loading_feed')} />
-            </div>
+      {subscriptionState === 'loading' && !searchQuery ? (
+        <div className={styles.feed}>
+          <div className={styles.footer}>
+            <LoadingEllipsis string={t('loading_feed')} />
           </div>
+        </div>
         ) : subscriptionState === 'noSubscriptions' && !searchQuery ? (
           <div className={styles.noSubscriptions}>
             <br />

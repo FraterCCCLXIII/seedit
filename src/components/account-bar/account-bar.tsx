@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { createAccount, setActiveAccount, useAccount, useAccounts } from '@plebbit/plebbit-react-hooks';
 import { isSettingsView } from '../../lib/utils/view-utils';
-import styles from './account-bar.module.css';
 import SearchBar from '../search-bar';
 
 const AccountBar = () => {
@@ -24,11 +23,9 @@ const AccountBar = () => {
   const toggleAccountDropdown = () => setIsAccountDropdownOpen(!isAccountDropdownOpen);
   const accountDropdownRef = useRef<HTMLDivElement>(null);
   const accountdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const accountDropdownClass = isAccountDropdownOpen ? styles.visible : styles.hidden;
   const accountSelectButtonRef = useRef<HTMLDivElement>(null);
 
   const unreadNotificationCount = account?.unreadNotificationCount ? ` ${account.unreadNotificationCount}` : '';
-  const mailClass = unreadNotificationCount ? styles.mailIconUnread : styles.mailIconRead;
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
@@ -73,62 +70,37 @@ const AccountBar = () => {
     .map((account, index) => (
       <span
         key={index}
-        className={styles.dropdownItem}
         onClick={() => {
           setActiveAccount(account?.name);
           setIsAccountDropdownOpen(false);
         }}
       >
         u/{account.author.shortAddress}
-      </span>
+
+    </span>
     ));
 
   accountDropdownOptions.push(
-    <Link key='create' to='#' className={styles.dropdownItem} onClick={() => createAccount()}>
-      +{t('create')}
+    <Link key='create' to='/create'>
+      {t('create')}
     </Link>,
   );
 
   return (
-    <div className={styles.content}>
-      <span className={styles.user}>
-        <Link to='/profile'>{account?.author?.shortAddress}</Link>
-        {karma && (
-          <span className={styles.karma}>
-            {' '}
-            (<span className={styles.karmaScore}>{karma?.postScore + 1}</span>)
-          </span>
-        )}
-        <span className={styles.userDropdownButton} ref={accountSelectButtonRef} onClick={toggleAccountDropdown} />
-        {isAccountDropdownOpen && (
-          <div className={`${styles.dropdown} ${accountDropdownClass}`} ref={accountDropdownRef}>
-            <div className={`${styles.dropChoices} ${styles.accountDropChoices}`} ref={accountdropdownItemsRef}>
-              {accountDropdownOptions}
-            </div>
-          </div>
-        )}
-      </span>
-      <span className={styles.separator}>|</span>
-      <Link to='/inbox' className={styles.iconButton}>
-        <span className={`${styles.mailIcon} ${mailClass}`} />
-        {unreadNotificationCount && <span className={styles.mailUnreadCount}>{unreadNotificationCount}</span>}
-      </Link>
-      <span className={styles.searchButton}>
-        <span className={styles.separator}>|</span>
-        <span className={styles.iconButton} onClick={toggleSearchVisible} ref={searchBarButtonRef}>
-          🔎
+    <span>
+      <Link to='/profile'>{account?.author?.shortAddress}</Link>
+      {karma && (
+        <span>
+          {' '}
+          {karma}
         </span>
-        {searchVisible && (
-          <div className={styles.searchBar} ref={searchBarRef}>
-            <SearchBar isFocused={isFocused} />
-          </div>
-        )}
-      </span>
-      <span className={styles.separator}>|</span>
-      <Link to='/settings' className={`${styles.textButton} ${isInSettingsView && styles.selectedTextButton}`}>
-        {t('preferences')}
-      </Link>
-    </div>
+      )}
+      {isAccountDropdownOpen && (
+        <div>
+          {accountDropdownOptions}
+        </div>
+      )}
+    </span>
   );
 };
 

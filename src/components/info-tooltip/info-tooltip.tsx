@@ -1,6 +1,5 @@
 import { useState, useLayoutEffect, useRef } from 'react';
 import { useFloating, autoUpdate, offset, shift, size, useHover, useFocus, useDismiss, useRole, useInteractions, FloatingPortal, safePolygon } from '@floating-ui/react';
-import styles from './info-tooltip.module.css';
 
 interface InfoTooltipProps {
   content: string;
@@ -96,15 +95,11 @@ const InfoTooltip = ({ content, showTooltip = true }: InfoTooltipProps) => {
 
   return (
     <>
-      <sup className={styles.tooltipIcon} ref={refs.setReference} {...getReferenceProps()}>
         [?]
       </sup>
       {showTooltip && (
         <FloatingPortal>
           {isVisible && (
-            <div className={`${styles.tooltip} ${isExiting ? styles.exiting : ''}`} ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
-              <div className={styles.tooltipInner}>
-                <p className={styles.tooltipContent}>{content}</p>
               </div>
             </div>
           )}

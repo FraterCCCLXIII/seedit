@@ -4,7 +4,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { createAccount, deleteAccount, exportAccount, importAccount, setActiveAccount, useAccount, useAccounts } from '@plebbit/plebbit-react-hooks';
 import { processImportedAccount } from '../../../lib/utils/account-import-utils';
 import { exportFile } from '../../../lib/utils/file-export-utils';
-import styles from './account-settings.module.css';
 
 const CreateAccountButton = () => {
   const { accounts } = useAccounts();
@@ -180,14 +179,10 @@ const ExportAccountButton = () => {
           1: <button key='exportAccountButton' onClick={handleExportAccount} />,
         }}
       />
-      <span className={styles.exportAccountOptions}>
-        <span className={styles.exportAccountOptionsButton} onClick={() => setShowExportAccountOptions(!showExportAccountOptions)}>
           {showExportAccountOptions ? 'hide options' : 'options'}
         </span>
       </span>
       {showExportAccountOptions && (
-        <div className={styles.exportAccountOptions}>
-          <div className={styles.exportAccountOption}>
             <input
               type='checkbox'
               id='includePlebbitOptions'
@@ -197,7 +192,6 @@ const ExportAccountButton = () => {
             />
             <label htmlFor='includePlebbitOptions'>Include plebbit options</label>
           </div>
-          <div className={styles.exportAccountOption}>
             <input
               type='checkbox'
               id='includePostHistory'
@@ -207,7 +201,6 @@ const ExportAccountButton = () => {
             />
             <label htmlFor='includePostHistory'>Include post history</label>
           </div>
-          <div className={styles.exportAccountOption}>
             <input
               type='checkbox'
               id='includeVoteHistory'
@@ -246,25 +239,19 @@ const AccountSettings = () => {
   };
 
   return (
-    <span className={styles.categorySettings}>
-      <div className={styles.accountAddress}>
         <select value={account?.name} onChange={(e) => setActiveAccount(e.target.value)}>
           {accountsOptions}
         </select>
         <Link to='/settings/account-data'>{t('edit')}</Link>
       </div>
-      <div className={styles.createAccount}>
         <CreateAccountButton />
       </div>
-      <div className={styles.accountData}>
-        <div className={styles.accountButtons}>
           <div>
             <ImportAccountButton />
           </div>
           <div>
             <ExportAccountButton />
           </div>
-          <div className={styles.deleteAccountBox}>
             <Trans
               i18nKey='delete_this_account'
               components={{

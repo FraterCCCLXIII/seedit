@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styles from './feed-toggle.module.css';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 interface FeedToggleProps {
   mode: 'subscribed' | 'all';
@@ -25,3 +26,4 @@ const FeedToggle = ({ mode, onModeChange }: FeedToggleProps) => {
 };
 
 export default FeedToggle;
+

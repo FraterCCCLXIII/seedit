@@ -5,7 +5,6 @@ import { isValidURL } from '../../lib/utils/url-utils';
 import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import usePublishReply from '../../hooks/use-publish-reply';
 import Markdown from '../markdown';
-import styles from './reply-form.module.css';
 
 type ReplyFormProps = {
   cid: string;
@@ -18,10 +17,8 @@ type ReplyFormProps = {
 export const FormattingHelpTable = () => {
   const { t } = useTranslation();
   return (
-    <div className={styles.markdownHelp}>
       <table>
         <tbody>
-          <tr className={styles.tableFirstRow}>
             <td>{t('you_type')}:</td>
             <td>{t('you_see')}:</td>
           </tr>
@@ -65,10 +62,8 @@ export const FormattingHelpTable = () => {
               are treated like code:
               <br />
               <br />
-              <span className={styles.spaces}>&nbsp;&nbsp;&nbsp;&nbsp;</span>
               {'if 1 * 2 < 3:'}
               <br />
-              <span className={styles.spaces}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
               print "hello, world!"
             </td>
             <td>
@@ -117,10 +112,6 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
   const [showPreview, setShowPreview] = useState(false);
   const { setPublishReplyOptions, resetPublishReplyOptions, replyIndex, publishReply, publishReplyOptions } = usePublishReply({ cid, subplebbitAddress, postCid });
 
-  const mdContainerClass = isReplyingToReply ? `${styles.mdContainer} ${styles.mdContainerReplying}` : styles.mdContainer;
-  const urlClass = showOptions ? styles.urlVisible : styles.urlHidden;
-  const spoilerClass = showOptions ? styles.spoilerVisible : styles.spoilerHidden;
-  const nsfwClass = showOptions ? styles.spoilerVisible : styles.spoilerHidden;
 
   const subplebbit = useSubplebbit({ subplebbitAddress, onlyIfCached: true });
   const { isOffline, offlineTitle } = useIsSubplebbitOffline(subplebbit);
@@ -161,57 +152,41 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
 
   return (
     <div className={mdContainerClass}>
-      <div className={styles.md}>
-        {isOffline && isTextareaFocused && <div className={styles.infobar}>{offlineTitle}</div>}
         {showOptions && (
-          <div className={styles.options}>
             <span className={urlClass}>
-              {t('media_url')}: <input className={`${styles.url} ${urlClass}`} onChange={(e) => setPublishReplyOptions.link(e.target.value)} />
             </span>
-            <span className={`${styles.spoiler} ${spoilerClass}`}>
               <label>
-                {t('spoiler')}: <input type='checkbox' className={styles.checkbox} onChange={(e) => setPublishReplyOptions.spoiler(e.target.checked)} />
               </label>
             </span>
-            <span className={`${styles.spoiler} ${nsfwClass}`}>
               <label>
-                {t('nsfw')}: <input type='checkbox' className={styles.checkbox} onChange={(e) => setPublishReplyOptions.nsfw(e.target.checked)} />
               </label>
             </span>
           </div>
         )}
         {!showPreview ? (
           <textarea
-            className={styles.textarea}
             value={publishReplyOptions?.content || ''}
             onChange={(e) => setPublishReplyOptions.content(e.target.value)}
             onFocus={() => setIsTextareaFocused(true)}
             onBlur={() => setIsTextareaFocused(false)}
           />
         ) : (
-          <div className={styles.preview}>
             <Markdown content={publishReplyOptions?.content || ''} />
           </div>
         )}
       </div>
-      <div className={styles.bottomArea}>
-        <button className={styles.save} onClick={onPublish}>
           {t('save')}
         </button>
         {showFormattingHelp && (
-          <button className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!publishReplyOptions?.content}>
             {showPreview ? t('edit') : t('preview')}
           </button>
         )}
         {isReplyingToReply && (
-          <button className={styles.cancel} onClick={hideReplyForm}>
             {t('cancel')}
           </button>
         )}
-        <span className={styles.optionsButton} onClick={() => setShowFormattingHelp(!showFormattingHelp)}>
           {showFormattingHelp ? t('hide_help') : t('formatting_help')}
         </span>
-        <span className={styles.optionsButton} onClick={() => setShowOptions(!showOptions)}>
           {showOptions ? t('hide_options') : t('options')}
         </span>
       </div>

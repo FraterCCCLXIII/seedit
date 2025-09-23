@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { setAccount, useAccount } from '@plebbit/plebbit-react-hooks';
 import useTheme from '../../../stores/use-theme-store';
 import stringify from 'json-stringify-pretty-compact';
-import styles from './account-data-editor.module.css';
 import useIsMobile from '../../../hooks/use-is-mobile';
 import LoadingEllipsis from '../../../components/loading-ellipsis';
 import ErrorDisplay from '../../../components/error-display';
@@ -44,8 +43,7 @@ const FallbackEditor = ({ value, onChange, height }: { value: string; onChange: 
 
   return (
     <div>
-      <div className={styles.infobar}>{t('editor_fallback_warning', 'Advanced editor failed to load. Using basic text editor as fallback.')}</div>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} className={styles.fallbackEditor} style={{ height }} spellCheck={false} />
+
     </div>
   );
 };
@@ -89,13 +87,13 @@ const AccountDataEditor = () => {
 
   if (!showEditor) {
     return (
-      <div className={styles.securityWarning}>
-        <img src='assets/privacy_icon.png' alt='' />
-        <div className={styles.warning}>
+      <div>
+        <div>
+          <img src='assets/privacy_icon.png' alt='' />
           <h3>{t('private_key_warning_title')}</h3>
           <p>{t('private_key_warning_description')}</p>
         </div>
-        <div className={styles.warningButtons}>
+        <div>
           <button onClick={() => navigate('/settings')}>{t('go_back')}</button>
           <button onClick={() => setShowEditor(true)}>{t('continue')}</button>
         </div>
@@ -104,7 +102,6 @@ const AccountDataEditor = () => {
   }
 
   return (
-    <div className={styles.content}>
       <EditorErrorBoundary
         fallback={
           <FallbackEditor
@@ -121,7 +118,7 @@ const AccountDataEditor = () => {
       >
         <Suspense
           fallback={
-            <div className={styles.loading}>
+            <div>
               <LoadingEllipsis string={t('loading_editor')} />
             </div>
           }
@@ -138,7 +135,6 @@ const AccountDataEditor = () => {
             }}
             name='ACCOUNT_DATA_EDITOR'
             editorProps={{ $blockScrolling: true }}
-            className={styles.editor}
             width='100%'
             height={isMobile ? 'calc(80vh - 95px)' : 'calc(90vh - 77px)'}
             setOptions={{
@@ -157,11 +153,10 @@ const AccountDataEditor = () => {
         </Suspense>
       </EditorErrorBoundary>
       {currentError && (
-        <div className={styles.error}>
           <ErrorDisplay error={currentError} />
-        </div>
+
+    </div>
       )}
-      <div className={styles.buttons}>
         <Trans
           i18nKey='save_reset_changes'
           components={{
@@ -172,8 +167,11 @@ const AccountDataEditor = () => {
         <div>
           <br />
           <button onClick={() => navigate('/settings')}>return to settings</button>
-        </div>
-      </div>
+
+    </div>
+
+    </div>
+
     </div>
   );
 };
