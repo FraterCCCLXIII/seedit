@@ -54,6 +54,8 @@ html, body {
   overflow-x: hidden; /* Only prevent horizontal scrolling */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   height: 100%;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 body {
@@ -63,11 +65,89 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 /* Global font class */
 .font-inter {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Global typography improvements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.875rem;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+h5 {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+h6 {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* Improved button styles */
+button, .button {
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Improved link styles */
+a {
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* Improved form elements */
+input, textarea, select {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Improved spacing for common elements */
+.space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+.space-y-8 > * + * {
+  margin-top: 2rem;
 }
 
 /* Three-column layout styles */

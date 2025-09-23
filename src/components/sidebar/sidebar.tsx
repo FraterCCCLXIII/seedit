@@ -29,8 +29,8 @@ import Markdown from '../markdown';
 import SearchBar from '../search-bar';
 import SubscribeButton from '../subscribe-button';
 import { Version } from '../version';
-import styles from './sidebar.module.css';
 
+import styles from './sidebar.module.css';
 const RulesList = ({ rules }: { rules: string[] }) => {
   const { t } = useTranslation();
   const markdownRules = rules.map((rule, index) => `${index + 1}. ${rule}`).join('\n');
@@ -276,12 +276,12 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
   };
 
   return (
-    <div className={`${isMobile ? styles.mobileSidebar : styles.sidebar}`}>
-      <div className={styles.searchBarWrapper}>
+    <div className='w-full'>
+      <div className='mb-6'>
         <SearchBar onExpandoChange={handleSearchBarExpandoChange} />
       </div>
       <div
-        className={styles.contentWrapper}
+        className='space-y-6'
         style={{
           transform: showExpando ? 'translateY(47px)' : 'translateY(0)',
           transition: 'transform 0.3s linear',

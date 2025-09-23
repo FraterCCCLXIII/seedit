@@ -16,9 +16,17 @@ function RightColumn({ children }: RightColumnProps) {
   const comment = useComment({ commentCid });
 
   return (
-    <div className='h-full bg-background border-l border-border overflow-y-auto'>
-      <Sidebar subplebbit={subplebbit} comment={comment} settings={subplebbit?.settings} />
-      {children}
+    <div className='h-full bg-background border-l border-border flex flex-col w-80'>
+      <div className='flex-1 overflow-y-auto px-4 py-6'>
+        <div className='max-w-sm mx-auto'>
+          <Sidebar subplebbit={subplebbit} comment={comment} settings={subplebbit?.settings} />
+        </div>
+      </div>
+      {children && (
+        <div className='border-t border-border px-4 py-6'>
+          <div className='max-w-sm mx-auto'>{children}</div>
+        </div>
+      )}
     </div>
   );
 }
