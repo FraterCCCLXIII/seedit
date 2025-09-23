@@ -5,13 +5,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export function TestShadcnComponent() {
   return (
-    <div className='p-8 space-y-4'>
-      <h1 className='text-2xl font-bold'>shadcn/ui Test Component</h1>
+    <div className='dark p-8 space-y-4 bg-background text-foreground'>
+      <h1 className='text-2xl font-bold'>shadcn/ui Dark Theme Test</h1>
 
       <Card className='w-96'>
         <CardHeader>
           <CardTitle>Welcome to shadcn/ui!</CardTitle>
-          <CardDescription>This is a test component to verify shadcn/ui is working correctly.</CardDescription>
+          <CardDescription>This is a test component to verify shadcn/ui dark theme is working correctly.</CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='flex items-center space-x-4'>
@@ -26,7 +26,7 @@ export function TestShadcnComponent() {
           </div>
 
           <div className='flex space-x-2'>
-            <Button>Primary</Button>
+            <Button>Primary (White)</Button>
             <Button variant='secondary'>Secondary</Button>
             <Button variant='outline'>Outline</Button>
           </div>
