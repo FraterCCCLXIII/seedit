@@ -45,7 +45,7 @@ function LeftNavigation() {
       </div>
 
       {/* Navigation Menu */}
-      <nav className='flex-1 px-2 py-2 space-y-2'>
+      <nav className='flex-1 px-6 py-4 space-y-2'>
         <a
           href='#/'
           className='flex items-center space-x-4 w-full px-4 py-3.5 text-left hover:bg-accent hover:text-accent-foreground rounded-full transition-all duration-200 group'
@@ -105,7 +105,7 @@ function LeftNavigation() {
 
         <Separator className='my-6 mx-3' />
 
-        <div className='px-3'>
+        <div className='px-6'>
           <Button className='w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 flex items-center justify-center space-x-2 rounded-full text-lg font-semibold'>
             <Edit3 className='w-6 h-6' />
             <span>Post</span>
@@ -115,8 +115,8 @@ function LeftNavigation() {
         <Separator className='my-6 mx-3' />
 
         {/* Communities Section */}
-        <div className='space-y-3'>
-          <div className='px-6'>
+        <div className='space-y-3 px-4'>
+          <div className='px-2'>
             <h3 className='text-lg font-semibold text-foreground'>Communities</h3>
           </div>
           <div className='space-y-2'>
@@ -161,7 +161,7 @@ function LeftNavigation() {
       </nav>
 
       {/* User Profile Section */}
-      <div className='px-3 py-4 border-t border-border'>
+      <div className='px-6 py-4 border-t border-border'>
         <div className='flex items-center space-x-3 p-3 hover:bg-accent rounded-full transition-all duration-200 cursor-pointer group'>
           <Avatar className='w-10 h-10'>
             <AvatarFallback className='font-inter text-sm font-semibold'>NT</AvatarFallback>
