@@ -22,7 +22,7 @@ import Expando from './expando';
 import Flair from './flair';
 import CommentTools from './comment-tools';
 import Thumbnail from './thumbnail';
-import styles from './post.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 import _ from 'lodash';
 import useContentOptionsStore from '../../stores/use-content-options-store';
 import React from 'react';
@@ -44,23 +44,25 @@ const PostAuthor = ({ authorAddress, authorRole, cid, displayName, index, pinned
   const isAuthorOwner = authorRole === 'owner';
   const isAuthorAdmin = authorRole === 'admin';
   const isAuthorModerator = authorRole === 'moderator';
-  const moderatorClass = `${isAuthorOwner ? styles.owner : isAuthorAdmin ? styles.admin : isAuthorModerator ? styles.moderator : ''}`;
+  const moderatorClass = `${
+    isAuthorOwner ? 'text-green-500 font-bold' : isAuthorAdmin ? 'text-green-500 font-bold' : isAuthorModerator ? 'text-green-500 font-bold' : ''
+  }`;
   const authorRoleInitial = (isAuthorOwner && 'O') || (isAuthorAdmin && 'A') || (isAuthorModerator && 'M') || '';
 
   const shortDisplayName = displayName?.trim().length > 20 ? displayName?.trim().slice(0, 20).trim() + '...' : displayName?.trim();
 
   return (
     <>
-      <Link to={cid ? `/u/${authorAddress}/c/${cid}` : `/profile/${index}`} className={`${styles.author} ${pinned && moderatorClass}`}>
+      <Link to={cid ? `/u/${authorAddress}/c/${cid}` : `/profile/${index}`} className={`text-blue-600 hover:underline no-underline ${pinned && moderatorClass}`}>
         {displayName && (
           <>
             {' '}
-            <span className={`${styles.displayName} ${pinned && moderatorClass}`}>{shortDisplayName}</span>
+            <span className={`text-gray-900 dark:text-gray-100 ${pinned && moderatorClass}`}>{shortDisplayName}</span>
           </>
         )}{' '}
-        <span className={`${styles.authorAddressWrapper} ${pinned && moderatorClass}`}>
-          <span className={styles.authorAddressHidden}>u/{shortAddress || shortAuthorAddress}</span>
-          <span className={`${styles.authorAddressVisible} ${authorAddressChanged && styles.authorAddressChanged}`}>u/{shortAuthorAddress}</span>
+        <span className={`inline-block overflow-x-clip ${pinned && moderatorClass}`}>
+          <span className='invisible select-none'>u/{shortAddress || shortAuthorAddress}</span>
+          <span className={`float-left w-0 whitespace-nowrap ${authorAddressChanged && 'post-author-address-changed'}`}>u/{shortAuthorAddress}</span>
         </span>
       </Link>
       {/* TODO: implement comment.highlightRole once implemented in API */}
@@ -199,19 +201,21 @@ const Post = ({ index, post = {} }: PostProps) => {
   }
 
   return (
-    <div className={styles.content} key={index}>
-      <div className={isLastClicked ? styles.lastClicked : ''}>
-        <div className={`${styles.hiddenPost} ${blocked && !isInProfileHiddenView ? styles.visible : styles.hidden}`}>
-          <div className={styles.hiddenPostText}>{t('post_hidden').charAt(0).toUpperCase() + t('post_hidden').slice(1)}</div>
-          <div className={styles.undoHiddenPost} onClick={unblock}>
+    <div className='flex flex-col pb-2' key={index}>
+      <div className={isLastClicked ? 'border border-dashed border-gray-500' : ''}>
+        <div className={`overflow-hidden border border-dashed border-gray-300 p-3 ${blocked && !isInProfileHiddenView ? 'block' : 'hidden'}`}>
+          <div className='text-sm text-gray-700 dark:text-gray-300'>{t('post_hidden').charAt(0).toUpperCase() + t('post_hidden').slice(1)}</div>
+          <div className='inline-block text-gray-500 font-bold text-xs cursor-pointer' onClick={unblock}>
             {t('undo')}
           </div>
         </div>
-        <div className={`${styles.container} ${blocked && !isInProfileHiddenView ? styles.hidden : styles.visible}`}>
-          <div className={styles.row}>
-            {!isMobile && !isInProfileView && !isInAuthorView && !isInPostPageView && <div className={styles.rank}>{pinned ? undefined : rank}</div>}
-            <div className={styles.leftcol}>
-              <div className={styles.midcol}>
+        <div className={`${blocked && !isInProfileHiddenView ? 'hidden' : 'block'}`}>
+          <div className='flex items-start'>
+            {!isMobile && !isInProfileView && !isInAuthorView && !isInPostPageView && (
+              <div className='pr-1 pl-1 min-w-[2.2ex] mt-4 text-gray-400 font-arial text-base text-right'>{pinned ? undefined : rank}</div>
+            )}
+            <div className='flex-shrink-0'>
+              <div className='w-[37px] font-bold text-sm float-left pr-2 bg-transparent overflow-hidden'>
                 <div className='pl-[11px] pt-0.5'>
                   <div className={`w-[15px] h-[14px] block cursor-pointer ${upvoted ? 'arrow-up-voted' : 'arrow-up'}`} onClick={() => cid && upvote()} />
                 </div>
@@ -237,9 +241,9 @@ const Post = ({ index, post = {} }: PostProps) => {
                 />
               )}
             </div>
-            <div className={styles.entry}>
-              <div className={styles.topMatter}>
-                <p className={styles.title}>
+            <div className='flex-grow overflow-visible p-0 overflow-hidden'>
+              <div>
+                <p className='text-base font-normal'>
                   {isInPostPageView && link ? (
                     <a href={link} className={linkClass} target='_blank' rel='noopener noreferrer' onClick={handlePostClick}>
                       {displayedTitle}
@@ -255,7 +259,7 @@ const Post = ({ index, post = {} }: PostProps) => {
                       <Flair flair={flair} />
                     </>
                   )}{' '}
-                  <span className={styles.domain}>
+                  <span className='text-gray-500 text-xs whitespace-nowrap align-middle inline-block pb-0.5'>
                     (
                     {hostname ? (
                       <Link to={`/domain/${hostname}`}>{hostname.length > 25 ? hostname.slice(0, 25) + '...' : hostname}</Link>
@@ -276,9 +280,9 @@ const Post = ({ index, post = {} }: PostProps) => {
                       toggleExpanded={toggleExpanded}
                     />
                   )}
-                <div className={styles.tagline}>
+                <div className='text-xs'>
                   {t('submitted')} <span title={postDate}>{getFormattedTimeAgo(timestamp)}</span>{' '}
-                  {edit && isInPostPageView && <span className={styles.timeEdit}>{t('last_edited', { timestamp: getFormattedTimeAgo(edit.timestamp) })}</span>}{' '}
+                  {edit && isInPostPageView && <span className='lowercase italic'>{t('last_edited', { timestamp: getFormattedTimeAgo(edit.timestamp) })}</span>}{' '}
                   {t('post_by')}
                   <PostAuthor
                     authorAddress={author?.address}

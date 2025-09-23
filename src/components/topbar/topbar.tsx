@@ -10,7 +10,7 @@ import useTimeFilter, { setSessionTimeFilterPreference } from '../../hooks/use-t
 import { sortTypes } from '../../constants/sort-types';
 import { sortLabels } from '../../constants/sort-labels';
 import { handleNSFWSubscriptionPrompt } from '../../lib/utils/nsfw-subscription-utils';
-import styles from './topbar.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 
 const CommunitiesDropdown = () => {
   const { t } = useTranslation();
@@ -22,7 +22,7 @@ const CommunitiesDropdown = () => {
   const toggleSubsDropdown = () => setIsSubsDropdownOpen(!isSubsDropdownOpen);
   const subsDropdownRef = useRef<HTMLDivElement>(null);
   const subsdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const subsDropdownClass = isSubsDropdownOpen ? styles.visible : styles.hidden;
+  const subsDropdownClass = isSubsDropdownOpen ? 'block' : 'hidden';
 
   const handleClickOutside = (event: MouseEvent) => {
     if (subsDropdownRef.current && !subsDropdownRef.current.contains(event.target as Node)) {
@@ -37,15 +37,27 @@ const CommunitiesDropdown = () => {
   }, [isSubsDropdownOpen]);
 
   return (
-    <div className={`${styles.dropdown} ${styles.subsDropdown}`} ref={subsDropdownRef} onClick={toggleSubsDropdown}>
-      <span className={styles.selectedTitle}>{t('my_communities')}</span>
-      <div className={`${styles.dropChoices} ${styles.subsDropChoices} ${subsDropdownClass}`} ref={subsdropdownItemsRef}>
+    <div className='float-left inline relative pl-1 cursor-pointer' ref={subsDropdownRef} onClick={toggleSubsDropdown}>
+      <span className="bg-none bg-no-repeat bg-center bg-right inline-block align-bottom pr-5 pl-1 text-gray-700 dark:text-gray-300 font-normal -ml-1 cursor-pointer bg-[url('/assets/buttons/droparrowgray.gif')]">
+        {t('my_communities')}
+      </span>
+      <div
+        className={`absolute top-[18px] mt-0 left-0 border border-gray-300 bg-white dark:bg-gray-800 whitespace-nowrap leading-normal z-10 ml-1 ${subsDropdownClass}`}
+        ref={subsdropdownItemsRef}
+      >
         {reversedSubscriptions?.map((subscription: string, index: number) => (
-          <Link key={index} to={`/p/${subscription}`} className={styles.dropdownItem}>
+          <Link
+            key={index}
+            to={`/p/${subscription}`}
+            className='cursor-pointer py-0.5 px-1 block hover:bg-gray-100 dark:hover:bg-gray-700 no-underline text-gray-900 dark:text-gray-100'
+          >
             {Plebbit.getShortAddress(subscription)}
           </Link>
         ))}
-        <Link to='/communities/subscriber' className={`${styles.dropdownItem} ${styles.myCommunitiesItemButtonDotted}`}>
+        <Link
+          to='/communities/subscriber'
+          className='cursor-pointer py-0.5 px-1 block hover:bg-gray-100 dark:hover:bg-gray-700 no-underline text-gray-900 dark:text-gray-100 italic uppercase border-t border-dotted border-gray-600'
+        >
           {t('edit_subscriptions')}
         </Link>
       </div>
@@ -91,7 +103,7 @@ const TagFilterDropdown = () => {
   const toggleTagFilterDropdown = () => setIsTagFilterDropdownOpen(!isTagFilterDropdownOpen);
   const tagFilterDropdownRef = useRef<HTMLDivElement>(null);
   const tagFilterdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const tagFilterDropdownClass = isTagFilterDropdownOpen ? styles.visible : styles.hidden;
+  const tagFilterDropdownClass = isTagFilterDropdownOpen ? 'block' : 'hidden';
 
   const allHidden = hideAdultCommunities && hideGoreCommunities && hideAntiCommunities && hideVulgarCommunities;
 
@@ -143,20 +155,33 @@ const TagFilterDropdown = () => {
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={tagFilterDropdownRef} onClick={toggleTagFilterDropdown}>
-      <span className={styles.selectedTitle}>{t('tags')}</span>
-      <div className={`${styles.dropChoices} ${styles.filterDropChoices} ${tagFilterDropdownClass}`} ref={tagFilterdropdownItemsRef}>
-        <div className={styles.dropdownItem} onClick={handleToggleAll} style={{ cursor: 'pointer' }}>
-          <span className={styles.dropdownItemText}>{allHidden ? t('show_all_nsfw') : t('hide_all_nsfw')}</span>
+    <div className='float-left inline relative' ref={tagFilterDropdownRef} onClick={toggleTagFilterDropdown}>
+      <span className="bg-none bg-no-repeat bg-center bg-right inline-block align-bottom pr-5 pl-1 text-gray-700 dark:text-gray-300 font-normal -ml-1 cursor-pointer bg-[url('/assets/buttons/droparrowgray.gif')]">
+        {t('tags')}
+      </span>
+      <div
+        className={`absolute top-[18px] mt-0 left-0 border border-gray-300 bg-white dark:bg-gray-800 whitespace-nowrap leading-normal z-10 p-1 text-xs ${tagFilterDropdownClass}`}
+        ref={tagFilterdropdownItemsRef}
+      >
+        <div className='cursor-pointer py-0.5 px-1 block hover:bg-gray-100 dark:hover:bg-gray-700' onClick={handleToggleAll} style={{ cursor: 'pointer' }}>
+          <span>{allHidden ? t('show_all_nsfw') : t('hide_all_nsfw')}</span>
         </div>
         {tags.map((tag, index) => (
-          <div key={index} className={styles.dropdownItem} onClick={(e) => handleToggleTag(e, tag.setter, tag.isHidden, tag.name)} style={{ cursor: 'pointer' }}>
-            <span className={styles.dropdownItemText}>
+          <div
+            key={index}
+            className='cursor-pointer py-0.5 px-1 block hover:bg-gray-100 dark:hover:bg-gray-700'
+            onClick={(e) => handleToggleTag(e, tag.setter, tag.isHidden, tag.name)}
+            style={{ cursor: 'pointer' }}
+          >
+            <span>
               {tag.isHidden ? t('show') : t('hide')} <i>{tag.name}</i>
             </span>
           </div>
         ))}
-        <Link to='/settings/content-options' className={`${styles.dropdownItem} ${styles.myCommunitiesItemButtonDotted}`}>
+        <Link
+          to='/settings/content-options'
+          className='cursor-pointer py-0.5 px-1 block hover:bg-gray-100 dark:hover:bg-gray-700 no-underline text-gray-900 dark:text-gray-100 italic uppercase border-t border-dotted border-gray-600'
+        >
           {t('content_options')}
         </Link>
       </div>
@@ -183,7 +208,7 @@ const SortTypesDropdown = () => {
   const toggleSortsDropdown = () => setIsSortsDropdownOpen(!isSortsDropdownOpen);
   const sortsDropdownRef = useRef<HTMLDivElement>(null);
   const sortsdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const sortsDropdownClass = isSortsDropdownOpen ? styles.visible : styles.hidden;
+  const sortsDropdownClass = isSortsDropdownOpen ? 'block' : 'hidden';
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -199,16 +224,25 @@ const SortTypesDropdown = () => {
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={sortsDropdownRef} onClick={toggleSortsDropdown}>
-      <span className={styles.selectedTitle}>{t(getSelectedSortLabel())}</span>
-      <div className={`${styles.dropChoices} ${styles.sortsDropChoices} ${sortsDropdownClass}`} ref={sortsdropdownItemsRef}>
+    <div className='float-left inline relative' ref={sortsDropdownRef} onClick={toggleSortsDropdown}>
+      <span className="bg-none bg-no-repeat bg-center bg-right inline-block align-bottom pr-5 pl-1 text-gray-700 dark:text-gray-300 font-normal -ml-1 cursor-pointer bg-[url('/assets/buttons/droparrowgray.gif')]">
+        {t(getSelectedSortLabel())}
+      </span>
+      <div
+        className={`absolute top-[18px] mt-0 left-0 border border-gray-300 bg-white dark:bg-gray-800 whitespace-nowrap leading-normal z-10 ${sortsDropdownClass}`}
+        ref={sortsdropdownItemsRef}
+      >
         {sortTypes.map((sortType, index) => {
           let dropdownLink = isInSubplebbitView ? `/p/${params.subplebbitAddress}/${sortType}` : isinAllView ? `/p/all/${sortType}` : sortType;
           if (timeFilterName) {
             dropdownLink += `/${timeFilterName}`;
           }
           return (
-            <Link to={dropdownLink} key={index} className={styles.dropdownItem}>
+            <Link
+              to={dropdownLink}
+              key={index}
+              className='cursor-pointer py-0.5 px-1 block hover:bg-gray-100 dark:hover:bg-gray-700 no-underline text-gray-900 dark:text-gray-100'
+            >
               {t(sortLabels[index])}
             </Link>
           );
@@ -232,7 +266,7 @@ const TimeFilterDropdown = () => {
   const toggleTimeFilterDropdown = () => setIsTimeFilterDropdownOpen(!isTimeFilterDropdownOpen);
   const timeFilterDropdownRef = useRef<HTMLDivElement>(null);
   const timeFilterdropdownItemsRef = useRef<HTMLDivElement>(null);
-  const timeFilterDropdownClass = isTimeFilterDropdownOpen ? styles.visible : styles.hidden;
+  const timeFilterDropdownClass = isTimeFilterDropdownOpen ? 'block' : 'hidden';
 
   const selectedSortType = params.sortType || 'hot';
 
@@ -262,14 +296,19 @@ const TimeFilterDropdown = () => {
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={timeFilterDropdownRef} onClick={toggleTimeFilterDropdown}>
-      <span className={styles.selectedTitle}>{selectedTimeFilter}</span>
-      <div className={`${styles.dropChoices} ${styles.filterDropChoices} ${timeFilterDropdownClass}`} ref={timeFilterdropdownItemsRef}>
+    <div className='float-left inline relative' ref={timeFilterDropdownRef} onClick={toggleTimeFilterDropdown}>
+      <span className="bg-none bg-no-repeat bg-center bg-right inline-block align-bottom pr-5 pl-1 text-gray-700 dark:text-gray-300 font-normal -ml-1 cursor-pointer bg-[url('/assets/buttons/droparrowgray.gif')]">
+        {selectedTimeFilter}
+      </span>
+      <div
+        className={`absolute top-[18px] mt-0 left-0 border border-gray-300 bg-white dark:bg-gray-800 whitespace-nowrap leading-normal z-10 p-1 text-xs ${timeFilterDropdownClass}`}
+        ref={timeFilterdropdownItemsRef}
+      >
         {timeFilterNames.slice(0, -1).map((timeFilterName, index) => (
           <Link
             to={getTimeFilterLink(timeFilterName)}
             key={index}
-            className={styles.dropdownItem}
+            className='cursor-pointer py-0.5 px-1 block hover:bg-gray-100 dark:hover:bg-gray-700 no-underline text-gray-900 dark:text-gray-100'
             onClick={() => setSessionTimeFilterPreference(sessionKey, timeFilterName)}
           >
             {timeFilterNames[index]}
@@ -288,7 +327,7 @@ const TopBar = memo(() => {
   const isinAllView = isAllView(location.pathname);
   const isInHomeView = isHomeView(location.pathname);
   const isInModView = isModView(location.pathname);
-  const homeButtonClass = isInHomeView ? styles.selected : styles.choice;
+  const homeButtonClass = isInHomeView ? 'text-green-500 font-bold' : 'no-underline text-gray-700 dark:text-gray-300 hover:underline cursor-pointer';
 
   const { hideDefaultCommunities } = useContentOptionsStore();
   const subplebbitAddresses = useDefaultSubplebbitAddresses();
@@ -302,47 +341,60 @@ const TopBar = memo(() => {
   const filteredSubplebbitAddresses = useMemo(() => subplebbitAddresses?.filter((address) => !subscriptions?.includes(address)), [subplebbitAddresses, subscriptions]);
 
   return (
-    <div className={styles.headerArea}>
-      <div className={styles.widthClip}>
+    <div className='bg-gray-100 dark:bg-gray-800 whitespace-nowrap uppercase border-b border-gray-300 dark:border-gray-600 text-sm h-[18px] leading-[18px] text-gray-700 dark:text-gray-300'>
+      <div className='flex'>
         <CommunitiesDropdown />
         <TagFilterDropdown />
         <SortTypesDropdown />
         <TimeFilterDropdown />
-        <div className={styles.srList}>
-          <ul className={styles.srBar}>
+        <div className='overflow-hidden overflow-x-auto scrollbar-none'>
+          <ul className='list-none inline m-0 p-0 list-none inline-flex'>
             <li>
-              <Link to='/' className={`${styles.homeButton} ${homeButtonClass}`}>
+              <Link to='/' className={`ml-1 md:ml-2 ${homeButtonClass}`}>
                 {t('home')}
               </Link>
             </li>
             <li>
-              <span className={styles.separator}>-</span>
-              <Link to='/p/all' className={isinAllView ? styles.selected : styles.choice}>
+              <span className='text-gray-500 cursor-default mx-2'>-</span>
+              <Link
+                to='/p/all'
+                className={isinAllView ? 'text-green-500 font-bold hover:underline' : 'no-underline text-gray-700 dark:text-gray-300 hover:underline cursor-pointer'}
+              >
                 {t('all')}
               </Link>
             </li>
             {accountSubplebbitAddresses.length > 0 && (
               <li>
-                <span className={styles.separator}>-</span>
-                <Link to='/p/mod' className={isInModView ? styles.selected : styles.choice}>
+                <span className='text-gray-500 cursor-default mx-2'>-</span>
+                <Link
+                  to='/p/mod'
+                  className={isInModView ? 'text-green-500 font-bold hover:underline' : 'no-underline text-gray-700 dark:text-gray-300 hover:underline cursor-pointer'}
+                >
                   {t('mod')}
                 </Link>
               </li>
             )}
-            {subscriptions?.length > 0 && <span className={styles.separator}> | </span>}
+            {subscriptions?.length > 0 && <span className='text-gray-500 cursor-default mx-2'> | </span>}
             {reversedSubscriptions?.map((subscription: string, index: number) => {
               const shortAddress = Plebbit.getShortAddress(subscription);
               const displayAddress = shortAddress.includes('.eth') ? shortAddress.slice(0, -4) : shortAddress.includes('.sol') ? shortAddress.slice(0, -4) : shortAddress;
               return (
                 <li key={index}>
-                  {index !== 0 && <span className={styles.separator}>-</span>}
-                  <Link to={`/p/${subscription}`} className={params.subplebbitAddress === subscription ? styles.selected : styles.choice}>
+                  {index !== 0 && <span className='text-gray-500 cursor-default mx-2'>-</span>}
+                  <Link
+                    to={`/p/${subscription}`}
+                    className={
+                      params.subplebbitAddress === subscription
+                        ? 'text-green-500 font-bold hover:underline'
+                        : 'no-underline text-gray-700 dark:text-gray-300 hover:underline cursor-pointer'
+                    }
+                  >
                     {displayAddress}
                   </Link>
                 </li>
               );
             })}
-            {!hideDefaultCommunities && filteredSubplebbitAddresses?.length > 0 && <span className={styles.separator}> | </span>}
+            {!hideDefaultCommunities && filteredSubplebbitAddresses?.length > 0 && <span className='text-gray-500 cursor-default mx-2'> | </span>}
             {!hideDefaultCommunities &&
               filteredSubplebbitAddresses?.map((address, index) => {
                 const shortAddress = Plebbit.getShortAddress(address);
@@ -353,8 +405,15 @@ const TopBar = memo(() => {
                   : shortAddress;
                 return (
                   <li key={index}>
-                    {index !== 0 && <span className={styles.separator}>-</span>}
-                    <Link to={`/p/${address}`} className={params.subplebbitAddress === address ? styles.selected : styles.choice}>
+                    {index !== 0 && <span className='text-gray-500 cursor-default mx-2'>-</span>}
+                    <Link
+                      to={`/p/${address}`}
+                      className={
+                        params.subplebbitAddress === address
+                          ? 'text-green-500 font-bold hover:underline'
+                          : 'no-underline text-gray-700 dark:text-gray-300 hover:underline cursor-pointer'
+                      }
+                    >
                       {displayAddress}
                     </Link>
                   </li>
@@ -362,7 +421,7 @@ const TopBar = memo(() => {
               })}
           </ul>
         </div>
-        <Link to='/communities/vote' className={styles.editLink}>
+        <Link to='/communities/vote' className='text-gray-700 dark:text-gray-300 no-underline bg-gray-100 dark:bg-gray-800 px-2 py-0 font-bold ml-auto hover:underline'>
           {t('edit')} »
         </Link>
       </div>
