@@ -22,6 +22,7 @@ import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import ErrorDisplay from '../../components/error-display';
 import Markdown from '../../components/markdown';
 import Label from '../../components/post/label';
+import Sidebar from '../../components/sidebar';
 import SubscribeButton from '../../components/subscribe-button';
 import { nsfwTags } from '../../constants/nsfw-tags';
 import _ from 'lodash';
@@ -607,6 +608,9 @@ const Subplebbits = () => {
 
   return (
     <div className={styles.content}>
+      <div className={styles.sidebar}>
+        <Sidebar />
+      </div>
       {isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView || isInSubplebbitsView ? (
         <MyCommunitiesTabs />
       ) : (

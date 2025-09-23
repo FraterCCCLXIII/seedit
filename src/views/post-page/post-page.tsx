@@ -16,6 +16,7 @@ import Over18Warning from '../../components/over-18-warning';
 import PostComponent from '../../components/post';
 import Reply from '../../components/reply';
 import ReplyForm from '../../components/reply-form';
+import Sidebar from '../../components/sidebar';
 import styles from './post-page.module.css';
 import _ from 'lodash';
 
@@ -314,6 +315,9 @@ const PostPage = () => {
     <Over18Warning />
   ) : (
     <div className={styles.content}>
+      <div className={styles.sidebar}>
+        <Sidebar subplebbit={subplebbit} comment={post} settings={subplebbit?.settings} />
+      </div>
       {isInPendingPostView && params?.accountCommentIndex ? <Post post={pendingPost} /> : isInPostContextView ? <PostWithContext post={post} /> : <Post post={post} />}
       {shouldShowErrorToUser && (
         <div className={styles.error}>

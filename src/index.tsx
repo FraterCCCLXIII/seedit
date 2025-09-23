@@ -1,7 +1,7 @@
 import './polyfills.js';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './ModernApp';
+import App from './app';
 import { HashRouter as Router } from 'react-router-dom';
 import './lib/init-translations';
 import './index.css';

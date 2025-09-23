@@ -11,15 +11,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [
-          ['babel-plugin-react-compiler', { 
-            verbose: true 
-          }]
-        ]
-      }
-    }),
+    react(),
     // Only include React Scan in development mode - never in production builds
     (isDevelopment || (!isProduction && process.env.NODE_ENV !== 'production')) && reactScan({
       showToolbar: true,

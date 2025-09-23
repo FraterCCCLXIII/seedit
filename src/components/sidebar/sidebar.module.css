@@ -1,72 +1,13 @@
 .sidebar {
-  width: 275px;
-  height: 100vh;
-  background: #000000;
-  border-right: 1px solid #2f3336;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Logo */
-.logo {
-  padding: 16px 24px;
-  border-bottom: 1px solid #2f3336;
-}
-
-.logo h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0;
-}
-
-/* Navigation Styles */
-.navigation {
-  padding: 20px 0;
-  flex: 1;
-}
-
-.navItem {
-  display: flex !important;
-  align-items: center !important;
-  padding: 12px 24px !important;
-  margin: 4px 0 !important;
-  border-radius: 8px !important;
-  text-decoration: none !important;
-  color: #ffffff !important;
-  transition: background-color 0.2s ease !important;
-  font-weight: 500 !important;
-}
-
-.navItem:hover {
-  background-color: #16181c !important;
-  text-decoration: none !important;
-}
-
-.navItemActive {
-  background-color: #16181c !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-.navIcon {
-  font-size: 20px !important;
-  margin-right: 12px !important;
-  width: 24px !important;
-  text-align: center !important;
-}
-
-.navText {
-  font-size: 16px !important;
-  font-weight: inherit !important;
-}
-
-/* User Profile Section */
-.userProfile {
-  padding: 16px 24px;
-  border-top: 1px solid #2f3336;
-  margin-top: auto;
+  float: right;
+  width: 300px;
+  position: relative;
+  z-index: 5;
+  background-color: var(--background);
+  padding-left: 5px;
+  box-sizing: border-box;
+  padding-bottom: 50px;
+  margin-right: 5px;
 }
 
 .mobileSidebar {

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import { initializeNotificationSystem } from './lib/push';
 import useTheme from './hooks/use-theme';
 import { useAutoSubscribe } from './hooks/use-auto-subscribe';
@@ -20,9 +20,12 @@ import SubmitPage from './views/submit-page';
 import Subplebbit from './views/subplebbit';
 import SubplebbitSettings from './views/subplebbit-settings';
 import Subplebbits from './views/subplebbits';
+import AccountBar from './components/account-bar/';
 import ChallengeModal from './components/challenge-modal';
+import Header from './components/header';
 import NotificationHandler from './components/notification-handler';
-import ThreeColumnLayout from './components/layout/ThreeColumnLayout';
+import StickyHeader from './components/sticky-header';
+import TopBar from './components/topbar';
 import styles from './app.module.css';
 
 initializeNotificationSystem();
@@ -30,11 +33,28 @@ initializeNotificationSystem();
 const App = () => {
   useAutoSubscribe();
 
-  const threeColumnLayout = (
+  const globalLayout = (
     <>
       <ChallengeModal />
       <NotificationHandler />
-      <ThreeColumnLayout />
+      <Outlet />
+    </>
+  );
+
+  const pagesLayout = (
+    <>
+      <TopBar />
+      <AccountBar />
+      <Header />
+      <Outlet />
+    </>
+  );
+
+  const feedLayout = (
+    <>
+      <StickyHeader />
+      <Header />
+      <Outlet />
     </>
   );
 
@@ -65,69 +85,72 @@ const App = () => {
       </div>
 
       <Routes>
-        <Route element={threeColumnLayout}>
-          <Route path='/about' element={<AboutView />} />
-          <Route path='/submit' element={<SubmitPage />} />
+        <Route element={globalLayout}>
+          <Route element={pagesLayout}>
+            <Route path='/about' element={<AboutView />} />
+            <Route path='/submit' element={<SubmitPage />} />
 
-          <Route path='/p/:subplebbitAddress/c/:commentCid' element={<PostPage />} />
-          <Route path='/p/:subplebbitAddress/c/:commentCid/about' element={<AboutView />} />
+            <Route path='/p/:subplebbitAddress/c/:commentCid' element={<PostPage />} />
+            <Route path='/p/:subplebbitAddress/c/:commentCid/about' element={<AboutView />} />
 
-          <Route path='/p/:subplebbitAddress/submit' element={<SubmitPage />} />
-          <Route path='/p/:subplebbitAddress/about' element={<AboutView />} />
+            <Route path='/p/:subplebbitAddress/submit' element={<SubmitPage />} />
+            <Route path='/p/:subplebbitAddress/about' element={<AboutView />} />
 
-          <Route path='/settings' element={<Settings />} />
-          <Route path='/p/:subplebbitAddress/settings' element={<SubplebbitSettings />} />
-          <Route path='/p/:subplebbitAddress/settings/editor' element={<SubplebbitDataEditor />} />
-          <Route path='/settings/plebbit-options' element={<Settings />} />
-          <Route path='/settings/content-options' element={<Settings />} />
-          <Route path='/settings/account-data' element={<AccountDataEditor />} />
+            <Route path='/settings' element={<Settings />} />
+            <Route path='/p/:subplebbitAddress/settings' element={<SubplebbitSettings />} />
+            <Route path='/p/:subplebbitAddress/settings/editor' element={<SubplebbitDataEditor />} />
+            <Route path='/settings/plebbit-options' element={<Settings />} />
+            <Route path='/settings/content-options' element={<Settings />} />
+            <Route path='/settings/account-data' element={<AccountDataEditor />} />
 
-          <Route path='/profile/about' element={<AboutView />} />
+            <Route path='/profile/about' element={<AboutView />} />
 
-          <Route path='/u/:authorAddress/c/:commentCid/about' element={<AboutView />} />
+            <Route path='/u/:authorAddress/c/:commentCid/about' element={<AboutView />} />
 
-          <Route path='/inbox' element={<Inbox />} />
-          <Route path='/inbox/unread' element={<Inbox />} />
-          <Route path='/inbox/commentreplies' element={<Inbox />} />
-          <Route path='/inbox/postreplies' element={<Inbox />} />
+            <Route path='/inbox' element={<Inbox />} />
+            <Route path='/inbox/unread' element={<Inbox />} />
+            <Route path='/inbox/commentreplies' element={<Inbox />} />
+            <Route path='/inbox/postreplies' element={<Inbox />} />
 
-          <Route path='/communities' element={<Subplebbits />} />
-          <Route path='/communities/subscriber' element={<Subplebbits />} />
-          <Route path='/communities/moderator' element={<Subplebbits />} />
-          <Route path='/communities/admin' element={<Subplebbits />} />
-          <Route path='/communities/owner' element={<Subplebbits />} />
-          <Route path='/communities/vote' element={<Subplebbits />} />
-          <Route path='/communities/vote/passing' element={<Subplebbits />} />
-          <Route path='/communities/vote/rejecting' element={<Subplebbits />} />
-          <Route path='/communities/create' element={<SubplebbitSettings />} />
-
-          <Route path='/:sortType?/:timeFilterName?' element={<Home />} />
-
-          <Route path='/p/all/:sortType?/:timeFilterName?' element={<All />} />
-
-          <Route path='/p/mod/:sortType?/:timeFilterName?' element={<Mod />} />
-
-          <Route path='/p/:subplebbitAddress/:sortType?/:timeFilterName?' element={<Subplebbit />} />
-
-          <Route path='/domain/:domain/:sortType?/:timeFilterName?' element={<Domain />} />
-
-          <Route path='/profile/:accountCommentIndex' element={<PostPage />} />
-
-          <Route path='/profile' element={<Profile />}>
-            <Route index element={<Profile.Overview />} />
-            <Route path='upvoted' element={<Profile.VotedComments voteType={1} />} />
-            <Route path='downvoted' element={<Profile.VotedComments voteType={-1} />} />
-            <Route path='hidden' element={<Profile.HiddenComments />} />
-            <Route path='comments' element={<Profile.Comments />} />
-            <Route path='submitted' element={<Profile.Submitted />} />
+            <Route path='/communities' element={<Subplebbits />} />
+            <Route path='/communities/subscriber' element={<Subplebbits />} />
+            <Route path='/communities/moderator' element={<Subplebbits />} />
+            <Route path='/communities/admin' element={<Subplebbits />} />
+            <Route path='/communities/owner' element={<Subplebbits />} />
+            <Route path='/communities/vote' element={<Subplebbits />} />
+            <Route path='/communities/vote/passing' element={<Subplebbits />} />
+            <Route path='/communities/vote/rejecting' element={<Subplebbits />} />
+            <Route path='/communities/create' element={<SubplebbitSettings />} />
           </Route>
+          <Route element={feedLayout}>
+            <Route path='/:sortType?/:timeFilterName?' element={<Home />} />
 
-          <Route path='/u/:authorAddress/c/:commentCid?/:sortType?/:timeFilterName?' element={<Author />} />
-          <Route path='/u/:authorAddress/c/:commentCid?/comments/:sortType?/:timeFilterName?' element={<Author />} />
-          <Route path='/u/:authorAddress/c/:commentCid?/submitted/:sortType?/:timeFilterName?' element={<Author />} />
+            <Route path='/p/all/:sortType?/:timeFilterName?' element={<All />} />
 
-          <Route path='*' element={<NotFound />} />
-          <Route path='/not-found' element={<NotFound />} />
+            <Route path='/p/mod/:sortType?/:timeFilterName?' element={<Mod />} />
+
+            <Route path='/p/:subplebbitAddress/:sortType?/:timeFilterName?' element={<Subplebbit />} />
+
+            <Route path='/domain/:domain/:sortType?/:timeFilterName?' element={<Domain />} />
+
+            <Route path='/profile/:accountCommentIndex' element={<PostPage />} />
+
+            <Route path='/profile' element={<Profile />}>
+              <Route index element={<Profile.Overview />} />
+              <Route path='upvoted' element={<Profile.VotedComments voteType={1} />} />
+              <Route path='downvoted' element={<Profile.VotedComments voteType={-1} />} />
+              <Route path='hidden' element={<Profile.HiddenComments />} />
+              <Route path='comments' element={<Profile.Comments />} />
+              <Route path='submitted' element={<Profile.Submitted />} />
+            </Route>
+
+            <Route path='/u/:authorAddress/c/:commentCid?/:sortType?/:timeFilterName?' element={<Author />} />
+            <Route path='/u/:authorAddress/c/:commentCid?/comments/:sortType?/:timeFilterName?' element={<Author />} />
+            <Route path='/u/:authorAddress/c/:commentCid?/submitted/:sortType?/:timeFilterName?' element={<Author />} />
+
+            <Route path='*' element={<NotFound />} />
+            <Route path='/not-found' element={<NotFound />} />
+          </Route>
         </Route>
       </Routes>
     </div>

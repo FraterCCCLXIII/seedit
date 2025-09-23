@@ -17,6 +17,7 @@ import ErrorDisplay from '../../components/error-display';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Over18Warning from '../../components/over-18-warning';
 import Post from '../../components/post';
+import Sidebar from '../../components/sidebar';
 import { sortTypes } from '../../constants/sort-types';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
@@ -381,6 +382,9 @@ const Subplebbit = () => {
     <Over18Warning />
   ) : (
     <div className={styles.content}>
+      <div className={styles.sidebar}>
+        <Sidebar subplebbit={subplebbit} isSubCreatedButNotYetPublished={started && isSubCreatedButNotYetPublished} settings={settings} reset={reset} />
+      </div>
       {shouldShowErrorToUser && (
         <div className={styles.error}>
           <ErrorDisplay error={error} />
