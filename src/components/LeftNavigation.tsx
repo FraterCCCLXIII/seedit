@@ -32,6 +32,75 @@ function LeftNavigation() {
         <Separator className='my-4' />
 
         <Button className='w-full bg-primary text-primary-foreground hover:bg-primary/90'>✏️ Post</Button>
+
+        <Separator className='my-4' />
+
+        {/* Communities Section */}
+        <div className='space-y-2'>
+          <h3 className='text-sm font-semibold text-muted-foreground px-2'>My Communities</h3>
+          <div className='max-h-64 overflow-y-auto space-y-1'>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              fatpeoplehate.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              business-and-finance.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              politically-incorrect.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              weaponized-autism.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              vote.plebbit.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              videos-livestreams-podcasts.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              technopleb.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              redditdeath.sol
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              reddit-screenshots.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              plebwhales.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              plebtoken.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              plebpiracy.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              plebmusic.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              pleblore.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              plebbitai.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              movies-tv-anime.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              health-nutrition-science.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              censorship-watch.eth
+            </Button>
+            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+              blog.plebbit.eth
+            </Button>
+          </div>
+          <Button variant='outline' className='w-full text-xs h-8 mt-2'>
+            Edit Subscriptions
+          </Button>
+        </div>
       </nav>
 
       {/* User Profile Section */}
