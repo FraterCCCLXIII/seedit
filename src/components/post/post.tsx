@@ -173,7 +173,13 @@ const Post = ({ index, post = {} }: PostProps) => {
 
   const hasThumbnail = getHasThumbnail(commentMediaInfo, link);
   const hostname = getHostname(link);
-  const linkClass = `${isInPostPageView ? (link ? styles.externalLink : styles.internalLink) : styles.link} ${pinned ? styles.pinnedLink : ''}`;
+  const linkClass = `${
+    isInPostPageView
+      ? link
+        ? 'text-blue-600 dark:text-blue-400 no-underline visited:text-purple-600 dark:visited:text-purple-400'
+        : 'text-blue-600 dark:text-blue-400 no-underline visited:text-blue-600 dark:visited:text-blue-400'
+      : 'text-blue-600 dark:text-blue-400 no-underline visited:text-purple-600 dark:visited:text-purple-400'
+  } ${pinned ? 'text-green-500 font-bold' : ''}`;
 
   const { blocked, unblock } = useBlock({ cid });
 
@@ -298,11 +304,15 @@ const Post = ({ index, post = {} }: PostProps) => {
                   {!isInSubplebbitView && (
                     <>
                        {t('post_to')}
-                      <span className={styles.subscribeHoverGroup}>
+                      <span className='px-1 whitespace-nowrap'>
                         {isInAllView && (!subscribed || (subscribed && hasClickedSubscribe)) && (
-                          <span className={styles.subscribeButtonWrapper}>
+                          <span className='pr-3.5'>
                             <button
-                              className={`${styles.subscribeButton} ${subscribed ? styles.buttonSubscribed : styles.buttonSubscribe}`}
+                              className={`absolute border-none bg-none bg-no-repeat h-3 w-3 bg-[length:12px] cursor-pointer ${
+                                subscribed
+                                  ? 'bg-[url("/assets/buttons/all_feed_subscribed.png")]'
+                                  : 'bg-[url("/assets/buttons/all_feed_subscribe.png")] hover:bg-[url("/assets/buttons/all_feed_subscribe_hover.png")]'
+                              }`}
                               onClick={() => {
                                 subscribe();
                                 setHasClickedSubscribe(true);
@@ -310,13 +320,16 @@ const Post = ({ index, post = {} }: PostProps) => {
                             />
                           </span>
                         )}
-                        <Link className={`${styles.subplebbit} ${subscribed && hasClickedSubscribe ? styles.greenSubplebbitAddress : ''}`} to={`/p/${subplebbitAddress}`}>
+                        <Link
+                          className={`text-gray-600 dark:text-gray-400 hover:underline ${subscribed && hasClickedSubscribe ? 'text-green-400' : ''}`}
+                          to={`/p/${subplebbitAddress}`}
+                        >
                           p/{subplebbit?.shortAddress || (subplebbitAddress && Plebbit.getShortAddress(subplebbitAddress))}
                         </Link>
                       </span>
                     </>
                   )}
-                  {pinned && <span className={styles.announcement}> - {t('announcement')}</span>}
+                  {pinned && <span className='text-green-500'> - {t('announcement')}</span>}
                 </div>
                 <CommentTools
                   author={author}
