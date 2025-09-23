@@ -87,41 +87,31 @@ body {
   color: white !important;
 }
 
-/* Style specific Seedit buttons to use default shadcn/ui styling */
+/* Style specific Seedit buttons to be pure white and remove all patterns */
 .dark ._largeButton_121oq_104 {
-  background-color: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  border: 1px solid hsl(var(--border)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
-  padding: 0.5rem 1rem !important;
-  font-size: 0.875rem !important;
-  font-weight: 500 !important;
-  line-height: 1.25rem !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  background: white !important;
+  background-image: none !important;
+  color: black !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
   box-shadow: none !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.5rem !important;
-  white-space: nowrap !important;
-  cursor: pointer !important;
-  user-select: none !important;
+  text-shadow: none !important;
+  position: relative !important;
 }
 
 .dark ._largeButton_121oq_104:hover {
-  background-color: hsl(var(--primary) / 0.9) !important;
-  transform: none !important;
-  box-shadow: none !important;
+  background: #f9fafb !important;
+  background-image: none !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
-.dark ._largeButton_121oq_104:focus-visible {
-  outline: 2px solid hsl(var(--ring)) !important;
-  outline-offset: 2px !important;
-}
-
-.dark ._largeButton_121oq_104:disabled {
-  pointer-events: none !important;
-  opacity: 0.5 !important;
+.dark ._largeButton_121oq_104:before,
+.dark ._largeButton_121oq_104:after {
+  display: none !important;
 }
 
 /* Remove the nub graphics from buttons */
@@ -142,19 +132,28 @@ body {
   display: none !important;
 }
 
-/* Style the button container for better spacing */
-.dark div[style*="transform: translateY(0px)"] {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.75rem !important;
-  margin-top: 0 !important;
-  transform: none !important;
+/* Additional overrides to remove any remaining patterns or gradients */
+.dark ._largeButton_121oq_104 * {
+  background: transparent !important;
+  background-image: none !important;
 }
 
-/* Ensure buttons are properly sized */
 .dark ._largeButton_121oq_104 {
-  width: 100% !important;
-  min-height: 2.5rem !important;
+  background: white !important;
+  background-image: none !important;
+  background-color: white !important;
+  background-size: auto !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-attachment: scroll !important;
+  background-clip: border-box !important;
+  background-origin: padding-box !important;
+}
+
+/* Remove any CSS patterns that might be applied */
+.dark ._largeButton_121oq_104[style*="background"] {
+  background: white !important;
+  background-image: none !important;
 }
 
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td, iframe {
