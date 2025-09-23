@@ -1,4 +1,4 @@
-import styles from './flair.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 
 interface FlairProps {
   flair: {
@@ -22,8 +22,11 @@ const Flair = ({ flair }: FlairProps) => {
   };
 
   return (
-    <span className={styles.wrapper}>
-      <span className={styles.flair} style={flairStyle}>
+    <span className='px-1'>
+      <span
+        className='text-xs font-medium leading-4 rounded-sm inline-block h-4 overflow-hidden px-1 text-ellipsis align-middle whitespace-nowrap max-w-none'
+        style={flairStyle}
+      >
         {flair.text}
       </span>
     </span>

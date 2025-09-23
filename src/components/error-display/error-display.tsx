@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { copyToClipboard } from '../../lib/utils/clipboard-utils';
-import styles from './error-display.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 
 const ErrorDisplay = ({ error }: { error: any }) => {
   const { t } = useTranslation();
@@ -29,27 +29,26 @@ const ErrorDisplay = ({ error }: { error: any }) => {
   };
 
   let currentDisplayMessage = '';
-  const classNames = [styles.errorMessage];
+  let classNames = 'text-red-500';
   let isClickable = false;
 
   if (feedbackMessageKey === 'copied') {
     currentDisplayMessage = t('fullErrorCopiedToClipboard', 'full error copied to the clipboard');
-    classNames.pop();
-    classNames.push(styles.feedbackSuccessMessage);
+    classNames = 'text-gray-500';
   } else if (feedbackMessageKey === 'failed') {
     currentDisplayMessage = t('copyFailed', 'copy failed');
   } else if (originalDisplayMessage) {
     currentDisplayMessage = originalDisplayMessage;
     isClickable = true;
-    classNames.push(styles.clickableErrorMessage);
+    classNames = 'text-red-500 cursor-pointer';
   }
 
   return (
     (error?.message || error?.stack || error?.details || error) && (
-      <div className={styles.error}>
+      <div>
         {currentDisplayMessage && (
           <span
-            className={classNames.join(' ')}
+            className={classNames}
             onClick={isClickable ? handleMessageClick : undefined}
             title={isClickable ? t('clickToCopyFullError', 'Click to copy full error') : undefined}
           >
