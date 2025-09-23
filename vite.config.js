@@ -164,13 +164,19 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000,
-    open: true,
+    port: 12000,
+    host: '0.0.0.0',
+    open: false,
+    allowedHosts: ['work-1-mkfhdkwausjejkhz.prod-runtime.all-hands.dev', 'work-2-mkfhdkwausjejkhz.prod-runtime.all-hands.dev'],
     watch: {
       usePolling: true,
     },
     hmr: {
       overlay: false
+    },
+    cors: true,
+    headers: {
+      'X-Frame-Options': 'ALLOWALL'
     }
   },
   build: {

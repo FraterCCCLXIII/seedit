@@ -1,4 +1,3 @@
-import styles from './expand-button.module.css';
 import { CommentMediaInfo } from '../../../lib/utils/media-utils';
 
 interface ExpandButtonProps {
@@ -11,22 +10,22 @@ interface ExpandButtonProps {
 }
 
 const ExpandButton = ({ commentMediaInfo, content, expanded, hasThumbnail, link, toggleExpanded }: ExpandButtonProps) => {
-  let initialButtonType = hasThumbnail || commentMediaInfo?.type === 'audio' || commentMediaInfo?.type === 'iframe' ? 'playButton' : 'textButton';
+  let initialButtonType = hasThumbnail || commentMediaInfo?.type === 'audio' || commentMediaInfo?.type === 'iframe' ? 'expand-play-button' : 'expand-text-button';
 
   if (commentMediaInfo?.type === 'webpage' && content && content.trim().length > 0) {
-    initialButtonType = 'textButton';
+    initialButtonType = 'expand-text-button';
   }
 
   if (commentMediaInfo?.type === 'pdf') {
-    initialButtonType = 'playButton';
+    initialButtonType = 'expand-play-button';
   }
 
-  const buttonType = expanded ? 'closeButton' : initialButtonType;
+  const buttonType = expanded ? 'expand-close-button' : initialButtonType;
 
   return (
     ((content && !link) || link) && (
-      <div className={styles.buttonWrapper} onClick={toggleExpanded}>
-        <div className={`${styles.buttonCommon} ${styles[buttonType]}`}></div>
+      <div className='py-0.5 pr-1.5 pl-0 float-left cursor-pointer' onClick={toggleExpanded}>
+        <div className={`bg-cover h-[23px] w-[23px] block ${buttonType}`}></div>
       </div>
     )
   );

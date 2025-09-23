@@ -1,5 +1,3 @@
-import styles from './loading-ellipsis.module.css';
-
 interface LoadingEllipsisProps {
   string: string;
 }
@@ -13,9 +11,9 @@ const LoadingEllipsis = ({ string }: LoadingEllipsisProps) => {
     <span>
       {restOfString}
       {restOfString && ' '}
-      <span className={styles.nowrap}>
+      <span className='whitespace-nowrap'>
         {lastWord}
-        <span className={styles.ellipsis} />
+        <span className='inline-block w-[4ch] animate-ellipsis' />
       </span>
     </span>
   );

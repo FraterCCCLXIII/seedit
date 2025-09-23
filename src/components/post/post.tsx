@@ -212,12 +212,12 @@ const Post = ({ index, post = {} }: PostProps) => {
             {!isMobile && !isInProfileView && !isInAuthorView && !isInPostPageView && <div className={styles.rank}>{pinned ? undefined : rank}</div>}
             <div className={styles.leftcol}>
               <div className={styles.midcol}>
-                <div className={styles.arrowWrapper}>
-                  <div className={`${styles.arrowCommon} ${upvoted ? styles.upvoted : styles.arrowUp}`} onClick={() => cid && upvote()} />
+                <div className='pl-[11px] pt-0.5'>
+                  <div className={`w-[15px] h-[14px] block cursor-pointer ${upvoted ? 'arrow-up-voted' : 'arrow-up'}`} onClick={() => cid && upvote()} />
                 </div>
-                <div className={styles.score}>{formatScore(postScore)}</div>
-                <div className={styles.arrowWrapper}>
-                  <div className={`${styles.arrowCommon} ${downvoted ? styles.downvoted : styles.arrowDown}`} onClick={() => cid && downvote()} />
+                <div className='text-center text-muted-foreground'>{formatScore(postScore)}</div>
+                <div className='pl-[11px] pt-0.5'>
+                  <div className={`w-[15px] h-[14px] block cursor-pointer ${downvoted ? 'arrow-down-voted' : 'arrow-down'}`} onClick={() => cid && downvote()} />
                 </div>
               </div>
               {thumbnailDisplayOption === 'show' && (

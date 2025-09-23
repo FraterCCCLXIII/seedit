@@ -135,6 +135,13 @@ a:hover {
 input, textarea, select {
   font-size: 1rem;
   line-height: 1.5;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+select, button, input, textarea {
+  opacity: 0.8;
 }
 
 /* Improved spacing for common elements */
@@ -148,6 +155,77 @@ input, textarea, select {
 
 .space-y-8 > * + * {
   margin-top: 2rem;
+}
+
+/* Loading ellipsis animation */
+@keyframes ellipsis {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+  100% { content: ""; }
+}
+
+.animate-ellipsis::after {
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis 1500ms steps(4, end) infinite;
+  content: "";
+}
+
+/* Vote arrow styles */
+.arrow-up {
+  background-image: url("/assets/buttons/arrow-up.png");
+}
+
+.arrow-up-voted {
+  background-image: url("/assets/buttons/arrow-upvoted.png") !important;
+}
+
+.arrow-down {
+  background-image: url("/assets/buttons/arrow-down.png");
+}
+
+.arrow-down-voted {
+  background-image: url("/assets/buttons/arrow-downvoted.png") !important;
+}
+
+/* Expand button styles */
+.expand-text-button {
+  background-image: url("/assets/buttons/text-button.png");
+}
+
+.expand-text-button:hover {
+  background-image: url("/assets/buttons/text-button-hover.png");
+}
+
+.expand-play-button {
+  background-image: url("/assets/buttons/play-button.png");
+}
+
+.expand-play-button:hover {
+  background-image: url("/assets/buttons/play-button-hover.png");
+}
+
+.expand-close-button {
+  background-image: url("/assets/buttons/close-button.png");
+}
+
+.expand-close-button:hover {
+  background-image: url("/assets/buttons/close-button-hover.png");
+}
+
+/* Dark theme expand button styles */
+.dark .expand-text-button {
+  background-image: url("/assets/buttons/text-button-dark.png");
+}
+
+.dark .expand-play-button {
+  background-image: url("/assets/buttons/play-button-dark.png");
+}
+
+.dark .expand-close-button {
+  background-image: url("/assets/buttons/close-button-dark.png");
 }
 
 /* Three-column layout styles */
