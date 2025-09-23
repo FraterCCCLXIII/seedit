@@ -54,15 +54,21 @@ const App = () => {
   );
 
   const feedLayout = (
-    <>
-      <LeftNavigation />
-      <MiddleColumn>
-        <StickyHeader />
-        <Header />
-        <Outlet />
-      </MiddleColumn>
-      <RightColumn>{/* Right sidebar content will be rendered here by individual components */}</RightColumn>
-    </>
+    <div className='min-h-screen grid grid-cols-12'>
+      <div className='col-span-3'>
+        <LeftNavigation />
+      </div>
+      <div className='col-span-6'>
+        <MiddleColumn>
+          <StickyHeader />
+          <Header />
+          <Outlet />
+        </MiddleColumn>
+      </div>
+      <div className='col-span-3'>
+        <RightColumn>{/* Right sidebar content will be rendered here by individual components */}</RightColumn>
+      </div>
+    </div>
   );
 
   // add theme className to body so it can set the correct body background in index.css

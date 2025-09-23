@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 
 function LeftNavigation() {
   return (
-    <div className='fixed left-0 top-0 h-screen w-64 max-w-64 bg-background border-r border-border z-50 flex flex-col overflow-y-auto'>
+    <div className='sticky top-0 h-screen bg-background border-r border-border flex flex-col overflow-y-auto'>
       {/* Logo Section */}
       <div className='p-6 border-b border-border'>
         <div className='flex items-center space-x-3'>
