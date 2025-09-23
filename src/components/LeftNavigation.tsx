@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 
-export function LeftNavigation() {
+function LeftNavigation() {
   return (
     <div className='fixed left-0 top-0 h-screen w-64 bg-background border-r border-border z-50 flex flex-col'>
       {/* Logo Section */}
@@ -50,3 +50,5 @@ export function LeftNavigation() {
     </div>
   );
 }
+
+export default LeftNavigation;
