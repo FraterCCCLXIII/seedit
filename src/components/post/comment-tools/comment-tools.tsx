@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Author, useAccount, useComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
-import styles from './comment-tools.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 import EditMenu from './edit-menu';
 import HideMenu from './hide-menu';
 import Label from '../label';
@@ -49,7 +49,7 @@ const ModOrReportButton = ({ cid, isAuthor, isAccountMod, isCommentAuthorMod }: 
     <ModMenu cid={cid} isCommentAuthorMod={isCommentAuthorMod} />
   ) : (
     !isAuthor && (
-      <li className={`${styles.button} ${styles.reportButton}`}>
+      <li className='text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer hidden sm:block'>
         <span>{t('report')}</span>
       </li>
     )
@@ -77,7 +77,12 @@ const ShareButton = ({ cid, subplebbitAddress }: { cid: string; subplebbitAddres
   };
 
   return (
-    <li className={`${!hasCopied ? styles.button : styles.text}`} onClick={() => cid && handleCopy()}>
+    <li
+      className={`${
+        !hasCopied ? 'text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer' : '!cursor-default !text-gray-800 dark:!text-gray-200 !no-underline'
+      }`}
+      onClick={() => cid && handleCopy()}
+    >
       {hasCopied ? t('link_copied') : t('share')}
     </li>
   );
@@ -121,17 +126,17 @@ const PostTools = ({
 
   return (
     <>
-      <li className={`${styles.button} ${!hasLabel ? styles.firstButton : ''}`}>{commentCountButton}</li>
+      <li className={`text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer ${!hasLabel ? '!pl-0' : ''}`}>{commentCountButton}</li>
       <ShareButton cid={cid} subplebbitAddress={subplebbitAddress} />
       {/* TODO: Implement save functionality
-        <li className={styles.button}>
+        <li className="text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer">
           <span>{t('save')}</span>
         </li> 
       */}
       {isAuthor && <EditMenu commentCid={cid} showCommentEditForm={showCommentEditForm} />}
       <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} subplebbitAddress={subplebbitAddress} />
       {/* TODO: Implement crosspost functionality
-        <li className={`${styles.button} ${styles.crosspostButton}`}>
+        <li className="text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer hidden sm:block">
           <span>{t('crosspost')}</span>
         </li> 
       */}
@@ -165,16 +170,16 @@ const ReplyTools = ({
 
   return (
     <>
-      <li className={`${styles.button} ${!hasLabel ? styles.firstButton : ''}`}>{permalink}</li>
+      <li className={`text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer ${!hasLabel ? '!pl-0' : ''}`}>{permalink}</li>
       <ShareButton cid={cid} subplebbitAddress={subplebbitAddress} />
       {/* TODO: Implement save functionality
-        <li className={styles.button}>
+        <li className="text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer">
           <span>{t('save')}</span>
         </li> 
       */}
       {isAuthor && <EditMenu commentCid={cid} showCommentEditForm={showCommentEditForm} />}
       <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} subplebbitAddress={subplebbitAddress} />
-      <li className={!cid ? styles.hideReply : styles.button}>
+      <li className={!cid ? '!hidden' : 'text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer'}>
         <span onClick={() => cid && showReplyForm?.()}>{t('reply_reply')}</span>
       </li>
       <ModOrReportButton cid={cid} isAuthor={isAuthor} isAccountMod={isAccountMod} isCommentAuthorMod={isCommentAuthorMod} />
@@ -227,17 +232,17 @@ const SingleReplyTools = ({
 
   return (
     <>
-      <li className={`${styles.button} ${!hasLabel ? styles.firstButton : ''}`}>{permalinkButton}</li>
+      <li className={`text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer ${!hasLabel ? '!pl-0' : ''}`}>{permalinkButton}</li>
       {/* TODO: Implement save functionality
-        <li className={styles.button}>
+        <li className="text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer">
           <span>{t('save')}</span>
         </li> 
       */}
       {isAuthor && <EditMenu commentCid={cid} showCommentEditForm={showCommentEditForm} />}
-      <li className={styles.button}>{contextButton}</li>
-      <li className={styles.button}>{fullCommentsButton}</li>
+      <li className='text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer'>{contextButton}</li>
+      <li className='text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer'>{fullCommentsButton}</li>
       <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} subplebbitAddress={subplebbitAddress} />
-      <li className={!cid ? styles.hideReply : styles.button}>
+      <li className={!cid ? '!hidden' : 'text-gray-600 dark:text-gray-400 font-bold no-underline px-1 cursor-pointer'}>
         <span onClick={() => cid && showReplyForm?.()}>{t('reply_reply')}</span>
       </li>
       <ModOrReportButton cid={cid} isAuthor={isAuthor} isAccountMod={isAccountMod} isCommentAuthorMod={isCommentAuthorMod} />
@@ -305,7 +310,11 @@ const CommentTools = ({
 
   return (
     (!(deleted || removed) || (!deleted && isAccountMod)) && (
-      <ul className={`${styles.buttons} ${isReply && !isInInboxView ? styles.buttonsReply : ''} ${hasLabel ? styles.buttonsLabel : ''}`}>
+      <ul
+        className={`list-none py-0.5 px-0 block ${isReply && !isInInboxView ? 'ml-7' : ''} ${
+          hasLabel ? 'pt-1.5' : ''
+        } [&_li]:inline-block [&_li]:border-none [&_li]:pr-1 [&_li]:leading-6 [&_li]:whitespace-nowrap [&_li_a]:text-gray-600 dark:[&_li_a]:text-gray-400 [&_li_a]:font-bold [&_li_a]:no-underline [&_li_a]:px-0.5 [&_li:hover]:underline [&_li_span]:cursor-pointer`}
+      >
         {isReply ? (
           isSingleReply ? (
             <SingleReplyTools
