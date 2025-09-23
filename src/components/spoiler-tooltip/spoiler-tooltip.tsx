@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react';
 import { useFloating, autoUpdate, offset, shift, useHover, useFocus, useDismiss, useRole, useInteractions, FloatingPortal } from '@floating-ui/react';
-import styles from './spoiler-tooltip.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 
 interface SpoilerTooltipProps {
   content: string;
@@ -34,7 +34,12 @@ const SpoilerTooltip = ({ content, children, showTooltip = true }: SpoilerToolti
       {showTooltip && (
         <FloatingPortal>
           {isOpen && (
-            <div className={styles.tooltip} ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+            <div
+              className="absolute bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-400 dark:border-gray-600 shadow-lg rounded text-xs leading-4 pointer-events-none py-1 px-1.5 z-[100000] font-verdana before:absolute before:content-[''] before:block before:left-0 before:h-0 before:ml-2 before:border-[9px] before:border-transparent before:border-t-gray-400 dark:before:border-t-gray-600 before:-bottom-[19px] after:absolute after:content-[''] after:block after:left-0 after:ml-2 after:-bottom-[18px] after:border-[9px] after:border-transparent after:border-t-white dark:after:border-t-gray-900"
+              ref={refs.setFloating}
+              style={floatingStyles}
+              {...getFloatingProps()}
+            >
               {content}
             </div>
           )}
