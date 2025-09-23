@@ -30,14 +30,14 @@ import SearchBar from '../search-bar';
 import SubscribeButton from '../subscribe-button';
 import { Version } from '../version';
 
-import styles from './sidebar.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 const RulesList = ({ rules }: { rules: string[] }) => {
   const { t } = useTranslation();
   const markdownRules = rules.map((rule, index) => `${index + 1}. ${rule}`).join('\n');
 
   return (
-    <div className={styles.rules}>
-      <div className={styles.rulesTitle}>
+    <div className='pb-1.5 pt-2 text-gray-700 dark:text-gray-300 leading-4 break-words'>
+      <div className='mb-1.5 capitalize'>
         <strong>{t('rules')}</strong>
       </div>
       <Markdown content={markdownRules} />
@@ -50,16 +50,20 @@ const ModeratorsList = ({ roles }: { roles: Record<string, Role> }) => {
   const rolesList = roles ? Object.entries(roles).map(([address, { role }]) => ({ address, role })) : [];
 
   return (
-    <div className={styles.list}>
-      <div className={styles.listTitle}>{t('moderators')}</div>
-      <ul className={`${styles.listContent} ${styles.modsList}`}>
+    <div className='mb-3 -mr-1.5'>
+      <div className='inline uppercase m-0 text-gray-500 text-xs font-normal'>{t('moderators')}</div>
+      <ul className='m-0 p-1.5 border border-gray-300 dark:border-gray-600 list-none'>
         {rolesList.map(({ address }, index) => (
-          <li key={index} onClick={() => window.alert('Direct profile links are not supported yet.')}>
+          <li
+            key={index}
+            className='text-xs list-none no-underline text-gray-800 dark:text-gray-200 cursor-pointer'
+            onClick={() => window.alert('Direct profile links are not supported yet.')}
+          >
             u/{Plebbit.getShortAddress(address)}
           </li>
         ))}
         {/* TODO: https://github.com/plebbit/seedit/issues/274
-         <li className={styles.listMore}>{t('about_moderation')} »</li> */}
+         <li className="text-gray-500 text-right text-xs cursor-pointer">{t('about_moderation')} »</li> */}
       </ul>
     </div>
   );
@@ -75,17 +79,23 @@ const PostInfo = ({ comment }: { comment: Comment | undefined }) => {
   const postDate = getFormattedDate(timestamp, language);
 
   return (
-    <div className={styles.postInfo}>
-      <div className={styles.postDate}>
+    <div className='p-1.5 border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 font-arial text-lg rounded text-gray-700 dark:text-gray-300 mb-3 -mr-1.5'>
+      <div>
         <span>{t('post_submitted_on', { postDate: postDate })}</span>
       </div>
-      <div className={styles.postScore}>
-        <span className={styles.postScoreNumber}>{postScore === '•' ? '0' : postScore}</span>{' '}
-        <span className={styles.postScoreWord}>{postScore === 1 ? t('point') : t('points')}</span>{' '}
+      <div>
+        <span className='text-2xl font-bold'>{postScore === '•' ? '0' : postScore}</span>{' '}
+        <span className='text-base font-bold'>{postScore === 1 ? t('point') : t('points')}</span>{' '}
         {`(${postScore === '?' ? '?' : `${upvotePercentage}`}% ${t('upvoted')})`}
       </div>
-      <div className={styles.shareLink}>
-        {t('share_link')}: <input type='text' value={`https://pleb.bz/p/${subplebbitAddress}/c/${cid}`} readOnly={true} />
+      <div className='text-xs mt-1'>
+        {t('share_link')}:{' '}
+        <input
+          className='border border-gray-300 dark:border-gray-600 font-mono text-xs p-1 w-44 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300'
+          type='text'
+          value={`https://pleb.bz/p/${subplebbitAddress}/c/${cid}`}
+          readOnly={true}
+        />
       </div>
     </div>
   );
@@ -98,11 +108,14 @@ const ModerationTools = ({ address }: { address?: string }) => {
   const isInSubplebbitSettingsView = isSubplebbitSettingsView(location.pathname, params);
 
   return (
-    <div className={styles.list}>
-      <div className={styles.listTitle}>{t('moderation_tools')}</div>
-      <ul className={`${styles.listContent} ${styles.modsList}`}>
-        <li className={`${styles.moderationTool} ${isInSubplebbitSettingsView ? styles.selectedTool : ''}`}>
-          <Link className={styles.communitySettingsTool} to={`/p/${address}/settings`}>
+    <div className='mb-3 -mr-1.5'>
+      <div className='inline uppercase m-0 text-gray-500 text-xs font-normal'>{t('moderation_tools')}</div>
+      <ul className='m-0 p-1.5 border border-gray-300 dark:border-gray-600 list-none'>
+        <li className={`my-1.5 lowercase ${isInSubplebbitSettingsView ? 'font-bold' : ''}`}>
+          <Link
+            className="no-underline text-gray-800 dark:text-gray-200 cursor-pointer before:bg-[url('/assets/community_settings.png')] before:bg-[length:16px_16px] before:h-4 before:w-4 before:content-[''] before:float-left before:mr-1.5"
+            to={`/p/${address}/settings`}
+          >
             {t('community_settings')}
           </Link>
         </li>
@@ -129,36 +142,41 @@ export const Footer = () => {
 
   return (
     <div
-      className={`${styles.footer} ${isMobile && (isInHomeAboutView || isInPostPageAboutView) ? styles.mobileFooter : ''} ${
-        isInSubplebbitView ? styles.subplebbitFooterMargin : ''
-      }`}
+      className={`font-verdana text-xs w-full box-border bg-white dark:bg-gray-900 overflow-hidden ${
+        isMobile && (isInHomeAboutView || isInPostPageAboutView) ? 'mt-5 mb-5' : ''
+      } ${isInSubplebbitView ? 'mt-4 mb-4' : ''}`}
     >
-      <div className={styles.footerLinks}>
-        <ul>
-          <li>
+      <div className='overflow-hidden flex justify-center'>
+        <ul className='flex list-none lowercase pl-0 flex-wrap'>
+          <li className='whitespace-nowrap'>
             <Version />
           </li>
-          <span className={styles.footerSeparator}>|</span>
-          <li>
-            <a href='https://github.com/plebbit/seedit' target='_blank' rel='noopener noreferrer'>
+          <span className='mx-0.5 text-gray-400'>|</span>
+          <li className='whitespace-nowrap'>
+            <a className='text-xs text-blue-600 dark:text-blue-400' href='https://github.com/plebbit/seedit' target='_blank' rel='noopener noreferrer'>
               github
             </a>
-            <span className={styles.footerSeparator}>|</span>
+            <span className='mx-0.5 text-gray-400'>|</span>
           </li>
-          <li>
-            <a href='https://t.me/plebbit' target='_blank' rel='noopener noreferrer'>
+          <li className='whitespace-nowrap'>
+            <a className='text-xs text-blue-600 dark:text-blue-400' href='https://t.me/plebbit' target='_blank' rel='noopener noreferrer'>
               telegram
             </a>
-            <span className={styles.footerSeparator}>|</span>
+            <span className='mx-0.5 text-gray-400'>|</span>
           </li>
-          <li>
-            <a href='https://x.com/getplebbit' target='_blank' rel='noopener noreferrer'>
+          <li className='whitespace-nowrap'>
+            <a className='text-xs text-blue-600 dark:text-blue-400' href='https://x.com/getplebbit' target='_blank' rel='noopener noreferrer'>
               x
             </a>
-            <span className={styles.footerSeparator}>|</span>
+            <span className='mx-0.5 text-gray-400'>|</span>
           </li>
-          <li>
-            <a href='https://plebbit.github.io/docs/learn/clients/seedit/what-is-seedit' target='_blank' rel='noopener noreferrer'>
+          <li className='whitespace-nowrap'>
+            <a
+              className='text-xs text-blue-600 dark:text-blue-400'
+              href='https://plebbit.github.io/docs/learn/clients/seedit/what-is-seedit'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
               docs
             </a>
           </li>
@@ -292,9 +310,9 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
         {(isInPostPageView || isInPendingPostView) && <PostInfo comment={comment} />}
         {(isInSubplebbitView || isInHomeView || isInAllView || isInModView || isInDomainView || isInPendingPostView) && (
           <Link to={submitRoute}>
-            <div className={styles.largeButton}>
+            <div className='text-center relative border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 text-xl font-bold tracking-tight leading-7 h-7 cursor-pointer mb-3 text-gray-800 dark:text-gray-200 -mr-1.5 hover:bg-gradient-to-b hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800 dark:hover:to-blue-900 hover:border-blue-500 hover:text-white dark:hover:text-white'>
               {t('submit_post')}
-              <div className={styles.nub} />
+              <div className='absolute -top-px -right-px h-8 w-6 bg-white dark:bg-gray-800 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 bg-no-repeat' />
             </div>
           </Link>
         )}
@@ -306,21 +324,26 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
           !isInHomeAboutView &&
           !isInDomainView &&
           !isInPostPageAboutView && (
-            <div className={styles.titleBox}>
-              <Link className={styles.title} to={`/p/${address}`}>
+            <div className='text-xs text-gray-700 dark:text-gray-300 mb-3'>
+              <Link className='font-bold text-lg break-words font-arial hover:underline' to={`/p/${address}`}>
                 {subplebbit?.address}
               </Link>
-              <div className={styles.subscribeContainer}>
-                <span className={styles.subscribeButton}>
+              <div className='mt-1.5'>
+                <span className='mr-1.5'>
                   <SubscribeButton address={address} />
                 </span>
-                <span className={styles.subscribers}>{t('members_count', { count: allActiveUserCount })}</span>
+                <span>{t('members_count', { count: allActiveUserCount })}</span>
               </div>
-              <div className={styles.onlineLine}>
-                <span className={`${styles.onlineIndicator} ${!isOffline ? styles.online : styles.offline}`} title={!isOffline ? t('online') : t('offline')} />
-                <span>{isSubCreatedButNotYetPublished ? subCreatedButNotYetPublishedStatus : onlineStatus}</span>
+              <div className='pb-1.5'>
+                <span
+                  className={`bg-no-repeat inline-block h-3.5 w-3.5 my-2 mx-2 -mb-0.5 ml-0.5 ${
+                    !isOffline ? 'bg-[url("/assets/indicator-online.png")]' : 'bg-[url("/assets/indicator-offline.png")]'
+                  }`}
+                  title={!isOffline ? t('online') : t('offline')}
+                />
+                <span>{isSubCreatedButNotYetPublished ? subCreatedButNotYetPublished : onlineStatus}</span>
                 {moderatorRole && (
-                  <div className={styles.moderatorStatus}>
+                  <div className="text-gray-500 pt-2 pl-px text-xs before:bg-[url('/assets/mod.png')] before:bg-no-repeat before:h-4 before:w-3.5 before:content-[''] before:float-left before:pr-1.5">
                     {moderatorRole === 'moderator' ? t('you_are_moderator') : moderatorRole === 'admin' ? t('you_are_admin') : t('you_are_owner')}
                   </div>
                 )}
@@ -328,34 +351,34 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
               {description && description.length > 0 && (
                 <div>
                   {title && title.length > 0 && (
-                    <div className={styles.descriptionTitle}>
+                    <div className='pt-1.5 text-gray-700 dark:text-gray-300'>
                       <strong>{title}</strong>
                     </div>
                   )}
-                  <div className={styles.description}>
+                  <div className='py-1.5 break-words text-gray-700 dark:text-gray-300 leading-4 -mr-1.5 -mb-1.5'>
                     <Markdown content={description} />
                   </div>
                 </div>
               )}
               {rules && rules.length > 0 && <RulesList rules={rules} />}
-              <div className={styles.bottom}>
+              <div className='border-t border-gray-300 dark:border-gray-600 text-gray-500 pt-0.5 text-xs -mr-1.5'>
                 {t('created_by', { creatorAddress: '' })}
                 <span>{`u/${creatorAddress}`}</span>
-                {createdAt && <span className={styles.age}> {t('community_for', { date: getFormattedTimeDuration(createdAt) })}</span>}
-                <div className={styles.bottomButtons}>
+                {createdAt && <span className='float-right'> {t('community_for', { date: getFormattedTimeDuration(createdAt) })}</span>}
+                <div className='mt-2.5 lowercase'>
                   {showBlockConfirm ? (
-                    <span className={styles.blockConfirm}>
+                    <span className='text-red-500'>
                       {t('are_you_sure')}{' '}
-                      <span className={styles.confirmButton} onClick={handleBlock}>
+                      <span className='text-gray-500 font-bold cursor-pointer' onClick={handleBlock}>
                         {t('yes')}
                       </span>
                       {' / '}
-                      <span className={styles.cancelButton} onClick={cancelBlock}>
+                      <span className='text-gray-500 font-bold cursor-pointer' onClick={cancelBlock}>
                         {t('no')}
                       </span>
                     </span>
                   ) : (
-                    <span className={styles.blockSub} onClick={blockConfirm}>
+                    <span className='pt-2.5 font-bold text-gray-500 cursor-pointer' onClick={blockConfirm}>
                       {blocked ? t('unblock_community') : t('block_community')}
                     </span>
                   )}
@@ -366,28 +389,33 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
         {(moderatorRole || isOwner) && <ModerationTools address={address} />}
         {isInSubplebbitsView && (
           <a href='https://github.com/plebbit/lists' target='_blank' rel='noopener noreferrer'>
-            <div className={styles.largeButton}>
-              <div className={styles.nub} />
+            <div className='text-center relative border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 text-xl font-bold tracking-tight leading-7 h-7 cursor-pointer mb-3 text-gray-800 dark:text-gray-200 -mr-1.5 hover:bg-gradient-to-b hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800 dark:hover:to-blue-900 hover:border-blue-500 hover:text-white dark:hover:text-white'>
+              <div className='absolute -top-px -right-px h-8 w-6 bg-white dark:bg-gray-800 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 bg-no-repeat' />
               {t('submit_community')}
             </div>
           </a>
         )}
-        <div className={styles.largeButton} onClick={handleCreateCommunity}>
+        <div
+          className='text-center relative border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 text-xl font-bold tracking-tight leading-7 h-7 cursor-pointer mb-3 text-gray-800 dark:text-gray-200 -mr-1.5 hover:bg-gradient-to-b hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800 dark:hover:to-blue-900 hover:border-blue-500 hover:text-white dark:hover:text-white'
+          onClick={handleCreateCommunity}
+        >
           {t('create_your_community')}
-          <div className={styles.nub} />
+          <div className='absolute -top-px -right-px h-8 w-6 bg-white dark:bg-gray-800 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 bg-no-repeat' />
         </div>
-        <div className={styles.communitySubtitles}>
-          <span className={styles.createCommunityImage}>
-            <img src='assets/sprout/sprout-2.png' alt='' />
+        <div className='relative mt-2.5 py-1.5 pl-11 min-h-10 my-2 mb-3'>
+          <span className='inline-block mr-2.5 absolute top-0 left-1.5 block h-10 w-10'>
+            <img className='h-11' src='assets/sprout/sprout-2.png' alt='' />
           </span>
-          {subtitle1 && <div className={styles.createCommunitySubtitle}>{subtitle1}</div>}
-          {subtitle2 && <div className={styles.createCommunitySubtitle}>{subtitle2}</div>}
+          {subtitle1 && <div className='ml-4 text-gray-400 text-xs'>{subtitle1}</div>}
+          {subtitle2 && <div className='ml-4 text-gray-400 text-xs'>{subtitle2}</div>}
         </div>
         {roles && Object.keys(roles).length > 0 && <ModeratorsList roles={roles} />}
         {(!(isMobile && isInHomeAboutView) || isInSubplebbitAboutView || isInPostPageAboutView) && <Footer />}
         {address && !(moderatorRole || isOwner) && (
-          <div className={styles.readOnlySettingsLink}>
-            <Link to={`/p/${address}/settings`}>{t('community_settings')}</Link>
+          <div className='my-2 mb-3 text-center lowercase'>
+            <Link className='text-blue-600 dark:text-blue-400 no-underline' to={`/p/${address}/settings`}>
+              {t('community_settings')}
+            </Link>
           </div>
         )}
         {isMobile && isInHomeAboutView && <FAQ />}
