@@ -87,6 +87,42 @@ body {
   color: white !important;
 }
 
+/* Style specific Seedit buttons to be white and remove graphics */
+.dark ._largeButton_121oq_104 {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+.dark ._largeButton_121oq_104:hover {
+  background-color: #f9fafb !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Remove the nub graphics from buttons */
+.dark ._nub_121oq_122 {
+  display: none !important;
+}
+
+/* Hide community subtitles and images */
+.dark ._communitySubtitles_121oq_393 {
+  display: none !important;
+}
+
+.dark ._createCommunityImage_121oq_401 {
+  display: none !important;
+}
+
+.dark ._createCommunitySubtitle_121oq_416 {
+  display: none !important;
+}
+
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td, iframe {
   margin: 0;
   padding: 0;
