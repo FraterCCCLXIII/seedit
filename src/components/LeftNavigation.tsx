@@ -5,12 +5,11 @@ import { Separator } from '@/components/ui/separator';
 
 function LeftNavigation() {
   return (
-    <div className='sticky top-0 h-screen bg-background border-r border-border flex flex-col overflow-y-auto'>
+    <div className='h-full bg-background border-r border-border flex flex-col overflow-y-auto'>
       {/* Logo Section */}
       <div className='p-6 border-b border-border'>
         <div className='flex items-center space-x-3'>
-          <img src='/assets/sprout/sprout.png' alt='Seedit Logo' className='w-8 h-8' />
-          <img src='/assets/sprout/seedit-text-dark.svg' alt='Seedit' className='h-6' />
+          <h1 className='text-2xl font-bold text-foreground font-inter'>Holons</h1>
         </div>
       </div>
 
@@ -109,8 +108,7 @@ function LeftNavigation() {
           {/* User Info */}
           <div className='flex items-center space-x-3'>
             <Avatar className='w-8 h-8'>
-              <AvatarImage src='/assets/sprout/sprout.png' />
-              <AvatarFallback>NT</AvatarFallback>
+              <AvatarFallback className='font-inter'>NT</AvatarFallback>
             </Avatar>
             <div className='flex-1 min-w-0'>
               <a href='#/profile' className='text-sm font-medium truncate hover:text-primary'>

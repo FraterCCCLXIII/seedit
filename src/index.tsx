@@ -9,12 +9,28 @@ import './themes.css';
 import './preload-assets.css';
 import { App as CapacitorApp } from '@capacitor/app';
 import { registerSW } from 'virtual:pwa-register';
+import { setPlebbitJs } from '@plebbit/plebbit-react-hooks';
 
 if (window.location.hostname.startsWith('p2p.')) {
   (window as any).defaultPlebbitOptions = {
     libp2pJsClientsOptions: [{ key: 'libp2pjs' }],
   };
 }
+
+// Initialize Plebbit with default options
+const initializePlebbit = async () => {
+  try {
+    const PlebbitModule = await import('@plebbit/plebbit-js');
+    const Plebbit = PlebbitModule.default;
+
+    // Set the Plebbit constructor for the hooks to use
+    setPlebbitJs(Plebbit);
+
+    console.log('Plebbit initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Plebbit:', error);
+  }
+};
 
 registerSW({
   immediate: true,
@@ -32,14 +48,24 @@ registerSW({
   },
 });
 
+// Initialize Plebbit and then render the app
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(
-  <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
-  </React.StrictMode>,
-);
+
+const renderApp = async () => {
+  // Initialize Plebbit first
+  await initializePlebbit();
+
+  // Then render the app
+  root.render(
+    <React.StrictMode>
+      <Router>
+        <App />
+      </Router>
+    </React.StrictMode>,
+  );
+};
+
+renderApp();
 
 // add back button in android app
 CapacitorApp.addListener('backButton', ({ canGoBack }) => {

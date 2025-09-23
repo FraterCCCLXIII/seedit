@@ -9,13 +9,7 @@
   pointer-events: none;
 }
 
-.asset-preloader-seedit-text-light {
-  background-image: url('/assets/sprout/seedit-text-light.svg');
-}
-
-.asset-preloader-seedit-text-dark {
-  background-image: url('/assets/sprout/seedit-text-dark.svg');
-}
+/* Seedit text logos removed - replaced with Holons text */
 
 .asset-preloader-delete-button-hover {
   background-image: url('/assets/buttons/delete-button-hover.png');

@@ -255,7 +255,9 @@ const Subplebbit = ({ subplebbit, tags, index, isUnsubscribed, onUnsubscribe }: 
                   }}
                 />
               ) : (
-                <img key='sprout' src={'assets/sprout/sprout.png'} alt='' className={styles.sproutImg} />
+                <div key='holons-fallback' className={`${styles.sproutImg} flex items-center justify-center bg-muted text-muted-foreground font-inter font-bold text-xs`}>
+                  H
+                </div>
               )}
             </Link>
           </div>

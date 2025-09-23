@@ -28,7 +28,6 @@ import MiddleColumn from './components/MiddleColumn';
 import NotificationHandler from './components/notification-handler';
 import RightColumn from './components/RightColumn';
 import StickyHeader from './components/sticky-header';
-import TopBar from './components/topbar';
 import styles from './app.module.css';
 
 initializeNotificationSystem();
@@ -46,7 +45,6 @@ const App = () => {
 
   const pagesLayout = (
     <>
-      <TopBar />
       <AccountBar />
       <Header />
       <Outlet />
@@ -54,18 +52,18 @@ const App = () => {
   );
 
   const feedLayout = (
-    <div className='min-h-screen grid grid-cols-12'>
-      <div className='col-span-3'>
+    <div className='h-screen flex overflow-hidden'>
+      <div className='w-1/4 h-full'>
         <LeftNavigation />
       </div>
-      <div className='col-span-6'>
+      <div className='w-1/2 h-full'>
         <MiddleColumn>
           <StickyHeader />
           <Header />
           <Outlet />
         </MiddleColumn>
       </div>
-      <div className='col-span-3'>
+      <div className='w-1/4 h-full'>
         <RightColumn>{/* Right sidebar content will be rendered here by individual components */}</RightColumn>
       </div>
     </div>
@@ -81,8 +79,6 @@ const App = () => {
   return (
     <div className={`${styles.app} ${theme}`}>
       <div className='asset-preloader'>
-        <div className='asset-preloader-seedit-text-light'></div>
-        <div className='asset-preloader-seedit-text-dark'></div>
         <div className='asset-preloader-delete-button-hover'></div>
         <div className='asset-preloader-close-x-button-large-hover'></div>
         <div className='asset-preloader-play-button-hover'></div>

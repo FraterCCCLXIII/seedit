@@ -9,7 +9,6 @@ import useTimeFilter, { isValidTimeFilterName } from '../../hooks/use-time-filte
 import FeedFooter from '../../components/feed-footer';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
-import Sidebar from '../../components/sidebar';
 import { sortTypes } from '../../constants/sort-types';
 import styles from '../home/home.module.css';
 
@@ -186,9 +185,6 @@ const Mod = () => {
   return (
     <div>
       <div className={styles.content}>
-        <div className={`${styles.sidebar}`}>
-          <Sidebar />
-        </div>
         {isSearching ? (
           <div className={styles.feed}>
             <div className={styles.footer}>

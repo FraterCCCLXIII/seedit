@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './sticky-header.module.css';
 import AccountBar from '../account-bar';
-import TopBar from '../topbar';
 import { debounce } from 'lodash';
 
 const StickyHeader = () => {
-  // navbar animation on scroll
+  // navbar animation on scroll - TopBar removed
   const [visible, setVisible] = useState(true);
   const prevScrollPosRef = useRef(0);
 
@@ -25,7 +24,6 @@ const StickyHeader = () => {
 
   return (
     <div className={styles.content} style={{ transform: visible ? 'translateY(0)' : 'translateY(-40px)' }}>
-      <TopBar />
       <AccountBar />
     </div>
   );

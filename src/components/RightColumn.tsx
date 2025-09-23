@@ -16,7 +16,7 @@ function RightColumn({ children }: RightColumnProps) {
   const comment = useComment({ commentCid });
 
   return (
-    <div className='sticky top-0 h-screen bg-background border-l border-border overflow-y-auto'>
+    <div className='h-full bg-background border-l border-border overflow-y-auto'>
       <Sidebar subplebbit={subplebbit} comment={comment} settings={subplebbit?.settings} />
       {children}
     </div>
