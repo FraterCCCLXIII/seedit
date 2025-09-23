@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 
 function LeftNavigation() {
   return (
-    <div className='fixed left-0 top-0 h-screen w-64 bg-background border-r border-border z-50 flex flex-col'>
+    <div className='fixed left-0 top-0 h-screen w-64 max-w-64 bg-background border-r border-border z-50 flex flex-col overflow-y-auto'>
       {/* Logo Section */}
       <div className='p-6 border-b border-border'>
         <div className='flex items-center space-x-3'>
@@ -16,18 +16,18 @@ function LeftNavigation() {
 
       {/* Navigation Menu */}
       <nav className='flex-1 p-4 space-y-2'>
-        <Button variant='ghost' className='w-full justify-start text-left'>
+        <a href='#/' className='block w-full px-3 py-2 text-left hover:bg-accent rounded-md transition-colors'>
           🏠 Home
-        </Button>
-        <Button variant='ghost' className='w-full justify-start text-left'>
+        </a>
+        <a href='#/inbox' className='block w-full px-3 py-2 text-left hover:bg-accent rounded-md transition-colors'>
           📧 Inbox
-        </Button>
-        <Button variant='ghost' className='w-full justify-start text-left'>
+        </a>
+        <a href='#/search' className='block w-full px-3 py-2 text-left hover:bg-accent rounded-md transition-colors'>
           🔍 Search
-        </Button>
-        <Button variant='ghost' className='w-full justify-start text-left'>
+        </a>
+        <a href='#/settings' className='block w-full px-3 py-2 text-left hover:bg-accent rounded-md transition-colors'>
           ⚙️ Preferences
-        </Button>
+        </a>
 
         <Separator className='my-4' />
 
@@ -38,68 +38,68 @@ function LeftNavigation() {
         {/* Communities Section */}
         <div className='space-y-2'>
           <h3 className='text-sm font-semibold text-muted-foreground px-2'>My Communities</h3>
-          <div className='max-h-64 overflow-y-auto space-y-1'>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+          <div className='space-y-1'>
+            <a href='#/p/fatpeoplehate.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               fatpeoplehate.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/business-and-finance.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               business-and-finance.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/politically-incorrect.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               politically-incorrect.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/weaponized-autism.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               weaponized-autism.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/vote.plebbit.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               vote.plebbit.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/videos-livestreams-podcasts.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               videos-livestreams-podcasts.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/technopleb.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               technopleb.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/redditdeath.sol' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               redditdeath.sol
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/reddit-screenshots.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               reddit-screenshots.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/plebwhales.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               plebwhales.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/plebtoken.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               plebtoken.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/plebpiracy.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               plebpiracy.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/plebmusic.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               plebmusic.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/pleblore.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               pleblore.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/plebbitai.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               plebbitai.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/movies-tv-anime.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               movies-tv-anime.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/health-nutrition-science.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               health-nutrition-science.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/censorship-watch.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               censorship-watch.eth
-            </Button>
-            <Button variant='ghost' className='w-full justify-start text-left text-sm h-8'>
+            </a>
+            <a href='#/p/blog.plebbit.eth' className='block w-full px-3 py-2 text-left text-sm hover:bg-accent rounded-md transition-colors'>
               blog.plebbit.eth
-            </Button>
+            </a>
           </div>
-          <Button variant='outline' className='w-full text-xs h-8 mt-2'>
+          <a href='#/communities/subscriber' className='block w-full px-3 py-2 text-left text-xs border border-border rounded-md hover:bg-accent transition-colors mt-2'>
             Edit Subscriptions
-          </Button>
+          </a>
         </div>
       </nav>
 
