@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import supersub from 'remark-supersub';
 import ReactMarkdown, { Components } from 'react-markdown';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
-import styles from './markdown.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 import rehypeRaw from 'rehype-raw';
 import SpoilerTooltip from '../spoiler-tooltip';
 import { isSeeditLink, transformSeeditLinkToInternal, preprocessSeeditPatterns } from '../../lib/utils/url-utils';
@@ -125,7 +125,7 @@ const Markdown = ({ content }: MarkdownProps) => {
   );
 
   return (
-    <span className={styles.markdown}>
+    <span className='markdown-content [&_a]:text-blue-600 dark:[&_a]:text-blue-400 [&_ol]:pl-10 [&_ol]:whitespace-normal [&_ol]:pb-1.5 [&_ul]:pl-10 [&_ul]:whitespace-normal [&_ul]:pb-1.5 [&_blockquote]:px-2 [&_blockquote]:ml-1.5 [&_blockquote]:border-l-2 [&_blockquote]:border-gray-400 dark:[&_blockquote]:border-gray-600 [&_blockquote]:text-gray-600 dark:[&_blockquote]:text-gray-400 [&_blockquote]:whitespace-normal [&_blockquote]:flow-root [&_blockquote]:mb-1.5 [&_blockquote>p:last-child]:mb-0 [&_blockquote_blockquote>p:last-child]:mb-1.5 [&_blockquote>blockquote:last-child]:mb-0 [&_li]:whitespace-normal [&_h1]:text-lg [&_h1]:mb-4 [&_h2]:text-lg [&_h2]:font-normal [&_h2]:mb-4 [&_h3]:text-base [&_h3]:mb-2.5 [&_h4]:text-base [&_h4]:font-normal [&_h4]:mb-2.5 [&_h5]:text-sm [&_h5]:mb-2.5 [&_h6]:text-sm [&_h6]:font-normal [&_h6]:underline [&_h6]:mb-2.5 [&_p]:mb-1.5 [&_pre]:border [&_pre]:border-gray-300 dark:[&_pre]:border-gray-600 [&_pre]:bg-gray-100 dark:[&_pre]:bg-gray-800 [&_pre]:rounded-sm [&_pre]:my-1.5 [&_pre]:px-2.5 [&_pre]:py-1 [&_pre]:overflow-hidden [&_code:not(pre_code)]:border [&_code:not(pre_code)]:border-gray-300 dark:[&_code:not(pre_code)]:border-gray-600 [&_code:not(pre_code)]:bg-gray-100 dark:[&_code:not(pre_code)]:bg-gray-800 [&_code:not(pre_code)]:rounded-sm [&_code:not(pre_code)]:my-1.5 [&_code:not(pre_code)]:px-1'>
       <ReactMarkdown
         children={preprocessedContent}
         remarkPlugins={remarkPlugins}
