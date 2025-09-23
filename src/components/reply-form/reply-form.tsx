@@ -5,7 +5,7 @@ import { isValidURL } from '../../lib/utils/url-utils';
 import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import usePublishReply from '../../hooks/use-publish-reply';
 import Markdown from '../markdown';
-import styles from './reply-form.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 
 type ReplyFormProps = {
   cid: string;

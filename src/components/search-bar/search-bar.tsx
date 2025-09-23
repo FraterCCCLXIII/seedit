@@ -16,7 +16,7 @@ import {
 } from '../../lib/utils/view-utils';
 import useFeedFiltersStore from '../../stores/use-feed-filters-store';
 import { useDefaultSubplebbitAddresses } from '../../hooks/use-default-subplebbits';
-import styles from './search-bar.module.css';
+// Removed CSS modules import - converted to Tailwind classes
 import _ from 'lodash';
 
 interface SearchBarProps {
@@ -220,8 +220,11 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
   );
 
   return (
-    <div ref={wrapperRef} className={`${styles.searchBarWrapper} ${isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? styles.mobileInfobar : ''}`}>
-      <form className={styles.searchBar} ref={searchBarRef} onSubmit={handleSearchSubmit}>
+    <div
+      ref={wrapperRef}
+      className={`relative transition-transform duration-300 ease-linear ${isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? 'sm:w-full' : ''}`}
+    >
+      <form className='relative z-[2] min-w-[300px]' ref={searchBarRef} onSubmit={handleSearchSubmit}>
         <input
           type='text'
           autoCorrect='off'
@@ -229,6 +232,7 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
           spellCheck='false'
           autoCapitalize='off'
           placeholder={placeholder}
+          className='relative border border-gray-500 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 text-xs font-verdana w-full box-border py-1.5 pr-6 pl-2 lowercase'
           ref={(instance) => {
             // @ts-expect-error Property 'current' is read-only.
             searchInputRef.current = instance;
@@ -243,7 +247,11 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
           onKeyDown={handleKeyDown}
           onBlur={() => setTimeout(() => setIsInputFocused(false), 150)}
         />
-        <input type='submit' value='' />
+        <input
+          type='submit'
+          value=''
+          className="bg-transparent bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAMAAACelLz8AAAAb1BMVEUAAACJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYm4Po3NAAAAJXRSTlMAAQIEDBAREhMUJS0uQ09QV19hZG1udHmbnJ64xMXGx8jOz9DUayO31AAAANNJREFUeAGF0fFugjAUhfGDg3W1blMEC2IV8Lz/My4nEnK7jOz3380nN7XFy0fdJzL1tUeujBMXUyxh7Acaw96UBzPj2sqBmtuDc6Edqe+0U6Km/v01VJ2muJxtUnnDYqc2e0itbRVWlXbWkJ5kC6MleYUkkgcYgWSCkKSD4Uiy+CdpYfi98Pb3MRqS3fbhzxA/61e77C8/vbmorrIXdcmvtwnOhWaknNZH0Zw7mqfcbGWcuXheTqaJr6+JvHVnDxzzJkUBUZNvZGy7Y7PZZH097p8/V4YmEaKXKKIAAAAASUVORK5CYII=')] bg-[length:13px_13px] bg-[position:0_0] h-3.5 w-3.5 border-0 absolute top-2 right-2 cursor-pointer text-[0px] hover:bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAMAAACelLz8AAAAeFBMVEUAAACJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYl3r/6iAAAAJ3RSTlMAAQMFDhMUFhcYLC02N1FfYGlydXiDhIuRuru8vt3s7e7v8PH4+fpBQVyrAAAA1ElEQVR4AYXQcW+CMBBA8cPBuk7cpgiCiFUE3/f/hksuDbmakf3+uuSl5DhR8lH1AUJfeUnl7UQ0tbktnwPGsDXlTuKxtFzfjM3OubIZ9V0eUwvQv4sqOoA27jYB/ZtEmw6Yvc4VMBayKEag0rEHGjEa4KJTAHY2lUDQCcDZ5ACyf1IAytcPXv9eowbO68sfdfQz0G2SX356c6iusIc6peetS+fKegTgINH2wav90ob1lrcz0fN0SJv46hLgej56kb1pUZaJiu1HUqbdZLXZZH3fb1+/i3YpBcVhtqwAAAAASUVORK5CYII=')] hover:cursor-pointer"
+        />
       </form>
       {context.open && (
         <FloatingPortal>
@@ -255,12 +263,16 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
               left: x ?? 0,
               width: searchInputRef.current?.offsetWidth ? searchInputRef.current.offsetWidth - 2 : 'auto', // -2 for border
             }}
-            className={styles.dropdown}
+            className='font-verdana text-sm absolute w-[calc(100%-8px)] m-0 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 left-0 list-none z-[999999999]'
           >
             {filteredCommunitySuggestions.map((address: string, index: number) => (
               <li
                 key={address}
-                className={`${styles.dropdownItem} ${index === activeDropdownIndex ? styles.activeDropdownItem : ''}`}
+                className={`no-underline block p-1.5 cursor-pointer text-gray-700 dark:text-gray-300 overflow-hidden ${
+                  index === activeDropdownIndex
+                    ? 'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900'
+                    : 'hover:bg-gray-800 dark:hover:bg-gray-200 hover:text-white dark:hover:text-gray-900'
+                }`}
                 onClick={() => handleCommunitySelect(address)}
                 onTouchEnd={() => handleCommunitySelect(address)}
                 onMouseEnter={() => setActiveDropdownIndex(index)}
@@ -271,14 +283,24 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
           </ul>
         </FloatingPortal>
       )}
-      <div className={`${styles.infobar} ${showExpando ? styles.slideDown : styles.slideUp} ${!isInFeedView ? styles.lessHeight : ''}`}>
-        <label>
-          <input type='checkbox' checked={!isInCommunitySearch || !isInFeedView} disabled={!isInFeedView} onChange={() => handleCommunitySearchToggle(false)} />
+      <div
+        className={`relative w-[278px] whitespace-normal rounded bg-orange-100 dark:bg-orange-900 border border-orange-300 dark:border-orange-700 text-sm p-2.5 overflow-hidden z-[1] mt-1.5 mb-3 transition-all duration-300 ease-linear origin-top ${
+          showExpando ? 'scale-y-100 visible h-12' : 'scale-y-0 invisible h-5'
+        } ${!isInFeedView ? 'h-6' : ''}`}
+      >
+        <label className='block text-gray-700 dark:text-gray-300 pb-2.5'>
+          <input
+            className='mr-2 mt-0.5'
+            type='checkbox'
+            checked={!isInCommunitySearch || !isInFeedView}
+            disabled={!isInFeedView}
+            onChange={() => handleCommunitySearchToggle(false)}
+          />
           {t('go_to_a_community')}
         </label>
         {isInFeedView && (
-          <label>
-            <input type='checkbox' checked={isInCommunitySearch} onChange={() => handleCommunitySearchToggle(true)} />
+          <label className='block text-gray-700 dark:text-gray-300 pb-2.5'>
+            <input className='mr-2 mt-0.5' type='checkbox' checked={isInCommunitySearch} onChange={() => handleCommunitySearchToggle(true)} />
             {t('search_feed_post')}
           </label>
         )}
