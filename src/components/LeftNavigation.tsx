@@ -105,14 +105,36 @@ function LeftNavigation() {
 
       {/* User Profile Section */}
       <div className='p-4 border-t border-border'>
-        <div className='flex items-center space-x-3'>
-          <Avatar className='w-8 h-8'>
-            <AvatarImage src='/assets/sprout/sprout.png' />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-          <div className='flex-1 min-w-0'>
-            <p className='text-sm font-medium truncate'>User Profile</p>
-            <p className='text-xs text-muted-foreground'>1 karma</p>
+        <div className='space-y-3'>
+          {/* User Info */}
+          <div className='flex items-center space-x-3'>
+            <Avatar className='w-8 h-8'>
+              <AvatarImage src='/assets/sprout/sprout.png' />
+              <AvatarFallback>NT</AvatarFallback>
+            </Avatar>
+            <div className='flex-1 min-w-0'>
+              <a href='#/profile' className='text-sm font-medium truncate hover:text-primary'>
+                NT3qkUQ7L8AL
+              </a>
+              <p className='text-xs text-muted-foreground'>1 karma</p>
+            </div>
+          </div>
+
+          {/* User Actions */}
+          <div className='flex items-center space-x-4 text-xs'>
+            <a href='#/inbox' className='flex items-center space-x-1 hover:text-primary'>
+              <span>📧</span>
+              <span>Inbox</span>
+            </a>
+            <span className='text-muted-foreground'>|</span>
+            <a href='#/search' className='flex items-center space-x-1 hover:text-primary'>
+              <span>🔍</span>
+              <span>Search</span>
+            </a>
+            <span className='text-muted-foreground'>|</span>
+            <a href='#/settings' className='hover:text-primary'>
+              Preferences
+            </a>
           </div>
         </div>
       </div>
