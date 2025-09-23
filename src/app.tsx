@@ -23,7 +23,10 @@ import Subplebbits from './views/subplebbits';
 import AccountBar from './components/account-bar/';
 import ChallengeModal from './components/challenge-modal';
 import Header from './components/header';
+import LeftNavigation from './components/LeftNavigation';
+import MiddleColumn from './components/MiddleColumn';
 import NotificationHandler from './components/notification-handler';
+import RightColumn from './components/RightColumn';
 import StickyHeader from './components/sticky-header';
 import TopBar from './components/topbar';
 import styles from './app.module.css';
@@ -52,9 +55,13 @@ const App = () => {
 
   const feedLayout = (
     <>
-      <StickyHeader />
-      <Header />
-      <Outlet />
+      <LeftNavigation />
+      <MiddleColumn>
+        <StickyHeader />
+        <Header />
+        <Outlet />
+      </MiddleColumn>
+      <RightColumn>{/* Right sidebar content will be rendered here by individual components */}</RightColumn>
     </>
   );
 
