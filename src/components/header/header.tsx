@@ -48,7 +48,6 @@ import useNotFoundStore from '../../stores/use-not-found-store';
 import { useIsBroadlyNsfwSubplebbit } from '../../hooks/use-is-broadly-nsfw-subplebbit';
 import useTheme from '../../hooks/use-theme';
 import useWindowWidth from '../../hooks/use-window-width';
-import styles from './header.module.css';
 
 const AboutButton = () => {
   const { t } = useTranslation();
@@ -60,8 +59,17 @@ const AboutButton = () => {
   const isInSubplebbitAboutView = isSubplebbitAboutView(location.pathname, params);
 
   return (
-    <li className={`${styles.about} ${isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? styles.selected : styles.choice}`}>
-      <Link to={aboutLink}>{t('about')}</Link>
+    <li className={`inline-flex items-end font-bold mx-1 leading-[1.3] ${isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? 'selected' : 'choice'}`}>
+      <Link
+        to={aboutLink}
+        className={
+          isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView
+            ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+            : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+        }
+      >
+        {t('about')}
+      </Link>
     </li>
   );
 };
@@ -76,8 +84,20 @@ const CommentsButton = () => {
   const isInPostPageAboutView = isPostPageAboutView(location.pathname, params);
 
   return (
-    <li className={(isInPostPageView || isInPendingPostView) && !isInHomeAboutView && !isInPostPageAboutView ? styles.selected : styles.choice}>
-      <Link to={`/p/${params.subplebbitAddress}/c/${params.commentCid}`} onClick={(e) => isInPendingPostView && e.preventDefault()}>
+    <li
+      className={`inline-flex items-end font-bold mx-1 leading-[1.3] ${
+        (isInPostPageView || isInPendingPostView) && !isInHomeAboutView && !isInPostPageAboutView ? 'selected' : 'choice'
+      }`}
+    >
+      <Link
+        to={`/p/${params.subplebbitAddress}/c/${params.commentCid}`}
+        onClick={(e) => isInPendingPostView && e.preventDefault()}
+        className={
+          (isInPostPageView || isInPendingPostView) && !isInHomeAboutView && !isInPostPageAboutView
+            ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+            : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+        }
+      >
         {t('comments')}
       </Link>
     </li>
@@ -122,8 +142,16 @@ const SortItems = () => {
       sortLink = sortLink + `/${timeFilterName}`;
     }
     return (
-      <li key={sortType} className={selectedSortType === sortType ? styles.selected : styles.choice}>
-        <Link to={sortLink} onClick={() => setSelectedSortType(sortType)}>
+      <li key={sortType} className={`inline-flex items-end font-bold mx-1 leading-[1.3] ${selectedSortType === sortType ? 'selected' : 'choice'}`}>
+        <Link
+          to={sortLink}
+          onClick={() => setSelectedSortType(sortType)}
+          className={
+            selectedSortType === sortType
+              ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+              : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+          }
+        >
           {t(sortLabels[index])}
         </Link>
       </li>
@@ -155,34 +183,81 @@ const AuthorHeaderTabs = () => {
     !isInAuthorCommentsView &&
     !isInProfileHiddenView &&
     !isInAuthorSubmittedView
-      ? styles.selected
-      : styles.choice;
+      ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+      : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline';
 
   return (
     <>
-      <li className={overviewSelectedClass}>
-        <Link to={isInAuthorView ? authorRoute : '/profile'}>{t('overview')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link to={isInAuthorView ? authorRoute : '/profile'} className={overviewSelectedClass}>
+          {t('overview')}
+        </Link>
       </li>
-      <li className={isInProfileCommentsView || isInAuthorCommentsView ? styles.selected : styles.choice}>
-        <Link to={isInAuthorView ? authorRoute + '/comments' : '/profile/comments'}>{t('comments')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={isInAuthorView ? authorRoute + '/comments' : '/profile/comments'}
+          className={
+            isInProfileCommentsView || isInAuthorCommentsView
+              ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+              : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+          }
+        >
+          {t('comments')}
+        </Link>
       </li>
-      <li className={isInProfileSubmittedView || isInAuthorSubmittedView ? styles.selected : styles.choice}>
-        <Link to={isInAuthorView ? authorRoute + '/submitted' : '/profile/submitted'}>{t('submitted')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={isInAuthorView ? authorRoute + '/submitted' : '/profile/submitted'}
+          className={
+            isInProfileSubmittedView || isInAuthorSubmittedView
+              ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+              : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+          }
+        >
+          {t('submitted')}
+        </Link>
       </li>
       {isInProfileView && (
         <>
-          <li className={isInProfileUpvotedView ? styles.selected : styles.choice}>
-            <Link to='/profile/upvoted'>{t('upvoted')}</Link>
+          <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+            <Link
+              to='/profile/upvoted'
+              className={
+                isInProfileUpvotedView
+                  ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+                  : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+              }
+            >
+              {t('upvoted')}
+            </Link>
           </li>
-          <li className={isInProfileDownvotedView ? styles.selected : styles.choice}>
-            <Link to='/profile/downvoted'>{t('downvoted')}</Link>
+          <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+            <Link
+              to='/profile/downvoted'
+              className={
+                isInProfileDownvotedView
+                  ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+                  : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+              }
+            >
+              {t('downvoted')}
+            </Link>
           </li>
-          <li className={isInProfileHiddenView ? styles.selected : styles.choice}>
-            <Link to={'/profile/hidden'}>{t('hidden')}</Link>
+          <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+            <Link
+              to={'/profile/hidden'}
+              className={
+                isInProfileHiddenView
+                  ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+                  : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+              }
+            >
+              {t('hidden')}
+            </Link>
           </li>
           {/* TODO: implement functionality from API once available
           <li>
-            <Link to={'/'} className={styles.choice} onClick={(e) => e.preventDefault()}>
+            <Link to={'/'} className="px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline" onClick={(e) => e.preventDefault()}>
               {t('saved')}
             </Link>
           </li> */}
@@ -197,8 +272,13 @@ const InboxHeaderTabs = () => {
 
   return (
     <>
-      <li className={styles.selected}>
-        <Link to={'/inbox'}>{t('inbox')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={'/inbox'}
+          className='px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+        >
+          {t('inbox')}
+        </Link>
       </li>
       {/* TODO: add tabs for messaging when available in the API */}
     </>
@@ -223,17 +303,29 @@ const SubplebbitsHeaderTabs = () => {
 
   return (
     <>
-      <li className={`${isInSubplebbitsVoteView ? styles.selected : styles.choice}`}>
-        <Link to={'/communities/vote'}>{t('vote')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={'/communities/vote'}
+          className={
+            isInSubplebbitsVoteView
+              ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+              : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+          }
+        >
+          {t('vote')}
+        </Link>
       </li>
-      <li
-        className={
-          isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView || isInSubplebbitsView
-            ? styles.selected
-            : styles.choice
-        }
-      >
-        <Link to={'/communities'}>{t('my_communities')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={'/communities'}
+          className={
+            isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView || isInSubplebbitsView
+              ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+              : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+          }
+        >
+          {t('my_communities')}
+        </Link>
       </li>
     </>
   );
@@ -248,14 +340,41 @@ const SettingsHeaderTabs = () => {
 
   return (
     <>
-      <li className={isInSettingsPlebbitOptionsView || isInSettingsContentOptionsView || isInSettingsAccountDataView ? styles.choice : styles.selected}>
-        <Link to={'/settings'}>{t('general')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={'/settings'}
+          className={
+            isInSettingsPlebbitOptionsView || isInSettingsContentOptionsView || isInSettingsAccountDataView
+              ? 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+              : 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+          }
+        >
+          {t('general')}
+        </Link>
       </li>
-      <li className={isInSettingsContentOptionsView ? styles.selected : styles.choice}>
-        <Link to={'/settings/content-options'}>{t('content_options')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={'/settings/content-options'}
+          className={
+            isInSettingsContentOptionsView
+              ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+              : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+          }
+        >
+          {t('content_options')}
+        </Link>
       </li>
-      <li className={isInSettingsPlebbitOptionsView ? styles.selected : styles.choice}>
-        <Link to={'/settings/plebbit-options'}>{t('plebbit_options')}</Link>
+      <li className='inline-flex items-end font-bold mx-1 leading-[1.3]'>
+        <Link
+          to={'/settings/plebbit-options'}
+          className={
+            isInSettingsPlebbitOptionsView
+              ? 'px-1.5 pt-0.5 pb-0 bg-white dark:bg-gray-900 text-green-500 border border-gray-300 dark:border-gray-600 border-b-white dark:border-b-gray-900 inline-flex items-end -mb-px'
+              : 'px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'
+          }
+        >
+          {t('plebbit_options')}
+        </Link>
       </li>
     </>
   );
@@ -300,7 +419,7 @@ const HeaderTabs = () => {
   } else if (isInProfileView || isInAuthorView) {
     return <AuthorHeaderTabs />;
   } else if (isInPendingPostView) {
-    return <span className={styles.pageName}>{t('pending')}</span>;
+    return <span className='font-bold text-sm text-gray-900 dark:text-gray-100'>{t('pending')}</span>;
   } else if (isInInboxView) {
     return <InboxHeaderTabs />;
   } else if (isInSubplebbitsView && !isInCreateSubplebbitView) {
@@ -349,7 +468,7 @@ const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; p
     </Link>
   );
   const domainTitle = <Link to={`/domain/${params.domain}`}>{params.domain}</Link>;
-  const submitTitle = <span className={styles.submitTitle}>{t('submit')}</span>;
+  const submitTitle = <span className='uppercase text-[11px]'>{t('submit')}</span>;
   const profileTitle = <Link to='/profile'>{account?.author?.shortAddress}</Link>;
   const authorTitle = <Link to={`/u/${params.authorAddress}/c/${params.commentCid}`}>{params.authorAddress && Plebbit.getShortAddress(params.authorAddress)}</Link>;
 
@@ -364,7 +483,7 @@ const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; p
   } else if (isInSubplebbitSettingsView) {
     return (
       <>
-        {subplebbitTitle}: <span className={styles.lowercase}>{t('community_settings')}</span>
+        {subplebbitTitle}: <span className='lowercase'>{t('community_settings')}</span>
       </>
     );
   } else if (isInSubmitView) {
@@ -380,15 +499,15 @@ const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; p
   } else if (isInInboxView) {
     return t('messages');
   } else if (isInCreateSubplebbitView) {
-    return <span className={styles.lowercase}>{t('create_community')}</span>;
+    return <span className='lowercase'>{t('create_community')}</span>;
   } else if (isInSubplebbitsView) {
     return t('communities');
   } else if (isInNotFoundView) {
-    return <span className={styles.lowercase}>{t('page_not_found')}</span>;
+    return <span className='lowercase'>{t('page_not_found')}</span>;
   } else if (isInAllView) {
     return t('all');
   } else if (isInModView) {
-    return <span className={styles.lowercase}>{t('communities_you_moderate')}</span>;
+    return <span className='lowercase'>{t('communities_you_moderate')}</span>;
   } else if (isInDomainView) {
     return domainTitle;
   }
@@ -469,46 +588,46 @@ const Header = () => {
       : '/submit';
 
   return (
-    <div className={styles.header}>
+    <div className='border-b border-gray-300 dark:border-gray-600 relative bg-white dark:bg-gray-900 text-xs flex flex-col'>
       <div
-        className={`${styles.container} ${hasFewTabs && styles.reducedHeight} ${
-          isInSubmitView && isInSubplebbitSubmitView && !isInSubplebbitView && isMobile && styles.reduceSubmitPageHeight
-        } ${hasStickyHeader && styles.increasedHeight}`}
+        className={`flex items-end justify-start whitespace-nowrap h-[45px] ${hasFewTabs ? 'pb-0' : ''} ${
+          isInSubmitView && isInSubplebbitSubmitView && !isInSubplebbitView && isMobile ? '-mb-1' : ''
+        } ${hasStickyHeader ? 'pt-5' : ''}`}
       >
-        <div className={styles.logoContainer}>
-          <Link to={logoLink} className={styles.logoLink}>
+        <div className='relative top-0 left-0'>
+          <Link to={logoLink} className='cursor-pointer'>
             {(logoIsAvatar || (!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-              <img className={`${logoIsAvatar ? styles.avatar : styles.logo}`} src={logoSrc} alt='' />
+              <img className={`${logoIsAvatar ? 'max-h-10 mx-1' : 'max-h-10 mr-1 ml-1 opacity-90'}`} src={logoSrc} alt='' />
             )}
             {((!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-              <img src={`assets/sprout/seedit-text-${theme === 'dark' ? 'dark' : 'light'}.svg`} className={styles.logoText} alt='' />
+              <img src={`assets/sprout/seedit-text-${theme === 'dark' ? 'dark' : 'light'}.svg`} className='w-[84px] max-h-[26px] mt-4 pr-1 opacity-90' alt='' />
             )}
           </Link>
         </div>
         {!isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
-          <span className={`${styles.pageName} ${!logoIsAvatar && styles.soloPageName}`}>
+          <span className={`font-bold text-sm text-gray-900 dark:text-gray-100 ${!logoIsAvatar ? 'pl-2' : ''}`}>
             <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
           </span>
         )}
         {(isInModView || isInAllView) && (
-          <div className={`${styles.pageName} ${styles.allOrModPageName}`}>
+          <div className={`font-bold text-sm text-gray-900 dark:text-gray-100 absolute ${isMobile ? 'top-[46px] left-[138px]' : 'top-[26px] left-[140px]'}`}>
             <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
           </div>
         )}
         {!isMobile && !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) && (
-          <ul className={styles.tabMenu}>
+          <ul className='list-none whitespace-nowrap flex items-end lowercase pl-2'>
             <HeaderTabs />
             {(isInHomeView || isInHomeAboutView) && <AboutButton />}
           </ul>
         )}
       </div>
       {isMobile && !isInSubplebbitSubmitView && !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) && (
-        <ul className={`${styles.tabMenu} ${isInProfileView ? styles.horizontalScroll : ''}`}>
+        <ul className={`list-none whitespace-nowrap flex items-end lowercase pl-0 ${isInProfileView ? 'flex overflow-x-auto scrollbar-none' : ''}`}>
           <HeaderTabs />
           {(isInHomeView || isInHomeAboutView || isInSubplebbitView || isInHomeAboutView || isInPostPageView) && <AboutButton />}
           {!isInSubmitView && !isInSettingsView && (
-            <li>
-              <Link to={mobileSubmitButtonRoute} className={styles.submitButton}>
+            <li className='inline-flex items-end font-bold mx-1 leading-[1.3] order-3 mb-1 ml-1'>
+              <Link to={mobileSubmitButtonRoute} className='px-1.5 pt-0.5 pb-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 no-underline'>
                 {t('submit')}
               </Link>
             </li>
