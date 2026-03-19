@@ -12,7 +12,8 @@ Seedit is a serverless, adminless, decentralized Reddit alternative built on the
 - **Vite** for bundling
 - **plebbit-react-hooks** for Plebbit protocol integration
 - **i18next** for translations
-- **Yarn 4** via **Corepack**
+- **Node 22.12.0** via `.nvmrc`
+- **Yarn 4** via **Corepack**; run `corepack enable` once, then use plain `yarn install` / `yarn build` / `yarn test`
 - **oxlint** for linting
 - **oxfmt** for formatting
 - **tsgo** for type checking (native TypeScript compiler)
@@ -20,7 +21,9 @@ Seedit is a serverless, adminless, decentralized Reddit alternative built on the
 ## Commands
 
 ```bash
-corepack yarn install
+nvm install && nvm use
+corepack enable
+yarn install
 yarn start        # Start dev server (port 3000)
 yarn build        # Production build
 yarn test         # Run tests
