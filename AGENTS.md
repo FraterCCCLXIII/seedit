@@ -1,293 +1,195 @@
 # AGENTS.md
 
+## Purpose
+
+This file defines the always-on rules for AI agents working on seedit.
+Use this as the default policy. Load linked playbooks only when their trigger condition applies.
+
+## Surprise Handling
+
+The role of this file is to reduce recurring agent mistakes and confusion points in this repository.
+If you encounter something surprising or ambiguous while working, alert the developer immediately.
+After confirmation, add a concise entry to `docs/agent-playbooks/known-surprises.md` so future agents avoid the same issue.
+Only record items that are repo-specific, likely to recur, and have a concrete mitigation.
+
 ## Project Overview
 
-Seedit is a serverless, adminless, decentralized Reddit alternative built on the Bitsocial protocol.
+seedit is a serverless, adminless, decentralized Reddit-style client built on the Bitsocial protocol with an old.reddit-inspired UI.
+
+## Instruction Priority
+
+- **MUST** rules are mandatory.
+- **SHOULD** rules are strong defaults unless task context requires a different choice.
+- If guidance conflicts, prefer: user request > MUST > SHOULD > playbooks.
+
+## Task Router (Read First)
+
+| Situation | Required action |
+|---|---|
+| React UI logic changed (`src/components`, `src/views`, `src/hooks`, UI stores) | Follow React architecture rules below; run `yarn build`, `yarn lint`, and `yarn type-check` |
+| Visible UI or interaction changed | Verify in browser with `playwright-cli`; test desktop and mobile viewport |
+| `package.json` changed | Run `corepack yarn install` to keep `yarn.lock` in sync |
+| Translation key/value changed | Use `docs/agent-playbooks/translations.md` |
+| Bug report in a specific file/line | Start with git history scan from `docs/agent-playbooks/bug-investigation.md` before editing |
+| `CHANGELOG.md`, `scripts/release-body.js`, or package version changed | Run `yarn changelog` if release notes need regeneration |
+| Long-running task spans multiple sessions, handoffs, or spawned agents | Use `docs/agent-playbooks/long-running-agent-workflow.md`, keep a machine-readable feature list plus a progress log, and run `./scripts/agent-init.sh` before starting a fresh feature slice |
+| New reviewable feature/fix started while on `master` | Create a short-lived `codex/feature/*`, `codex/fix/*`, `codex/docs/*`, or `codex/chore/*` branch from `master` before editing; use a separate worktree only for parallel tasks |
+| New unrelated task started while another task branch is already checked out or being worked on by another agent | Create a separate worktree from `master`, create a new short-lived task branch there, and keep each agent on its own worktree/branch/PR |
+| Open PR needs feedback triage or merge readiness check | Use the `review-and-merge-pr` skill to inspect bot/human feedback, fix valid findings, and merge only after verification |
+| Repo AI workflow files changed (`.codex/**`, `.cursor/**`) | Keep the Codex and Cursor copies aligned when they represent the same workflow; update `AGENTS.md` if the default agent policy changes |
+| GitHub operation needed | Use `gh` CLI, not GitHub MCP |
+| User asks for commit/issue phrasing | Use `docs/agent-playbooks/commit-issue-format.md` |
+| Surprising/ambiguous repo behavior encountered | Alert developer and, once confirmed, document in `docs/agent-playbooks/known-surprises.md` |
 
 ## Stack
 
-- **React 19** with TypeScript
-- **Zustand** for state management
-- **React Router v6** for routing
-- **Vite** for bundling
-- **plebbit-react-hooks** for Plebbit protocol integration
-- **i18next** for translations
-- **Node 22.12.0** via `.nvmrc`
-- **Yarn 4** via **Corepack**; run `corepack enable` once, then use plain `yarn install` / `yarn build` / `yarn test`
-- **oxlint** for linting
-- **oxfmt** for formatting
-- **tsgo** for type checking (native TypeScript compiler)
-
-## Commands
-
-```bash
-nvm install && nvm use
-corepack enable
-yarn install
-yarn start        # Start dev server (port 3000)
-yarn build        # Production build
-yarn test         # Run tests
-yarn prettier     # Format code
-yarn electron     # Run Electron app
-```
-
-## Code Style
-
-- TypeScript strict mode
-- **oxfmt** for formatting (runs on pre-commit via husky; recommend setting up AI hooks too)
-- **oxlint** for linting, **tsgo** for type-checking
-- **DRY principle**: Always follow the DRY principle when possible. Never repeat UI elements across views—extract them into reusable components in `src/components/`. Same applies to logic—extract into custom hooks in `src/hooks/`.
-
-## React Patterns (Critical)
-
-AI tends to overuse `useState` and `useEffect`. This project follows modern React patterns instead.
-
-### Do NOT
-
-- Use `useState` for shared/global state → use **Zustand stores** in `src/stores/`
-- Use `useEffect` for data fetching → use **plebbit-react-hooks** (already handles caching, loading states)
-- Copy-paste logic across components → extract into **custom hooks** in `src/hooks/`
-- Use boolean flag soup (`isLoading`, `isError`, `isSuccess`) → use **state machines** with Zustand
-- Use `useEffect` to sync derived state → **calculate during render** instead
-
-### Do
-
-- Use Zustand for any state shared between components
-- Use plebbit-react-hooks (`useComment`, `useFeed`, `useSubplebbit`, etc.) for all Plebbit data
-- Extract reusable logic into custom hooks
-- Calculate derived values during render, not in effects
-- Use `useMemo` only when profiling shows it's needed
-- Use React Router for navigation (no manual history manipulation)
-
-### Quick Reference
-
-| Concern | ❌ Avoid | ✅ Use Instead |
-|---------|----------|----------------|
-| Shared state | `useState` + prop drilling | Zustand store |
-| Data fetching | `useEffect` + fetch | plebbit-react-hooks |
-| Derived state | `useEffect` to sync | Calculate during render |
-| Side effects | Effects without cleanup | AbortController or query libs |
-| Complex flows | Boolean flags | State machine in Zustand |
-| Logic reuse | Copy-paste | Custom hooks |
+- React 19 + TypeScript
+- Zustand for shared state
+- React Router v6
+- Vite
+- `@plebbit/plebbit-react-hooks`
+- i18next
+- Corepack-managed Yarn 4
+- oxlint
+- oxfmt
+- tsgo
 
 ## Project Structure
 
-```
+```text
 src/
-├── components/    # Reusable UI components
-├── views/         # Page-level components (routes)
-├── hooks/         # Custom React hooks
-├── stores/        # Zustand stores
-├── lib/           # Utilities and helpers
-└── data/          # Static data (default subplebbits, etc.)
+├── components/   # Reusable UI components
+├── views/        # Page-level route views
+├── hooks/        # Custom hooks
+├── stores/       # Zustand stores
+├── lib/          # Utilities/helpers
+└── data/         # Static data
 ```
 
-## Recommended Skills
+## Core MUST Rules
 
-Skills are more efficient than docs—they inject targeted guidance without bloating the context window.
+### Package and Dependency Rules
 
-### Context7 (for library docs)
+- Use Corepack-managed Yarn 4, never `npm`. Run `corepack enable` once on a new machine before using `yarn`.
+- Pin exact dependency versions (`package@x.y.z`), never `^` or `~`.
+- Keep lockfile synchronized when dependency manifests change.
 
-When you need documentation for libraries like **plebbit-react-hooks** or **plebbit-js**, use the Context7 skill to fetch current docs instead of relying on potentially outdated training data.
+### React Architecture Rules
+
+- Do not use `useState` for shared/global state. Use Zustand stores in `src/stores/`.
+- Do not use `useEffect` for data fetching. Use `@plebbit/plebbit-react-hooks`.
+- Do not sync derived state with effects. Compute during render.
+- Avoid copy-paste logic across components. Extract custom hooks in `src/hooks/`.
+- Avoid boolean flag soup for complex flows; model state clearly in Zustand.
+- Use React Router for navigation; no manual history manipulation.
+
+### Code Organization Rules
+
+- Keep components focused; split large components.
+- Follow DRY: shared UI in `src/components/`, shared logic in `src/hooks/`.
+- Add comments for complex/non-obvious code; skip obvious comments.
+
+### Git Workflow Rules
+
+- Keep `master` releasable. Do not treat `master` as a scratch branch.
+- If the user asks for a reviewable feature/fix and the current branch is `master`, create a short-lived task branch before making code changes unless the user explicitly asks to work directly on `master`.
+- Name short-lived AI task branches by intent under the Codex prefix: `codex/feature/*`, `codex/fix/*`, `codex/docs/*`, `codex/chore/*`.
+- Open PRs from task branches into `master` so review bots can run against the actual change.
+- Prefer short-lived task branches over a long-lived `develop` branch unless the user explicitly asks for a staging branch workflow.
+- Use worktrees only when parallel tasks need isolated checkouts. One active task branch per worktree.
+- If a new task is unrelated to the currently checked out branch, do not stack it on that branch. Create a new worktree from `master` and create a separate short-lived task branch there.
+- Prefer `./scripts/create-task-worktree.sh <feature|fix|docs|chore> <slug>` when you need a new task worktree and do not have a stronger repo-specific reason to create it manually.
+- Treat branch and worktree as different things: the branch is the change set; the worktree is the checkout where that branch is worked on.
+- For parallel unrelated tasks, give each task its own branch from `master`, its own worktree, and its own PR into `master`.
+- After a reviewed branch is merged, prefer deleting it to keep branch drift and merge conflicts low.
+
+### Bug Investigation Rules
+
+- For bug reports tied to a specific file/line, check relevant git history before any fix.
+- Minimum sequence: `git log --oneline` or `git blame` first, then scoped `git show` for relevant commits.
+- Full workflow: `docs/agent-playbooks/bug-investigation.md`.
+
+### Verification Rules
+
+- Never mark work complete without verification.
+- After code changes, run: `yarn build`, `yarn lint`, `yarn type-check`.
+- After adding or changing tests, run `yarn test`.
+- Do not commit or force-add local rebuild output. `build/` is the main generated build output in this repo; remove or restore generated output directories after local verification before committing.
+- For UI/visual changes, verify with `playwright-cli` on desktop and mobile viewport.
+- The shared hook verification path is strict by default. Only set `AGENT_VERIFY_MODE=advisory` when you intentionally need signal from a broken tree without blocking the session.
+- If verification fails, fix and re-run until passing.
+
+### Tooling Constraints
+
+- Use `gh` CLI for GitHub work (issues, PRs, actions, dependabot, projects, search).
+- Do not use GitHub MCP.
+- Do not use browser MCP servers (cursor-ide-browser, playwright-mcp, chrome MCP, etc.).
+- Use `playwright-cli` for browser automation.
+- If many MCP tools are present in context, warn user and suggest disabling unused MCPs.
+
+### AI Tooling Rules
+
+- Treat `.codex/` and `.cursor/` as repo-managed contributor tooling, not private scratch space.
+- Keep equivalent workflow files aligned across both toolchains when both directories contain the same skill, hook, or agent.
+- When changing shared agent behavior, update the relevant files in `.codex/skills/`, `.cursor/skills/`, `.codex/agents/`, `.cursor/agents/`, `.codex/hooks/`, `.cursor/hooks/`, and their `hooks.json` or config entry points as needed.
+- If `AGENTS.md` references a skill, agent, or hook, prefer a tracked file under `.codex/` or `.cursor/` rather than an untracked local-only instruction.
+- Review `.codex/config.toml` and `.cursor/hooks.json` before changing agent orchestration or hook behavior, because they are the entry points contributors will actually load.
+- Directory-specific auto-loaded rules live under `src/AGENTS.md` and `scripts/AGENTS.md`; read them before editing files in those trees.
+- For work expected to span multiple sessions, keep explicit task state in a `feature-list.json` plus `progress.md` pair using `docs/agent-playbooks/long-running-agent-workflow.md`.
+- If more than one human or toolchain needs the same task state, keep it in a tracked location such as `docs/agent-runs/<slug>/` instead of burying it in a tool-specific hidden directory.
+
+### Project Maintenance Rules
+
+- If `CHANGELOG.md`, `package.json`, or `scripts/release-body.js` changes as part of release work, run `yarn changelog` before finishing.
+
+### Security and Boundaries
+
+- Never commit secrets or API keys.
+- Never push to a remote unless the user explicitly asks.
+- Test responsive behavior on mobile viewport.
+
+## Core SHOULD Rules
+
+- Keep context lean: delegate heavy/verbose tasks to subprocesses when available.
+- For complex work, parallelize independent checks.
+- Add or update tests for bug fixes and non-trivial logic changes when the code is reasonably testable.
+- When touching already-covered code, prefer extending nearby tests so measured coverage does not regress without a clear reason.
+- When proposing or implementing meaningful code changes, include both:
+  - a Conventional Commit title suggestion
+  - a short GitHub issue suggestion
+  Use the format playbook: `docs/agent-playbooks/commit-issue-format.md`.
+- When stuck on a bug, search the web for recent fixes/workarounds.
+- After user corrections, identify root cause and apply the lesson in subsequent steps.
+
+## Local Development URL
+
+The default web dev server is `http://localhost:3000`. Browser automation, local smoke/bootstrap helpers, and Electron dev flows should target that URL unless the parent agent gives a different one.
+
+## Common Commands
 
 ```bash
-npx skills add https://github.com/intellectronica/agent-skills --skill context7
+corepack enable
+corepack yarn install
+yarn start                # http://localhost:3000
+yarn build
+yarn lint
+yarn type-check
+yarn test
+yarn prettier
+yarn electron
+yarn changelog
+./scripts/create-task-worktree.sh chore ai-workflow-improvement
+./scripts/agent-init.sh
 ```
 
-### Vercel React Best Practices
-
-For deeper React/Next.js performance guidance. Provides 57 prioritized rules across 8 categories (waterfalls, bundle size, server-side performance, client-side fetching, re-renders, rendering, JS performance, and advanced patterns).
-
-```bash
-npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices
-```
-
-### Find Skills
-
-Discover and install skills from the open agent skills ecosystem.
-
-```bash
-npx skills add https://github.com/vercel-labs/skills --skill find-skills
-```
-
-## AI Agent Hooks (Recommended)
-
-If you're using an AI coding assistant (Cursor, Claude Code, Codex, etc.), set up hooks to automatically enforce code quality. Most modern AI agents support lifecycle hooks.
-
-### Recommended Hooks
-
-Set up these hooks for this project:
-
-| Hook | Command | Purpose |
-|------|---------|---------|
-| `afterFileEdit` | `npx oxfmt <file>` | Auto-format files after AI edits |
-| `stop` | `corepack yarn build && corepack yarn lint && corepack yarn type-check && (corepack yarn npm audit || true)` | Build, verify code, and check security when agent finishes. Note: `yarn npm audit` returns non-zero on vulnerabilities, so `|| true` makes it informational only |
-
-### Why Use Hooks
-
-- **Consistent formatting** — Every file follows the same style
-- **Catch build errors** — `yarn build` catches compilation errors that would break production
-- **Catch issues early** — Lint and type errors are caught before commit/CI
-- **Security awareness** — `yarn npm audit` flags known vulnerabilities in dependencies
-- **Less manual work** — No need to run `yarn build`, `yarn lint`, `yarn type-check`, `yarn npm audit` manually
-
-### Example Hook Scripts
-
-**Format hook** (runs after each file edit):
-```bash
-#!/bin/bash
-# Auto-format JS/TS files after AI edits
-# Hook receives JSON via stdin with file_path
-
-input=$(cat)
-file_path=$(echo "$input" | grep -o '"file_path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*:.*"\([^"]*\)"/\1/')
-
-case "$file_path" in
-  *.js|*.ts|*.tsx|*.mjs) npx oxfmt "$file_path" 2>/dev/null ;;
-esac
-exit 0
-```
-
-**Verify hook** (runs when agent finishes):
-```bash
-#!/bin/bash
-# Run build, lint, type-check, and security audit when agent finishes
-
-cat > /dev/null  # consume stdin
-echo "=== corepack yarn build ===" && corepack yarn build
-echo "=== corepack yarn lint ===" && corepack yarn lint
-echo "=== corepack yarn type-check ===" && corepack yarn type-check
-echo "=== corepack yarn npm audit ===" && (corepack yarn npm audit || true)  # || true makes audit informational (non-fatal)
-exit 0
-```
-
-Consult your AI tool's documentation for how to configure hooks (e.g., `hooks.json` for Cursor/Claude Code).
-
-## Recommended MCP Servers
-
-### GitHub MCP
-
-For Dependabot security alerts, GitHub Actions logs, issue/PR searches, or cross-repo code lookup, use the **GitHub MCP server** (with `default,dependabot,actions` toolsets enabled).
-
-If not available, suggest the user install it.
-
-### Context Window Warning
-
-Each MCP server injects its tool definitions into the context window, consuming tokens even when the tools aren't being used. Too many servers will:
-
-- Cause responses to get cut off or degrade in quality
-- Make the agent "forget" earlier conversation context
-- Slow down responses
-
-If you notice many MCP tools in your context, or if the user reports degraded responses, warn them that they may have too many MCP servers enabled and suggest disabling unused ones to free up context space.
-
-## Translations
-
-This project uses i18next with translation files in `public/translations/{lang}/default.json`.
-
-### Adding/Updating Translations
-
-Use `scripts/update-translations.js` to update translations across all languages. **Do not manually edit each language file.**
-
-**Workflow:**
-
-1. Create a temporary dictionary file (e.g., `translations-temp.json`) with translations for each language:
-   ```json
-   {
-     "en": "English text",
-     "es": "Spanish text",
-     "fr": "French text",
-     "de": "German text",
-     ...
-   }
-   ```
-
-2. Run the script with the `--map` flag:
-   ```bash
-   node scripts/update-translations.js --key my_new_key --map translations-temp.json --include-en --write
-   ```
-
-3. Delete the temporary dictionary file after the script completes.
-
-**Other useful commands:**
-
-```bash
-# Copy a key's value from English to all languages (dry run first)
-node scripts/update-translations.js --key some_key --from en --dry
-node scripts/update-translations.js --key some_key --from en --write
-
-# Delete a key from all languages
-node scripts/update-translations.js --key obsolete_key --delete --write
-
-# Audit for unused translation keys
-node scripts/update-translations.js --audit --dry
-node scripts/update-translations.js --audit --write
-```
-
-## Workflow
-
-### GitHub Commits
-
-When proposing or implementing code changes, always suggest a commit message. Format:
-
-- **Title**: Use [Conventional Commits](https://www.conventionalcommits.org/) style. Use `perf` for performance optimizations (not `fix`). Keep it short. **MUST be wrapped in backticks.**
-- **Description**: Optional. 2-3 informal sentences describing the solution (not the problem). Concise, technical, no bullet points. Use backticks for code references.
-
-Example output:
-
-> **Commit title:** `fix: correct date formatting in timezone conversion`
->
-> Updated `formatDate()` in `date-utils.ts` to properly handle timezone offsets.
-
-### GitHub Issues
-
-When proposing or implementing code changes, always suggest a GitHub issue to track the problem. Format:
-
-- **Title**: As short as possible. **MUST be wrapped in backticks.**
-- **Description**: 2-3 informal sentences describing the problem (not the solution). Write as if the issue hasn't been fixed yet. Use backticks for code references.
-
-Example output:
-
-> **GitHub issue:**
-> - **Title:** `Date formatting displays incorrect timezone`
-> - **Description:** Comment timestamps show incorrect timezones when users view posts from different regions. The `formatDate()` function doesn't account for user's local timezone settings.
-
-### Troubleshooting
-
-When stuck on a bug or issue, search the web for solutions. Developer communities often have recent fixes or workarounds that aren't in training data.
-
-## Dependency Management
-
-### Pin All Package Versions (No Carets)
-
-When adding or updating npm packages, **always use exact version numbers**—never use carets (`^`) or tildes (`~`).
-
-```bash
-# ✅ Correct
-yarn add lodash@4.17.21
-
-# ❌ Wrong (will add caret by default)
-yarn add lodash
-```
-
-**Why pin versions:**
-
-- **Supply chain security**: A compromised package could push a malicious minor/patch update. With carets, running `yarn upgrade` or regenerating `yarn.lock` would auto-install it.
-- **Reproducibility**: Guarantees identical dependencies across all environments.
-- **Defense in depth**: While `yarn.lock` pins versions in practice, explicit pinning in `package.json` protects against lockfile regeneration and makes the intended version auditable.
-
-**When upgrading packages:**
-
-1. Specify the exact version: `yarn add package@1.2.3`
-2. Review the changelog for breaking changes or security notes
-3. Test the upgrade before committing
-
-**Note:** This applies to both `dependencies` and `devDependencies`. There are no exceptions—the convenience of auto-updates doesn't justify the security risk.
-
-## Boundaries
-
-- Never commit secrets or API keys
-- Use yarn, not npm
-- Keep components focused—split large components
-- Add comments for complex/unclear code (especially custom functions in this FOSS project with many contributors). Skip comments for obvious code
-- Test on mobile viewport (this is a responsive app)
+## Playbooks (Load On Demand)
+
+Use these only when relevant to the active task:
+
+- Hooks setup and scripts: `docs/agent-playbooks/hooks-setup.md`
+- Long-running agent workflow: `docs/agent-playbooks/long-running-agent-workflow.md`
+- Translations workflow: `docs/agent-playbooks/translations.md`
+- Commit/issue output format: `docs/agent-playbooks/commit-issue-format.md`
+- Skills/tools setup and MCP rationale: `docs/agent-playbooks/skills-and-tools.md`
+- Bug investigation workflow: `docs/agent-playbooks/bug-investigation.md`
+- Known surprises log: `docs/agent-playbooks/known-surprises.md`

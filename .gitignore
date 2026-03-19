@@ -27,6 +27,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+/badges/
 *.lcov
 
 # nyc test coverage
@@ -100,6 +101,9 @@ dist
 # Electron Forge output
 squashfs-root
 
+# Vite PWA dev output
+dev-dist
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
@@ -131,11 +135,12 @@ squashfs-root
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
-# yarn v2
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
+# yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 .pnp.*
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -162,4 +167,38 @@ yarn-debug.log*
 yarn-error.log*
 
 .vscode
-.cursor
+.claude
+.playwright-cli
+.firecrawl/
+
+# Repo-managed AI tooling
+.cursor/*
+.cursor/.DS_Store
+!.cursor/agents/
+!.cursor/agents/**
+!.cursor/hooks/
+!.cursor/hooks/**
+!.cursor/hooks.json
+!.cursor/skills/
+!.cursor/skills/**
+.cursor/**/.DS_Store
+
+.codex/*
+.codex/.DS_Store
+!.codex/agents/
+!.codex/agents/**
+!.codex/config.toml
+!.codex/hooks/
+!.codex/hooks/**
+!.codex/hooks.json
+!.codex/skills/
+!.codex/skills/**
+.codex/**/.DS_Store
+
+# Upload selector smoke probe (report-only, local/CI triage)
+scripts/upload-selectors-smoke-report.json
+scripts/upload-selectors-smoke-snapshots/
+
+# Android build artifacts
+android/app/build/
+.vercel
