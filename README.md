@@ -32,12 +32,16 @@ Peers can connect to your bitsocial community using any bitsocial client, such a
 ### How to add a community to the default list (s/all)
 The default list of communities, used on s/all on Seedit, is bitsocial's [default-multisub.json list](https://github.com/bitsocialhq/lists/blob/master/default-multisub.json). You can open a pull request in that repo to add your community to the list.
 
+## Contributor setup
+
+1. `nvm install && nvm use`
+2. Run `corepack enable` once on your machine
+3. Use plain `yarn install`, `yarn build`, and `yarn test` from then on
+
 ## To run locally
 
-1. Install Node v22 (Download from https://nodejs.org)
-2. Install Yarn: `npm install -g yarn`
-3. `yarn install --frozen-lockfile` to install Seedit dependencies
-4. `yarn start` to run the web client
+1. `yarn install` to install Seedit dependencies
+2. `yarn start` to run the web client
 
 ### Scripts:
 

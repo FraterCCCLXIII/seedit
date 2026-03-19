@@ -2,7 +2,8 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "buildCommand": "yarn build",
+  "installCommand": "corepack yarn install --immutable",
+  "buildCommand": "corepack yarn build",
   "outputDirectory": "build",
   "framework": "vite"
 }

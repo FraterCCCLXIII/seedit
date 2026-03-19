@@ -28,8 +28,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 22
+      - run: corepack enable
       - name: Install dependencies (with Node v22)
-        run: yarn install --frozen-lockfile --ignore-engines
+        run: yarn install --immutable
       # make sure the ipfs executable is executable
       - name: Download IPFS and set permissions (with Node v22)
         run: node electron/download-ipfs && sudo chmod +x bin/linux/ipfs
@@ -77,6 +78,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 22
+      - run: corepack enable
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
@@ -89,7 +91,7 @@ jobs:
       - run: pip install setuptools
 
       - name: Install dependencies (with Node v22)
-        run: yarn install --frozen-lockfile --ignore-engines
+        run: yarn install --immutable
       # make sure the ipfs executable is executable
       - name: Download IPFS and set permissions (with Node v22)
         run: node electron/download-ipfs && sudo chmod +x bin/mac/ipfs
@@ -132,8 +134,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 22
-      - name: Install dependencies (with Node v22) # --network-timeout and --network-concurrency are yarn v1 flags.
-        run: yarn install --frozen-lockfile --network-timeout 100000 --network-concurrency 1
+      - run: corepack enable
+      - name: Install dependencies (with Node v22)
+        run: yarn install --immutable
       - name: Build React app (with Node v22)
         run: npx cross-env NODE_ENV=production yarn build
       - name: Build Electron app for Windows (x64)
@@ -171,11 +174,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 22
+      - run: corepack enable
       - run: sudo apt install -y apksigner zipalign
 
       # install all dependencies (including devDependencies needed for React build)
       - name: Install dependencies (with Node v22)
-        run: yarn install --frozen-lockfile --ignore-engines
+        run: yarn install --immutable
       # build react app
       - run: CI='' NODE_ENV=production yarn build
       # set android versionCode and versionName
@@ -216,8 +220,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 22
+      - run: corepack enable
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --ignore-engines
+        run: yarn install --immutable
       - name: Generate final release body from GitHub assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

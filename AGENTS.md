@@ -12,7 +12,8 @@ Seedit is a serverless, adminless, decentralized Reddit alternative built on the
 - **Vite** for bundling
 - **plebbit-react-hooks** for Plebbit protocol integration
 - **i18next** for translations
-- **yarn** as package manager
+- **Node 22.12.0** via `.nvmrc`
+- **Yarn 4** via **Corepack**; run `corepack enable` once, then use plain `yarn install` / `yarn build` / `yarn test`
 - **oxlint** for linting
 - **oxfmt** for formatting
 - **tsgo** for type checking (native TypeScript compiler)
@@ -20,7 +21,9 @@ Seedit is a serverless, adminless, decentralized Reddit alternative built on the
 ## Commands
 
 ```bash
-yarn install      # Install dependencies
+nvm install && nvm use
+corepack enable
+yarn install
 yarn start        # Start dev server (port 3000)
 yarn build        # Production build
 yarn test         # Run tests
@@ -118,15 +121,15 @@ Set up these hooks for this project:
 | Hook | Command | Purpose |
 |------|---------|---------|
 | `afterFileEdit` | `npx oxfmt <file>` | Auto-format files after AI edits |
-| `stop` | `yarn build && yarn lint && yarn type-check && (yarn audit || true)` | Build, verify code, and check security when agent finishes. Note: `yarn audit` returns non-zero on vulnerabilities, so `|| true` makes it informational only |
+| `stop` | `corepack yarn build && corepack yarn lint && corepack yarn type-check && (corepack yarn npm audit || true)` | Build, verify code, and check security when agent finishes. Note: `yarn npm audit` returns non-zero on vulnerabilities, so `|| true` makes it informational only |
 
 ### Why Use Hooks
 
 - **Consistent formatting** — Every file follows the same style
 - **Catch build errors** — `yarn build` catches compilation errors that would break production
 - **Catch issues early** — Lint and type errors are caught before commit/CI
-- **Security awareness** — `yarn audit` flags known vulnerabilities in dependencies
-- **Less manual work** — No need to run `yarn build`, `yarn lint`, `yarn type-check`, `yarn audit` manually
+- **Security awareness** — `yarn npm audit` flags known vulnerabilities in dependencies
+- **Less manual work** — No need to run `yarn build`, `yarn lint`, `yarn type-check`, `yarn npm audit` manually
 
 ### Example Hook Scripts
 
@@ -151,10 +154,10 @@ exit 0
 # Run build, lint, type-check, and security audit when agent finishes
 
 cat > /dev/null  # consume stdin
-echo "=== yarn build ===" && yarn build
-echo "=== yarn lint ===" && yarn lint
-echo "=== yarn type-check ===" && yarn type-check
-echo "=== yarn audit ===" && (yarn audit || true)  # || true makes audit informational (non-fatal)
+echo "=== corepack yarn build ===" && corepack yarn build
+echo "=== corepack yarn lint ===" && corepack yarn lint
+echo "=== corepack yarn type-check ===" && corepack yarn type-check
+echo "=== corepack yarn npm audit ===" && (corepack yarn npm audit || true)  # || true makes audit informational (non-fatal)
 exit 0
 ```
 
