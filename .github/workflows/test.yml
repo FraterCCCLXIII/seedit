@@ -19,7 +19,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'yarn'
       - run: corepack enable
 
       - name: Cache electron binaries
@@ -90,7 +89,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'yarn'
       - run: corepack enable
 
       - name: Install setuptools for native modules
@@ -152,7 +150,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'yarn'
       - run: corepack enable
 
       - name: Install setuptools for native modules
@@ -214,7 +211,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'yarn'
       - run: corepack enable
 
       - name: Cache electron binaries
