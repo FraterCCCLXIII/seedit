@@ -17154,6 +17154,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"portless@npm:0.7.0":
+  version: 0.7.0
+  resolution: "portless@npm:0.7.0"
+  dependencies:
+    chalk: "npm:^5.3.0"
+  bin:
+    portless: dist/cli.js
+  conditions: (os=darwin | os=linux | os=win32)
+  languageName: node
+  linkType: hard
+
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.1.0
   resolution: "possible-typed-array-names@npm:1.1.0"
@@ -18664,6 +18675,7 @@ __metadata:
     node-fetch: "npm:2"
     oxfmt: "npm:0.24.0"
     oxlint: "npm:1.39.0"
+    portless: "npm:0.7.0"
     progress: "npm:2.0.3"
     react: "npm:19.1.2"
     react-ace: "npm:14.0.1"
@@ -18689,6 +18701,9 @@ __metadata:
     vitest: "npm:4.1.0"
     wait-on: "npm:9.0.4"
     zustand: "npm:4.4.3"
+  dependenciesMeta:
+    portless:
+      optional: true
   languageName: unknown
   linkType: soft
 

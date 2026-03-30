@@ -8,7 +8,7 @@ if [ "$#" -ne 0 ]; then
 fi
 
 wait_timeout="${AGENT_INIT_TIMEOUT_SECONDS:-60}"
-app_url="${AGENT_APP_URL:-http://localhost:3000}"
+app_url="${AGENT_APP_URL:-http://seedit.localhost:1355}"
 
 repo_root="$(git rev-parse --show-toplevel)"
 log_dir="$repo_root/.playwright-cli"

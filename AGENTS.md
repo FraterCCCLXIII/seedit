@@ -163,14 +163,14 @@ src/
 
 ## Local Development URL
 
-The default web dev server is `http://localhost:3000`. Browser automation, local smoke/bootstrap helpers, and Electron dev flows should target that URL unless the parent agent gives a different one.
+This project uses [Portless](https://github.com/vercel-labs/portless) for the normal web dev flow. The default web dev server is `http://seedit.localhost:1355`. Browser automation and local smoke/bootstrap helpers should target that URL unless the caller explicitly bypasses Portless with `PORTLESS=0`.
 
 ## Common Commands
 
 ```bash
 corepack enable
 corepack yarn install
-yarn start                # http://localhost:3000
+yarn start                # http://seedit.localhost:1355
 yarn build
 yarn lint
 yarn type-check

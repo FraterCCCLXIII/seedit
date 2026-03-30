@@ -57,3 +57,13 @@ If uncertain, ask the developer before adding an entry.
 - **Impact:** The desktop app may open but fail to load comments, communities, or other RPC-backed data.
 - **Mitigation:** Before Electron packaging or release verification, rebuild `better-sqlite3` for the target Electron version, for example with `npx electron-rebuild -f -o better-sqlite3`, then verify the rebuilt native module under the Electron runtime.
 - **Status:** confirmed
+
+### Portless is now the canonical web dev URL
+
+- **Date:** 2026-03-30
+- **Observed by:** Codex
+- **Context:** Normal `yarn start` runs alongside other local Bitsocial projects
+- **What was surprising:** The repo historically assumed `http://localhost:3000`, but the normal web dev flow now runs through Portless at `http://seedit.localhost:1355` so multiple Bitsocial apps can coexist without raw-port collisions.
+- **Impact:** Agents can point browser automation, health checks, or local smoke scripts at the wrong URL and conclude the app is down when it is healthy.
+- **Mitigation:** Use `http://seedit.localhost:1355` for standard web dev and agent smoke flows. Only rely on `http://localhost:3000` when a script intentionally forces `PORTLESS=0`, such as the combined Electron dev commands.
+- **Status:** confirmed
