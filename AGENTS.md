@@ -163,7 +163,7 @@ src/
 
 ## Local Development URL
 
-This project uses [Portless](https://github.com/vercel-labs/portless) for the normal web dev flow. The default web dev server is `http://seedit.localhost:1355`. Browser automation and local smoke/bootstrap helpers should target that URL unless the caller explicitly bypasses Portless with `PORTLESS=0`.
+This project uses [Portless](https://github.com/vercel-labs/portless) for the normal web dev flow. The canonical web dev URL is `http://seedit.localhost:1355`, and non-`master` branches can automatically fall back to a branch-scoped `*.seedit.localhost:1355` route when needed so parallel worktrees do not collide. Browser automation and local smoke/bootstrap helpers should target that URL unless the caller explicitly bypasses Portless with `PORTLESS=0`.
 
 ## Common Commands
 
