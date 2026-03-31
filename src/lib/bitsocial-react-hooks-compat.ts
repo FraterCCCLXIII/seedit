@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import {
   deleteCommunity as deleteCommunityBase,
+  setAccount as setAccountBase,
   useAccountComment as useAccountCommentBase,
   useAccountCommunities as useAccountCommunitiesBase,
   useCommunities as useCommunitiesBase,
@@ -13,6 +14,7 @@ import {
   useSubscribe as useSubscribeBase,
 } from '@bitsocialnet/bitsocial-react-hooks/dist/index.js';
 import type {
+  Account,
   AccountCommunity,
   Community,
   PublishCommunityEditOptions,
@@ -36,6 +38,7 @@ import type {
   UsePublishCommunityEditResult,
   UseSubscribeOptions as BaseUseSubscribeOptions,
 } from '@bitsocialnet/bitsocial-react-hooks/dist/index.js';
+import accountsStore from '@bitsocialnet/bitsocial-react-hooks/dist/stores/accounts/index.js';
 
 export * from '@bitsocialnet/bitsocial-react-hooks/dist/index.js';
 
@@ -118,6 +121,26 @@ export interface UseAccountCommentOptions extends BaseUseAccountCommentOptions {
 export interface UseAccountCommentResult extends BaseUseAccountCommentResult {
   refresh(): Promise<void>;
 }
+
+const normalizeAccountForSet = (account: Account): Account => {
+  const storedAccount = account?.id ? accountsStore.getState().accounts[account.id] : undefined;
+
+  if (!storedAccount) {
+    return account;
+  }
+
+  return {
+    ...storedAccount,
+    ...account,
+    author: account.author ? { ...storedAccount.author, ...account.author } : storedAccount.author,
+    subscriptions: account.subscriptions ?? storedAccount.subscriptions,
+    blockedAddresses: account.blockedAddresses ?? storedAccount.blockedAddresses,
+    blockedCids: account.blockedCids ?? storedAccount.blockedCids,
+    communities: account.communities ?? storedAccount.communities,
+    plebbitOptions: account.plebbitOptions ?? storedAccount.plebbitOptions,
+    mediaIpfsGatewayUrl: account.mediaIpfsGatewayUrl ?? storedAccount.mediaIpfsGatewayUrl,
+  };
+};
 
 export const useSubplebbit = (options?: UseSubplebbitOptions): UseCommunityResult => {
   const { subplebbitAddress, ...rest } = options || {};
@@ -231,6 +254,10 @@ export const usePublishSubplebbitEdit = (options?: UsePublishSubplebbitEditOptio
 };
 
 export const deleteSubplebbit = deleteCommunityBase;
+
+export const setAccount = async (account: Account): Promise<void> => {
+  await setAccountBase(normalizeAccountForSet(account));
+};
 
 export const useAccountComment = (options?: UseAccountCommentOptions): UseAccountCommentResult => {
   if (options?.commentIndex === undefined && options?.commentCid === undefined) {
