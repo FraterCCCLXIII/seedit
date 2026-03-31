@@ -42,8 +42,8 @@ If uncertain, ask the developer before adding an entry.
 
 - **Date:** 2026-03-19
 - **Observed by:** Codex
-- **Context:** `electron/start-plebbit-rpc.js` imports `@plebbit/plebbit-js/rpc` directly even though the repo depends on `@plebbit/plebbit-react-hooks`.
-- **What was surprising:** The direct import can make agents think `@plebbit/plebbit-js` should be added to `package.json`, but this repo intentionally relies on the transitive copy provided by `@plebbit/plebbit-react-hooks`.
+- **Context:** `electron/start-plebbit-rpc.js` imports `@plebbit/plebbit-js/rpc` directly even though the repo depends on `@bitsocialnet/bitsocial-react-hooks`.
+- **What was surprising:** The direct import can make agents think `@plebbit/plebbit-js` should be added to `package.json`, but this repo intentionally relies on the transitive copy provided by `@bitsocialnet/bitsocial-react-hooks`.
 - **Impact:** Agents may add a redundant direct dependency and widen the upgrade surface unnecessarily.
 - **Mitigation:** Do not add `@plebbit/plebbit-js` just to satisfy a manifest audit. If a dependency audit complains, handle it with a targeted ignore or with the repo owner first.
 - **Status:** confirmed

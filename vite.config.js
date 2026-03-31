@@ -149,16 +149,44 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
-      'node-fetch': 'isomorphic-fetch',
-      assert: 'assert',
-      stream: 'stream-browserify',
-      crypto: 'crypto-browserify',
-      buffer: 'buffer',
-      'util/': 'util',
-      util: 'util',
-    },
+    alias: [
+      {
+        find: /^@bitsocialnet\/bitsocial-react-hooks$/,
+        replacement: resolve(__dirname, 'src/lib/bitsocial-react-hooks-compat.ts'),
+      },
+      {
+        find: /^@\//,
+        replacement: `${resolve(__dirname, 'src')}/`,
+      },
+      {
+        find: 'node-fetch',
+        replacement: 'isomorphic-fetch',
+      },
+      {
+        find: 'assert',
+        replacement: 'assert',
+      },
+      {
+        find: 'stream',
+        replacement: 'stream-browserify',
+      },
+      {
+        find: 'crypto',
+        replacement: 'crypto-browserify',
+      },
+      {
+        find: 'buffer',
+        replacement: 'buffer',
+      },
+      {
+        find: 'util/',
+        replacement: 'util',
+      },
+      {
+        find: 'util',
+        replacement: 'util',
+      },
+    ],
   },
   server: {
     port: 3000,

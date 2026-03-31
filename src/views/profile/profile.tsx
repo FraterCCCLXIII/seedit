@@ -3,13 +3,14 @@ import { Trans, useTranslation } from 'react-i18next';
 import { HashLink } from 'react-router-hash-link';
 import { Outlet, useParams } from 'react-router-dom';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
-import { useAccount, useAccountComments, useAccountVotes, useComment } from '@plebbit/plebbit-react-hooks';
+import { useAccount, useAccountComments, useAccountVotes, useComment, type AccountPublicationsFilter } from '@bitsocialnet/bitsocial-react-hooks';
 import useWindowWidth from '../../hooks/use-window-width';
 import AuthorSidebar from '../../components/author-sidebar';
 import Post from '../../components/post';
 import Reply from '../../components/reply';
 import styles from './profile.module.css';
 import ErrorDisplay from '../../components/error-display';
+import { getAccountHistoryOrder, getAccountHistoryPage } from '../../lib/utils/account-history-utils';
 
 const pageSize = 10;
 const sortTypes: string[] = ['new', 'old'];
@@ -136,21 +137,17 @@ const VirtualizedCommentList = ({ comments }: { comments: any[] }) => {
 
 const Overview = () => {
   const { t } = useTranslation();
-  const { error, accountComments } = useAccountComments();
   const [sortType, setSortType] = useState('new');
+  const { error, accountComments } = useAccountComments({ order: getAccountHistoryOrder(sortType) });
   const [shouldShowErrorToUserOverview, setShouldShowErrorToUserOverview] = useState(false);
 
-  const sortedComments = useMemo(() => {
-    return [...accountComments].sort((a, b) => (sortType === 'new' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp));
-  }, [accountComments, sortType]);
-
   useEffect(() => {
-    if (error?.message && sortedComments.length === 0) {
+    if (error?.message && accountComments.length === 0) {
       setShouldShowErrorToUserOverview(true);
-    } else if (sortedComments.length > 0) {
+    } else if (accountComments.length > 0) {
       setShouldShowErrorToUserOverview(false);
     }
-  }, [error, sortedComments]);
+  }, [error, accountComments]);
 
   const prevErrorMessageRef = useRef<string | undefined>(undefined);
   useEffect(() => {
@@ -168,30 +165,25 @@ const Overview = () => {
         </div>
       )}
       <SortDropdown onSortChange={setSortType} />
-      {sortedComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={sortedComments} />}
+      {accountComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={accountComments} />}
     </div>
   );
 };
 
 const Comments = () => {
   const { t } = useTranslation();
-  const { error, accountComments } = useAccountComments();
   const [sortType, setSortType] = useState('new');
+  const repliesFilter = useCallback<AccountPublicationsFilter>((publication) => ('parentCid' in publication ? Boolean(publication.parentCid) : false), []);
+  const { error, accountComments } = useAccountComments({ filter: repliesFilter, order: getAccountHistoryOrder(sortType) });
   const [shouldShowErrorToUserComments, setShouldShowErrorToUserComments] = useState(false);
 
-  const replyComments = useMemo(() => accountComments?.filter((comment) => comment.parentCid) || [], [accountComments]);
-
-  const sortedComments = useMemo(() => {
-    return [...replyComments].sort((a, b) => (sortType === 'new' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp));
-  }, [replyComments, sortType]);
-
   useEffect(() => {
-    if (error?.message && sortedComments.length === 0) {
+    if (error?.message && accountComments.length === 0) {
       setShouldShowErrorToUserComments(true);
-    } else if (sortedComments.length > 0) {
+    } else if (accountComments.length > 0) {
       setShouldShowErrorToUserComments(false);
     }
-  }, [error, sortedComments]);
+  }, [error, accountComments]);
 
   const prevErrorMessageRef = useRef<string | undefined>(undefined);
   useEffect(() => {
@@ -209,30 +201,25 @@ const Comments = () => {
         </div>
       )}
       <SortDropdown onSortChange={setSortType} />
-      {sortedComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={sortedComments} />}
+      {accountComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={accountComments} />}
     </div>
   );
 };
 
 const Submitted = () => {
   const { t } = useTranslation();
-  const { error, accountComments } = useAccountComments();
   const [sortType, setSortType] = useState('new');
+  const submittedFilter = useCallback<AccountPublicationsFilter>((publication) => ('parentCid' in publication ? !publication.parentCid : false), []);
+  const { error, accountComments } = useAccountComments({ filter: submittedFilter, order: getAccountHistoryOrder(sortType) });
   const [shouldShowErrorToUserSubmitted, setShouldShowErrorToUserSubmitted] = useState(false);
 
-  const postComments = useMemo(() => accountComments?.filter((comment) => !comment.parentCid) || [], [accountComments]);
-
-  const sortedComments = useMemo(() => {
-    return [...postComments].sort((a, b) => (sortType === 'new' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp));
-  }, [postComments, sortType]);
-
   useEffect(() => {
-    if (error?.message && sortedComments.length === 0) {
+    if (error?.message && accountComments.length === 0) {
       setShouldShowErrorToUserSubmitted(true);
-    } else if (sortedComments.length > 0) {
+    } else if (accountComments.length > 0) {
       setShouldShowErrorToUserSubmitted(false);
     }
-  }, [error, sortedComments]);
+  }, [error, accountComments]);
 
   const prevErrorMessageRef = useRef<string | undefined>(undefined);
   useEffect(() => {
@@ -250,26 +237,22 @@ const Submitted = () => {
         </div>
       )}
       <SortDropdown onSortChange={setSortType} />
-      {sortedComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={sortedComments} />}
+      {accountComments.length === 0 ? <div className={styles.nothingFound}>{t('nothing_found')}</div> : <VirtualizedCommentList comments={accountComments} />}
     </div>
   );
 };
 
 const VotedComments = ({ voteType }: { voteType: 1 | -1 }) => {
   const { t } = useTranslation();
-  const { error, accountVotes } = useAccountVotes();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState('new');
   const [shouldShowErrorToUserVoted, setShouldShowErrorToUserVoted] = useState(false);
-
-  const votedCommentCids = useMemo(() => {
-    const filteredVotes = accountVotes?.filter((vote) => vote.vote === voteType) || [];
-    const sortedVotes = filteredVotes.sort((a, b) => (sortType === 'new' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp));
-    return sortedVotes.map((vote) => vote.commentCid);
-  }, [accountVotes, voteType, sortType]);
-
-  const paginatedCids = votedCommentCids.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-  const hasMore = currentPage * pageSize < votedCommentCids.length;
+  const order = getAccountHistoryOrder(sortType);
+  const page = getAccountHistoryPage(currentPage);
+  const { error, accountVotes } = useAccountVotes({ vote: voteType, order, page, pageSize });
+  const { accountVotes: nextPageVotes } = useAccountVotes({ vote: voteType, order, page: page + 1, pageSize: 1 });
+  const paginatedCids = useMemo(() => accountVotes.map((vote) => vote.commentCid).filter((cid): cid is string => Boolean(cid)), [accountVotes]);
+  const hasMore = nextPageVotes.length > 0;
 
   useEffect(() => {
     if (error?.message && paginatedCids.length === 0 && hasMore) {
