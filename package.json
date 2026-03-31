@@ -8,6 +8,7 @@
   "private": true,
   "packageManager": "yarn@4.13.0",
   "dependencies": {
+    "@bitsocialnet/bitsocial-react-hooks": "https://codeload.github.com/bitsocialnet/bitsocial-react-hooks/tar.gz/dcfaeaccefc0b9de90ef37c44885ac005eef429a",
     "@capacitor/app": "7.0.1",
     "@capacitor/filesystem": "7.1.4",
     "@capacitor/local-notifications": "7.0.1",
@@ -15,7 +16,6 @@
     "@capacitor/status-bar": "7.0.1",
     "@capawesome/capacitor-android-edge-to-edge-support": "7.2.2",
     "@floating-ui/react": "0.26.1",
-    "@plebbit/plebbit-react-hooks": "https://codeload.github.com/plebbit/plebbit-react-hooks/tar.gz/df3cb6901f63054870dc127cd7565c98617c2a4f",
     "@types/node": "20.8.2",
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
@@ -56,6 +56,7 @@
     "zustand": "4.4.3"
   },
   "scripts": {
+    "postinstall": "node scripts/patch-bitsocial-react-hooks-esm.cjs",
     "start": "node scripts/start-dev.js",
     "build": "cross-env NODE_ENV=production PUBLIC_URL=./ GENERATE_SOURCEMAP=false vite build",
     "build:preload": "cross-env NODE_ENV=production vite build --config electron/vite.preload.config.js",

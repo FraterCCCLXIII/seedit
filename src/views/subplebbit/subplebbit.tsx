@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useAccountComments, useBlock, useFeed, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { useAccountComments, useBlock, useFeed, useSubplebbit, type Comment } from '@bitsocialnet/bitsocial-react-hooks';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
 import { Trans, useTranslation } from 'react-i18next';
 import styles from '../home/home.module.css';
 import { useFeedStateString } from '../../hooks/use-state-string';
+import { filterOptimisticLocalPosts } from '../../lib/utils/account-history-utils';
 import { commentMatchesPattern } from '../../lib/utils/pattern-utils';
 import useContentOptionsStore from '../../stores/use-content-options-store';
 import useFeedFiltersStore from '../../stores/use-feed-filters-store';
@@ -268,24 +269,8 @@ const Subplebbit = () => {
   const { feed, hasMore, loadMore, reset } = useFeed(feedOptions);
 
   // show account comments instantly in the feed once published (cid defined), instead of waiting for the feed to update
-  const { accountComments } = useAccountComments();
-  const filteredComments = useMemo(
-    () =>
-      accountComments.filter((comment) => {
-        const { cid, deleted, postCid, removed, state, timestamp } = comment || {};
-        return (
-          !deleted &&
-          !removed &&
-          timestamp > Date.now() / 1000 - 60 * 60 &&
-          state === 'succeeded' &&
-          cid &&
-          cid === postCid &&
-          comment?.subplebbitAddress === subplebbitAddress &&
-          !feed.some((post) => post.cid === cid)
-        );
-      }),
-    [accountComments, subplebbitAddress, feed],
-  );
+  const { accountComments } = useAccountComments({ communityAddress: subplebbitAddress, newerThan: 60 * 60 });
+  const filteredComments = useMemo(() => filterOptimisticLocalPosts(accountComments, feed, subplebbitAddress), [accountComments, subplebbitAddress, feed]);
 
   // reset the feed when a new account comment is published, so it shows instantly in the feed
   const setResetFunction = useFeedResetStore((state) => state.setResetFunction);
