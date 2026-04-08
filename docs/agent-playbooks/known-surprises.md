@@ -77,3 +77,13 @@ If uncertain, ask the developer before adding an entry.
 - **Impact:** Parallel seedit branches can block each other even though Portless is meant to let them coexist safely.
 - **Mitigation:** Keep Portless startup behind `scripts/start-dev.js`, which now uses a branch-scoped `*.seedit.localhost:1355` route outside the canonical case, suffixes repeated branch routes (`-2`, `-3`, ...) until it finds a free Portless name, and falls back to the next free direct-Vite port when `PORTLESS=0` is used without an explicit `PORT`.
 - **Status:** confirmed
+
+### Toolchain model names are not interchangeable
+
+- **Date:** 2026-04-08
+- **Observed by:** Codex
+- **Context:** Reviewing repo-managed agent configs under `.codex/`, `.claude/`, and `.cursor/`.
+- **What was surprising:** `composer-2` is only valid for Cursor agents, while `.codex` agents should use `gpt-5.4` instead of `gpt-5.3-codex` or `gpt-5.3-codex-spark`.
+- **Impact:** Agents can silently pick unavailable or poor-performing models when equivalent workflow files are copied across toolchains without adjusting the model field.
+- **Mitigation:** When editing shared agent definitions, keep the behavior text aligned across toolchains but set models per platform: Cursor may use `composer-2`, `.claude` must not, and `.codex` should use `gpt-5.4`.
+- **Status:** confirmed
