@@ -32,6 +32,14 @@ npx skills add https://github.com/vercel-labs/skills --skill find-skills
 
 Use `playwright-cli` for browser automation (navigation, interaction, screenshots, tests, extraction).
 
+When using `playwright-cli` for repo UI verification, do not stop after one engine. Run the relevant flow in all three main browser engines:
+
+- `chrome` for Blink
+- `firefox` for Gecko
+- `webkit` for Safari/WebKit coverage
+
+Use separate named sessions per engine so results stay isolated. If an engine is intentionally skipped, record why.
+
 ```bash
 npm install -g @playwright/cli@latest
 playwright-cli install --skills

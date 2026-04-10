@@ -27,7 +27,7 @@ seedit is a serverless, adminless, decentralized Reddit-style client built on th
 | Situation | Required action |
 |---|---|
 | React UI logic changed (`src/components`, `src/views`, `src/hooks`, UI stores) | Follow React architecture rules below; run `yarn build`, `yarn lint`, and `yarn type-check` |
-| Visible UI or interaction changed | Verify in browser with `playwright-cli`; test desktop and mobile viewport |
+| Visible UI or interaction changed | Verify in browser with `playwright-cli` across Chrome/Blink, Firefox/Gecko, and WebKit/Safari; test desktop and mobile viewport |
 | `package.json` changed | Run `corepack yarn install` to keep `yarn.lock` in sync |
 | Translation key/value changed | Use `docs/agent-playbooks/translations.md` |
 | Bug report in a specific file/line | Start with git history scan from `docs/agent-playbooks/bug-investigation.md` before editing |
@@ -115,7 +115,8 @@ src/
 - After code changes, run: `yarn build`, `yarn lint`, `yarn type-check`.
 - After adding or changing tests, run `yarn test`.
 - Do not commit or force-add local rebuild output. `build/` is the main generated build output in this repo; remove or restore generated output directories after local verification before committing.
-- For UI/visual changes, verify with `playwright-cli` on desktop and mobile viewport.
+- For UI/visual changes, verify with `playwright-cli` across Chrome/Blink, Firefox/Gecko, and WebKit/Safari.
+- Cover desktop and a mobile viewport flow in each browser engine when the change affects layout, touch behavior, or responsiveness.
 - The shared hook verification path is strict by default. Only set `AGENT_VERIFY_MODE=advisory` when you intentionally need signal from a broken tree without blocking the session.
 - If verification fails, fix and re-run until passing.
 

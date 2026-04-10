@@ -66,7 +66,7 @@ After all batches complete:
 1. Run `yarn build` to confirm everything compiles
 2. Run `yarn lint` and `yarn type-check`
 3. If the plan touched React components/hooks, run the repo-standard verification commands and add `yarn test` when runtime behavior or tests changed
-4. For UI changes, verify in the browser with playwright-cli
+4. For UI changes, verify in the browser with `playwright-cli` across `chrome`, `firefox`, and `webkit`, plus a mobile viewport flow in each engine when relevant
 
 ### 6. Report
 
