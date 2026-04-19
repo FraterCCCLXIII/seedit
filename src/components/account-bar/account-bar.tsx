@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { createAccount, setActiveAccount, useAccount, useAccounts } from '@plebbit/plebbit-react-hooks';
+import { createAccount, setActiveAccount, useAccount, useAccounts } from '@bitsocialnet/bitsocial-react-hooks';
 import { isSettingsView } from '../../lib/utils/view-utils';
 import styles from './account-bar.module.css';
 import SearchBar from '../search-bar';
@@ -54,12 +54,8 @@ const AccountBar = () => {
     [searchBarRef, accountSelectButtonRef, accountDropdownRef, accountdropdownItemsRef],
   );
 
-  const [isFocused, setIsFocused] = useState(false);
-  useEffect(() => {
-    if (searchVisible) {
-      setIsFocused(true);
-    }
-  }, [searchVisible]);
+  // Derive focus intent from visibility to avoid effect; SearchBar will handle actual focusing
+  const shouldFocusSearch = searchVisible;
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -120,7 +116,7 @@ const AccountBar = () => {
         </span>
         {searchVisible && (
           <div className={styles.searchBar} ref={searchBarRef}>
-            <SearchBar isFocused={isFocused} />
+            <SearchBar isFocused={shouldFocusSearch} />
           </div>
         )}
       </span>

@@ -2,11 +2,20 @@ import { Fragment, useEffect, useMemo, useState, useRef } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Plebbit from '@plebbit/plebbit-js';
-import { Comment, useAccountComment, useAuthorAddress, useAuthorAvatar, useBlock, useComment, useEditedComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import {
+  Comment,
+  useAccountComment,
+  useAuthorAddress,
+  useAuthorAvatar,
+  useBlock,
+  useComment,
+  useEditedComment,
+  useSubplebbit,
+} from '@bitsocialnet/bitsocial-react-hooks';
 import { isInboxView, isPostContextView, isPostPageView } from '../../lib/utils/view-utils';
 import { getHostname } from '../../lib/utils/url-utils';
 import { formatScore, getReplyScore } from '../../lib/utils/post-utils';
-import { flattenCommentsPages } from '@plebbit/plebbit-react-hooks/dist/lib/utils';
+import { flattenCommentsPages } from '@bitsocialnet/bitsocial-react-hooks/dist/lib/utils';
 import { CommentMediaInfo, getHasThumbnail } from '../../lib/utils/media-utils';
 import { formatLocalizedUTCTimestamp, getFormattedTimeAgo } from '../../lib/utils/time-utils';
 import { useCommentMediaInfo } from '../../hooks/use-comment-media-info';
@@ -100,7 +109,7 @@ const ReplyAuthor = ({
               {' '}
               [
               {isAuthorSubmitter && (
-                <Link to={`/p/${subplebbitAddress}/c/${postCid}`} className={styles.submitter} title={t('submitter')}>
+                <Link to={`/s/${subplebbitAddress}/c/${postCid}`} className={styles.submitter} title={t('submitter')}>
                   S
                 </Link>
               )}
@@ -117,7 +126,7 @@ const ReplyAuthor = ({
             <span className={styles.moderatorBrackets}>
               {' '}
               [
-              <Link to={`/p/${subplebbitAddress}/c/${postCid}`} className={styles.submitter} title={t('submitter')}>
+              <Link to={`/s/${subplebbitAddress}/c/${postCid}`} className={styles.submitter} title={t('submitter')}>
                 S
               </Link>
               ]
@@ -217,7 +226,7 @@ const ParentLink = ({ postCid }: ParentLinkProps) => {
 
   return (
     <div className={styles.parent}>
-      <Link to={`/p/${subplebbitAddress}/c/${cid}`} className={styles.parentLink}>
+      <Link to={`/s/${subplebbitAddress}/c/${cid}`} className={styles.parentLink}>
         {postTitle}{' '}
       </Link>
       {t('post_by')}{' '}
@@ -225,8 +234,8 @@ const ParentLink = ({ postCid }: ParentLinkProps) => {
         u/{author?.shortAddress}{' '}
       </Link>
       {t('via')}{' '}
-      <Link to={`/p/${subplebbitAddress}`} className={styles.parentSubplebbit}>
-        p/{subplebbitAddress}
+      <Link to={`/s/${subplebbitAddress}`} className={styles.parentSubplebbit}>
+        s/{subplebbitAddress}
       </Link>
     </div>
   );
@@ -246,7 +255,7 @@ const InboxParentLink = ({ commentCid }: ParentLinkProps) => {
   return (
     <div className={styles.inboxParentLinkWrapper}>
       <span className={styles.inboxParentLinkSubject}>{isInboxCommentReply ? t('comment_reply') : isInboxPostReply ? t('post_reply') : ''}</span>
-      <Link to={`/p/${subplebbitAddress}/c/${cid}`} className={styles.inboxParentLink}>
+      <Link to={`/s/${subplebbitAddress}/c/${cid}`} className={styles.inboxParentLink}>
         {postTitle}
       </Link>
     </div>
@@ -260,7 +269,7 @@ const InboxParentComment = ({ parentCid }: { parentCid: string | undefined }) =>
   return (
     <>
       <Expando content={content} expanded={true} showContent={true} />
-      <Link className={styles.viewParentComment} to={`/p/${subplebbitAddress}/c/${parentCid}`}>
+      <Link className={styles.viewParentComment} to={`/s/${subplebbitAddress}/c/${parentCid}`}>
         {t('view_parent_comment')}
       </Link>
     </>
@@ -282,7 +291,7 @@ const InboxShowParentButton = ({ parentCid }: { parentCid: string | undefined })
 
 const InboxParentInfo = ({ address, cid, markedAsRead, parentCid, postCid, shortAddress, subplebbitAddress, timestamp }: ParentLinkProps) => {
   const { t } = useTranslation();
-  const shortSubplebbitAddress = subplebbitAddress ? (subplebbitAddress.includes('.') ? subplebbitAddress : Plebbit.getShortAddress(subplebbitAddress)) : '';
+  const shortSubplebbitAddress = subplebbitAddress ? (subplebbitAddress.includes('.') ? subplebbitAddress : Plebbit.getShortAddress({ address: subplebbitAddress })) : '';
 
   return (
     <>
@@ -292,8 +301,8 @@ const InboxParentInfo = ({ address, cid, markedAsRead, parentCid, postCid, short
           u/{shortAddress}{' '}
         </Link>
         {t('via')}{' '}
-        <Link to={`/p/${subplebbitAddress}`} className={styles.inboxParentSubplebbit}>
-          p/{shortSubplebbitAddress}{' '}
+        <Link to={`/s/${subplebbitAddress}`} className={styles.inboxParentSubplebbit}>
+          s/{shortSubplebbitAddress}{' '}
         </Link>
         {t('sent')} {timestamp && getFormattedTimeAgo(timestamp)}
       </div>
@@ -583,7 +592,7 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
                         />
                       ) : (
                         <div className={styles.continueThisThread}>
-                          <Link to={`/p/${subplebbitAddress}/c/${cid}`}>{t('continue_thread')}</Link>
+                          <Link to={`/s/${subplebbitAddress}/c/${cid}`}>{t('continue_thread')}</Link>
                         </div>
                       )}
                     </Fragment>

@@ -47,7 +47,7 @@ if (remoteFiles.length) {
   files = remoteFiles;
 }
 
-const linkTo = (file) => `https://github.com/plebbit/seedit/releases/download/v${version}/${file}`;
+const linkTo = (file) => `https://github.com/bitsocialhq/seedit/releases/download/v${version}/${file}`;
 const has = (s, sub) => s.toLowerCase().includes(sub);
 const isArm = (s) => has(s, 'arm64') || has(s, 'aarch64');
 const isX64 = (s) => (has(s, 'x64') || has(s, 'x86_64')) || !isArm(s);
@@ -65,9 +65,7 @@ const linuxX64 = linux.find(isX64);
 const macArm = mac.find(isArm);
 const macX64 = mac.find(isX64);
 
-const winSetupArm = win.find(f => has(f, 'setup') && isArm(f));
 const winSetupX64 = win.find(f => has(f, 'setup') && isX64(f));
-const winPortableArm = win.find(f => has(f, 'portable') && isArm(f));
 const winPortableX64 = win.find(f => has(f, 'portable') && isX64(f));
 
 // small section builder without push()
@@ -85,6 +83,7 @@ const macSection = section('macOS', [
 const winSection = section('Windows', [
   winSetupX64 && `- Installer (x64): [Download EXE](${linkTo(winSetupX64)})`,
   winPortableX64 && `- Portable (x64): [Download EXE](${linkTo(winPortableX64)})`,
+  (win.length > 0) && `- If Windows shows "Windows protected your PC" (SmartScreen), click "More info" then "Run anyway". To permanently allow, right-click the .exe → Properties → check "Unblock", or run in PowerShell: \`Unblock-File -Path .\\path\\to\\file.exe\`.`,
 ]);
 
 const linuxSection = section('Linux', [
@@ -103,7 +102,7 @@ const htmlSection = section('Static HTML build', [
 const downloads = [macSection, winSection, linuxSection, androidSection, htmlSection]
   .filter(Boolean).join('\n\n');
 
-const releaseBody = `This version improves desktop performance and adds native builds.
+const releaseBody = `This version fixes a bug that prevented the desktop app from opening in specific Linux environments. It also includes a plebbit-react-hooks fix for the user's wallet signature timestamps, which were invalid.
 
 - Web app: https://seedit.app
 - Decentralized web app via IPFS/IPNS gateways (works on any browser): [seedit.eth.limo](https://seedit.eth.limo), [seedit.eth.link](https://seedit.eth.link), [dweb.link/ipfs.io](https://dweb.link/ipns/seedit.eth)

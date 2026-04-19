@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
-import { useFeed } from '@plebbit/plebbit-react-hooks';
+import { useFeed } from '@bitsocialnet/bitsocial-react-hooks';
 import { commentMatchesPattern } from '../../lib/utils/pattern-utils';
 import useFeedFiltersStore from '../../stores/use-feed-filters-store';
 import { useDefaultSubplebbitAddresses } from '../../hooks/use-default-subplebbits';
@@ -32,7 +32,7 @@ const All = () => {
     if (!params.timeFilterName && !searchQuery && sessionKey) {
       const sessionPreference = sessionStorage.getItem(sessionKey);
       if (sessionPreference && timeFilterNames.includes(sessionPreference)) {
-        const targetPath = `/p/all/${sortType}/${sessionPreference}${location.search}`;
+        const targetPath = `/s/all/${sortType}/${sessionPreference}${location.search}`;
         navigate(targetPath, { replace: true });
       }
     }

@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAccount, useAccountComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { useAccount, useAccountComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import { sortTypes } from '../../constants/sort-types';
 import { sortLabels } from '../../constants/sort-labels';
@@ -77,7 +76,7 @@ const CommentsButton = () => {
 
   return (
     <li className={(isInPostPageView || isInPendingPostView) && !isInHomeAboutView && !isInPostPageAboutView ? styles.selected : styles.choice}>
-      <Link to={`/p/${params.subplebbitAddress}/c/${params.commentCid}`} onClick={(e) => isInPendingPostView && e.preventDefault()}>
+      <Link to={`/s/${params.subplebbitAddress}/c/${params.commentCid}`} onClick={(e) => isInPendingPostView && e.preventDefault()}>
         {t('comments')}
       </Link>
     </li>
@@ -95,37 +94,26 @@ const SortItems = () => {
   const isInModView = isModView(location.pathname);
   const isInDomainView = isDomainView(location.pathname);
   const isInSubplebbitView = isSubplebbitView(location.pathname, params);
-  const [selectedSortType, setSelectedSortType] = useState(params.sortType || '/hot');
+  // Derive selection directly from route instead of syncing via an effect
+  const selectedSortType = isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? '' : params.sortType || 'hot';
   const timeFilterName = params.timeFilterName;
-
-  useEffect(() => {
-    if (isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView) {
-      setSelectedSortType('');
-    } else if (params.sortType) {
-      setSelectedSortType(params.sortType);
-    } else {
-      setSelectedSortType('hot');
-    }
-  }, [params.sortType, isInHomeAboutView, isInSubplebbitAboutView, isInPostPageAboutView]);
 
   return sortTypes.map((sortType, index) => {
     let sortLink = isInSubplebbitView
-      ? `/p/${params.subplebbitAddress}/${sortType}`
+      ? `/s/${params.subplebbitAddress}/${sortType}`
       : isInAllView
-      ? `p/all/${sortType}`
-      : isInModView
-      ? `p/mod/${sortType}`
-      : isInDomainView
-      ? `domain/${params.domain}/${sortType}`
-      : sortType;
+        ? `/s/all/${sortType}`
+        : isInModView
+          ? `/s/mod/${sortType}`
+          : isInDomainView
+            ? `/domain/${params.domain}/${sortType}`
+            : sortType;
     if (timeFilterName) {
       sortLink = sortLink + `/${timeFilterName}`;
     }
     return (
       <li key={sortType} className={selectedSortType === sortType ? styles.selected : styles.choice}>
-        <Link to={sortLink} onClick={() => setSelectedSortType(sortType)}>
-          {t(sortLabels[index])}
-        </Link>
+        <Link to={sortLink}>{t(sortLabels[index])}</Link>
       </li>
     );
   });
@@ -262,7 +250,6 @@ const SettingsHeaderTabs = () => {
 };
 
 const HeaderTabs = () => {
-  const { t } = useTranslation();
   const params = useParams();
   const location = useLocation();
   const isInAllView = isAllView(location.pathname);
@@ -299,8 +286,6 @@ const HeaderTabs = () => {
     return <SortItems />;
   } else if (isInProfileView || isInAuthorView) {
     return <AuthorHeaderTabs />;
-  } else if (isInPendingPostView) {
-    return <span className={styles.pageName}>{t('pending')}</span>;
   } else if (isInInboxView) {
     return <InboxHeaderTabs />;
   } else if (isInSubplebbitsView && !isInCreateSubplebbitView) {
@@ -342,16 +327,18 @@ const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; p
   const isBroadlyNsfwSubplebbit = useIsBroadlyNsfwSubplebbit(subplebbitAddress || '');
 
   const subplebbitTitle = (
-    <Link to={`/p/${isInPendingPostView ? pendingPostSubplebbitAddress : subplebbitAddress}`}>
+    <Link to={`/s/${isInPendingPostView ? pendingPostSubplebbitAddress : subplebbitAddress}`}>
       {title ||
-        (subplebbitAddress && Plebbit.getShortAddress(subplebbitAddress)) ||
-        (pendingPostSubplebbitAddress && Plebbit.getShortAddress(pendingPostSubplebbitAddress))}
+        (subplebbitAddress && Plebbit.getShortAddress({ address: subplebbitAddress })) ||
+        (pendingPostSubplebbitAddress && Plebbit.getShortAddress({ address: pendingPostSubplebbitAddress }))}
     </Link>
   );
   const domainTitle = <Link to={`/domain/${params.domain}`}>{params.domain}</Link>;
   const submitTitle = <span className={styles.submitTitle}>{t('submit')}</span>;
   const profileTitle = <Link to='/profile'>{account?.author?.shortAddress}</Link>;
-  const authorTitle = <Link to={`/u/${params.authorAddress}/c/${params.commentCid}`}>{params.authorAddress && Plebbit.getShortAddress(params.authorAddress)}</Link>;
+  const authorTitle = (
+    <Link to={`/u/${params.authorAddress}/c/${params.commentCid}`}>{params.authorAddress && Plebbit.getShortAddress({ address: params.authorAddress })}</Link>
+  );
 
   if (isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) {
     return <span>{t('over_18')}</span>;
@@ -463,10 +450,10 @@ const Header = () => {
     isInHomeView || isInHomeAboutView || isInAllView || isInModView || isInDomainView
       ? '/submit'
       : isInPendingPostView
-      ? `/p/${accountComment?.subplebbitAddress}/submit`
-      : subplebbitAddress
-      ? `/p/${subplebbitAddress}/submit`
-      : '/submit';
+        ? `/s/${accountComment?.subplebbitAddress}/submit`
+        : subplebbitAddress
+          ? `/s/${subplebbitAddress}/submit`
+          : '/submit';
 
   return (
     <div className={styles.header}>

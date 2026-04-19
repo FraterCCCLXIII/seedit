@@ -10,7 +10,7 @@ import {
   usePublishSubplebbitEdit,
   useSubplebbit,
   useSubscribe,
-} from '@plebbit/plebbit-react-hooks';
+} from '@bitsocialnet/bitsocial-react-hooks';
 import { isUserOwnerOrAdmin, Roles } from '../../lib/utils/user-utils';
 import { isValidURL } from '../../lib/utils/url-utils';
 import { isCreateSubplebbitView, isSubplebbitSettingsView } from '../../lib/utils/view-utils';
@@ -322,7 +322,7 @@ const Moderators = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
   );
 };
 
-const JSONSettings = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
+const JSONSettings = ({ isReadOnly: _isReadOnly = false }: { isReadOnly?: boolean }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { subplebbitAddress } = useParams<{ subplebbitAddress: string }>();
@@ -332,7 +332,7 @@ const JSONSettings = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
       <div className={`${styles.boxTitle} ${styles.JSONSettingsTitle}`}>{t('json_settings')}</div>
       <div className={styles.boxSubtitle}>{t('json_settings_info')}</div>
       <div className={`${styles.boxInput} ${styles.JSONSettings}`}>
-        <button onClick={() => navigate(`/p/${subplebbitAddress}/settings/editor`)}>{t('edit')}</button>
+        <button onClick={() => navigate(`/s/${subplebbitAddress}/settings/editor`)}>{t('edit')}</button>
       </div>
     </div>
   );
@@ -412,7 +412,7 @@ const SubplebbitSettings = () => {
 
   const [showDeleting, setShowDeleting] = useState(false);
   const _deleteSubplebbit = async () => {
-    if (subplebbitAddress && window.confirm(t('delete_confirm', { value: `p/${shortAddress}`, interpolation: { escapeValue: false } }))) {
+    if (subplebbitAddress && window.confirm(t('delete_confirm', { value: `s/${shortAddress}`, interpolation: { escapeValue: false } }))) {
       if (window.confirm(t('double_confirm'))) {
         try {
           setShowDeleting(true);
@@ -468,7 +468,7 @@ const SubplebbitSettings = () => {
       }
 
       resetSubplebbitSettingsStore();
-      navigate(`/p/${createdSubplebbit?.address}/`);
+      navigate(`/s/${createdSubplebbit?.address}/`);
     }
   }, [createdSubplebbit, navigate, resetSubplebbitSettingsStore, account, subscribe]);
 
@@ -582,7 +582,7 @@ const SubplebbitSettings = () => {
       )}
       {isReadOnly && !userIsOwnerOrAdmin && <div className={styles.infobar}>{t('owner_settings_notice')}</div>}
       {isOffline && <div className={styles.infobar}>{offlineTitle}</div>}
-      {isChallengesReadOnly && <div className={styles.infobar}>cannot read or write anti-spam challenges, community node isn't reachable.</div>}
+      {isChallengesReadOnly && <div className={styles.infobar}>cannot read or write challenges, community node isn't reachable.</div>}
       <Title isReadOnly={isReadOnly} />
       <Description isReadOnly={isReadOnly} />
       {!isInCreateSubplebbitView && <Address isReadOnly={isReadOnly} />}

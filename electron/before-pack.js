@@ -18,7 +18,8 @@ const ipfsClientLinuxPath = path.join(ipfsClientsPath, 'linux');
 // const ipfsClientLinuxUrl = `https://github.com/plebbit/kubo/releases/download/v${ipfsClientVersion}/ipfs-linux-amd64`
 
 // official kubo download links https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
-const ipfsClientVersion = '0.32.1';
+// NOTE: Keep this version in sync with the kubo version in package.json to avoid repo version mismatches
+const ipfsClientVersion = '0.39.0';
 
 // Resolve desired build arch: allow overriding via env (so cross-arch builds pick correct binary)
 const resolveBuildArch = () => {
@@ -96,25 +97,6 @@ const downloadWithRetry = async (url, retries = 3) => {
   }
 };
 
-// plebbit kubo downloads dont need to be extracted
-const download = async (url, destinationPath) => {
-  let binName = 'ipfs';
-  if (destinationPath.endsWith('win')) {
-    binName += '.exe';
-  }
-  const binPath = path.join(destinationPath, binName);
-  // already downloaded, don't download again
-  if (fs.pathExistsSync(binPath)) {
-    return;
-  }
-  const split = url.split('/');
-  const fileName = split[split.length - 1];
-  const downloadPath = path.join(destinationPath, fileName);
-  const file = await downloadWithRetry(url);
-  fs.ensureDirSync(destinationPath);
-  await fs.writeFile(binPath, file);
-};
-
 // official kubo downloads need to be extracted
 const downloadAndExtract = async (url, destinationPath) => {
   let binName = 'ipfs';
@@ -128,14 +110,14 @@ const downloadAndExtract = async (url, destinationPath) => {
   console.log(`Downloading IPFS client from ${url} to ${destinationPath}`);
   const split = url.split('/');
   const fileName = split[split.length - 1];
-  const downloadPath = path.join(destinationPath, fileName);
+  const archivePath = path.join(destinationPath, fileName);
   const file = await downloadWithRetry(url);
   fs.ensureDirSync(destinationPath);
-  await fs.writeFile(downloadPath, file);
-  console.log(`Downloaded archive to ${downloadPath}`);
-  console.log(`Extracting ${downloadPath} to ${destinationPath}`);
+  await fs.writeFile(archivePath, file);
+  console.log(`Downloaded archive to ${archivePath}`);
+  console.log(`Extracting ${archivePath} to ${destinationPath}`);
   try {
-    await decompress(downloadPath, destinationPath);
+    await decompress(archivePath, destinationPath);
     console.log('Decompression complete');
   } catch (err) {
     console.error('Error during decompression:', err);
@@ -147,7 +129,7 @@ const downloadAndExtract = async (url, destinationPath) => {
   fs.moveSync(extractedBinPath, binPath);
   console.log('Binary moved');
   console.log('Cleaning up temporary files');
-  fs.removeSync(downloadPath);
+  fs.removeSync(archivePath);
   console.log('Cleanup complete');
 };
 
@@ -167,6 +149,6 @@ export const downloadIpfsClients = async () => {
   }
 };
 
-export default async (context) => {
+export default async (_context) => {
   await downloadIpfsClients();
 };

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Author, useBlock } from '@plebbit/plebbit-react-hooks';
+import { Author, useBlock } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import { autoUpdate, flip, FloatingFocusManager, offset, shift, useClick, useDismiss, useFloating, useId, useInteractions, useRole } from '@floating-ui/react';
 import { isProfileHiddenView } from '../../../../lib/utils/view-utils';
@@ -24,7 +24,7 @@ const BlockAuthorButton = ({ author, toggleIsMenuOpen }: HideMenuProps) => {
       className={styles.menuItem}
       onClick={() => {
         (blocked ? unblock : block)();
-        toggleIsMenuOpen && toggleIsMenuOpen();
+        if (toggleIsMenuOpen) toggleIsMenuOpen();
       }}
     >
       {blocked ? `${t('unblock')}` : `${t('block')}`} u/{author?.shortAddress}
@@ -38,7 +38,7 @@ const BlockSubplebbitButton = ({ subplebbitAddress }: HideMenuProps) => {
 
   return (
     <div className={styles.menuItem} onClick={blocked ? unblock : block}>
-      {blocked ? `${t('unblock')}` : `${t('block')}`} p/{subplebbitAddress && Plebbit.getShortAddress(subplebbitAddress)}
+      {blocked ? `${t('unblock')}` : `${t('block')}`} s/{subplebbitAddress && Plebbit.getShortAddress({ address: subplebbitAddress })}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef, lazy, Suspense, Component } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { usePublishSubplebbitEdit, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { usePublishSubplebbitEdit, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import useTheme from '../../../stores/use-theme-store';
 import styles from '../../settings/account-data-editor/account-data-editor.module.css';
 import useIsMobile from '../../../hooks/use-is-mobile';
@@ -116,7 +116,7 @@ const SubplebbitDataEditor = () => {
   const subplebbitSettings = useMemo(() => JSON.stringify(currentSettings, null, 2), [currentSettings]);
 
   // Update text when settings change, but not when user is actively typing
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   useEffect(() => {
     // Clear any pending timeout
     if (timeoutRef.current) {
@@ -152,7 +152,7 @@ const SubplebbitDataEditor = () => {
         settings: parsedSettings.settings ?? {},
         subplebbitAddress: parsedSettings.subplebbitAddress,
       });
-    } catch (error) {
+    } catch {
       // Invalid JSON - don't spam console during active typing
       // Just silently skip sync until JSON becomes valid
     }
@@ -325,7 +325,7 @@ const SubplebbitDataEditor = () => {
           />
           <div>
             <br />
-            <button onClick={() => navigate(`/p/${subplebbitAddress}/settings`)}>return to settings</button>
+            <button onClick={() => navigate(`/s/${subplebbitAddress}/settings`)}>return to settings</button>
           </div>
         </div>
       )}

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Author, useAccount, useComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { Author, useAccount, useComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
+import useScheduledReset from '../../../hooks/use-scheduled-reset';
 import styles from './comment-tools.module.css';
 import EditMenu from './edit-menu';
 import HideMenu from './hide-menu';
@@ -60,19 +61,18 @@ const ShareButton = ({ cid, subplebbitAddress }: { cid: string; subplebbitAddres
   const { t } = useTranslation();
   const [hasCopied, setHasCopied] = useState(false);
 
-  useEffect(() => {
-    if (hasCopied) {
-      setTimeout(() => setHasCopied(false), 2000);
-    }
-  }, [hasCopied]);
+  const resetCopied = useCallback(() => setHasCopied(false), []);
+  const [scheduleReset, clearReset] = useScheduledReset(resetCopied, 2000);
 
   const handleCopy = async () => {
     try {
       setHasCopied(true);
+      scheduleReset();
       await copyShareLinkToClipboard(subplebbitAddress, cid);
     } catch (error) {
       console.error('Failed to copy share link:', error);
       setHasCopied(false);
+      clearReset();
     }
   };
 
@@ -114,7 +114,7 @@ const PostTools = ({
   const commentCountButton = failed ? (
     <span>{commentCount}</span>
   ) : (
-    <Link to={cid ? `/p/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={() => cid && handlePostClick?.()}>
+    <Link to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={() => cid && handlePostClick?.()}>
       {commentCount}
     </Link>
   );
@@ -158,7 +158,7 @@ const ReplyTools = ({
   const permalink = failed ? (
     <span>permalink</span>
   ) : (
-    <Link to={cid ? `/p/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={(e) => !cid && e.preventDefault()}>
+    <Link to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={(e) => !cid && e.preventDefault()}>
       permalink
     </Link>
   );
@@ -202,7 +202,7 @@ const SingleReplyTools = ({
   const hasContext = parentCid !== postCid;
 
   const permalinkButton = cid ? (
-    <Link to={cid ? `/p/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={(e) => !cid && e.preventDefault()}>
+    <Link to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={(e) => !cid && e.preventDefault()}>
       permalink
     </Link>
   ) : (
@@ -210,13 +210,13 @@ const SingleReplyTools = ({
   );
 
   const contextButton = cid ? (
-    <Link to={cid ? (hasContext ? `/p/${subplebbitAddress}/c/${cid}/?context=3` : `/p/${subplebbitAddress}/c/${cid}`) : `/profile/${index}`}>{t('context')}</Link>
+    <Link to={cid ? (hasContext ? `/s/${subplebbitAddress}/c/${cid}/?context=3` : `/s/${subplebbitAddress}/c/${cid}`) : `/profile/${index}`}>{t('context')}</Link>
   ) : (
     <span>{t('context')}</span>
   );
 
   const fullCommentsButton = cid ? (
-    <Link to={cid ? `/p/${subplebbitAddress}/c/${postCid}` : `/profile/${index}`}>
+    <Link to={cid ? `/s/${subplebbitAddress}/c/${postCid}` : `/profile/${index}`}>
       {t('full_comments')} {comment?.replyCount ? `(${comment?.replyCount})` : ''}
     </Link>
   ) : (

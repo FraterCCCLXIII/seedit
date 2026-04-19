@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFloating, autoUpdate, offset, shift, FloatingPortal } from '@floating-ui/react';
-import { useAccount } from '@plebbit/plebbit-react-hooks';
+import { useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import {
   isHomeView,
@@ -44,7 +44,7 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
 
   const currentQuery = searchParams.get('q') || '';
   const [isInCommunitySearch, setIsInCommunitySearch] = useState(() => {
-    if (!!currentQuery) return true;
+    if (currentQuery) return true;
     if (isInFeedView) return false;
     return false; // always default to 'go to a community' in non-feed views
   });
@@ -104,7 +104,7 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
   );
 
   useEffect(() => {
-    if (!!searchParams.get('q')) {
+    if (searchParams.get('q')) {
       setIsInCommunitySearch(true);
     } else if (!isInFeedView) {
       setIsInCommunitySearch(false);
@@ -141,8 +141,12 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
     }
     const searchInput = searchInputRef.current?.value;
     if (searchInput) {
+      if (searchInput.toLowerCase() === params.subplebbitAddress?.toLowerCase()) {
+        alert(t('already_in_community'));
+        return;
+      }
       setInputValue('');
-      navigate(`/p/${searchInput}`);
+      navigate(`/s/${searchInput}`);
     }
   };
 
@@ -179,14 +183,18 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
 
   const handleCommunitySelect = useCallback(
     (address: string) => {
+      if (address.toLowerCase() === params.subplebbitAddress?.toLowerCase()) {
+        alert(t('already_in_community'));
+        return;
+      }
       setInputValue('');
       setIsInputFocused(false);
       setActiveDropdownIndex(-1);
       setShowExpando(false);
       searchInputRef.current?.blur();
-      navigate(`/p/${address}`);
+      navigate(`/s/${address}`);
     },
-    [navigate, setInputValue, setIsInputFocused, setActiveDropdownIndex],
+    [navigate, setInputValue, setIsInputFocused, setActiveDropdownIndex, params.subplebbitAddress, t],
   );
 
   const handleKeyDown = useCallback(
@@ -230,7 +238,6 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
           autoCapitalize='off'
           placeholder={placeholder}
           ref={(instance) => {
-            // @ts-expect-error Property 'current' is read-only.
             searchInputRef.current = instance;
             refs.setReference(instance);
           }}
@@ -265,7 +272,7 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
                 onTouchEnd={() => handleCommunitySelect(address)}
                 onMouseEnter={() => setActiveDropdownIndex(index)}
               >
-                {Plebbit.getShortAddress(address)}
+                {Plebbit.getShortAddress({ address })}
               </li>
             ))}
           </ul>

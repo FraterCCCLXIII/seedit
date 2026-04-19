@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Comment, useAccount, useBlock, Role, Subplebbit, useSubplebbitStats, useAccountComment, usePlebbitRpcSettings } from '@plebbit/plebbit-react-hooks';
+import { Comment, useAccount, useBlock, Role, Subplebbit, useSubplebbitStats, useAccountComment, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import { getPostScore } from '../../lib/utils/post-utils';
 import { getFormattedDate, getFormattedTimeDuration, getFormattedTimeAgo } from '../../lib/utils/time-utils';
@@ -55,10 +55,10 @@ const ModeratorsList = ({ roles }: { roles: Record<string, Role> }) => {
       <ul className={`${styles.listContent} ${styles.modsList}`}>
         {rolesList.map(({ address }, index) => (
           <li key={index} onClick={() => window.alert('Direct profile links are not supported yet.')}>
-            u/{Plebbit.getShortAddress(address)}
+            u/{Plebbit.getShortAddress({ address })}
           </li>
         ))}
-        {/* TODO: https://github.com/plebbit/seedit/issues/274
+        {/* TODO: https://github.com/bitsocialhq/seedit/issues/274
          <li className={styles.listMore}>{t('about_moderation')} »</li> */}
       </ul>
     </div>
@@ -84,9 +84,11 @@ const PostInfo = ({ comment }: { comment: Comment | undefined }) => {
         <span className={styles.postScoreWord}>{postScore === 1 ? t('point') : t('points')}</span>{' '}
         {`(${postScore === '?' ? '?' : `${upvotePercentage}`}% ${t('upvoted')})`}
       </div>
-      <div className={styles.shareLink}>
-        {t('share_link')}: <input type='text' value={`https://pleb.bz/p/${subplebbitAddress}/c/${cid}`} readOnly={true} />
-      </div>
+      {subplebbitAddress && cid && (
+        <div className={styles.shareLink}>
+          {t('share_link')}: <input type='text' value={`https://seedit.app/s/${subplebbitAddress}/c/${cid}`} readOnly={true} />
+        </div>
+      )}
     </div>
   );
 };
@@ -102,7 +104,7 @@ const ModerationTools = ({ address }: { address?: string }) => {
       <div className={styles.listTitle}>{t('moderation_tools')}</div>
       <ul className={`${styles.listContent} ${styles.modsList}`}>
         <li className={`${styles.moderationTool} ${isInSubplebbitSettingsView ? styles.selectedTool : ''}`}>
-          <Link className={styles.communitySettingsTool} to={`/p/${address}/settings`}>
+          <Link className={styles.communitySettingsTool} to={`/s/${address}/settings`}>
             {t('community_settings')}
           </Link>
         </li>
@@ -140,25 +142,25 @@ export const Footer = () => {
           </li>
           <span className={styles.footerSeparator}>|</span>
           <li>
-            <a href='https://github.com/plebbit/seedit' target='_blank' rel='noopener noreferrer'>
+            <a href='https://github.com/bitsocialhq/seedit' target='_blank' rel='noopener noreferrer'>
               github
             </a>
             <span className={styles.footerSeparator}>|</span>
           </li>
           <li>
-            <a href='https://t.me/plebbit' target='_blank' rel='noopener noreferrer'>
+            <a href='https://t.me/bitsocialhq' target='_blank' rel='noopener noreferrer'>
               telegram
             </a>
             <span className={styles.footerSeparator}>|</span>
           </li>
           <li>
-            <a href='https://x.com/getplebbit' target='_blank' rel='noopener noreferrer'>
+            <a href='https://x.com/bitsocialhq' target='_blank' rel='noopener noreferrer'>
               x
             </a>
             <span className={styles.footerSeparator}>|</span>
           </li>
           <li>
-            <a href='https://plebbit.github.io/docs/learn/clients/seedit/what-is-seedit' target='_blank' rel='noopener noreferrer'>
+            <a href='https://bitsocial.net' target='_blank' rel='noopener noreferrer'>
               docs
             </a>
           </li>
@@ -196,15 +198,15 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
   const pendingPost = useAccountComment({ commentIndex: params?.accountCommentIndex as any });
 
   const subplebbitCreator = findSubplebbitCreator(roles);
-  const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress(subplebbitCreator)}`;
+  const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress({ address: subplebbitCreator })}`;
   const submitRoute =
     isInHomeView || isInHomeAboutView || isInAllView || isInModView || isInDomainView
       ? '/submit'
       : isInPendingPostView
-      ? `/p/${pendingPost?.subplebbitAddress}/submit`
-      : address || params?.subplebbitAddress
-      ? `/p/${address || params?.subplebbitAddress}/submit`
-      : '/submit';
+        ? `/s/${pendingPost?.subplebbitAddress}/submit`
+        : address || params?.subplebbitAddress
+          ? `/s/${address || params?.subplebbitAddress}/submit`
+          : '/submit';
 
   const { blocked, unblock, block } = useBlock({ address });
 
@@ -261,7 +263,7 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
       navigate('/communities/create');
     } else if (window.confirm(t('create_community_warning'))) {
       const link = document.createElement('a');
-      link.href = 'https://github.com/plebbit/seedit/releases/latest';
+      link.href = 'https://github.com/bitsocialhq/seedit/releases/latest';
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.click();
@@ -307,7 +309,7 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
           !isInDomainView &&
           !isInPostPageAboutView && (
             <div className={styles.titleBox}>
-              <Link className={styles.title} to={`/p/${address}`}>
+              <Link className={styles.title} to={`/s/${address}`}>
                 {subplebbit?.address}
               </Link>
               <div className={styles.subscribeContainer}>
@@ -365,7 +367,7 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
           )}
         {(moderatorRole || isOwner) && <ModerationTools address={address} />}
         {isInSubplebbitsView && (
-          <a href='https://github.com/plebbit/lists' target='_blank' rel='noopener noreferrer'>
+          <a href='https://github.com/bitsocialhq/lists' target='_blank' rel='noopener noreferrer'>
             <div className={styles.largeButton}>
               <div className={styles.nub} />
               {t('submit_community')}
@@ -387,7 +389,7 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
         {(!(isMobile && isInHomeAboutView) || isInSubplebbitAboutView || isInPostPageAboutView) && <Footer />}
         {address && !(moderatorRole || isOwner) && (
           <div className={styles.readOnlySettingsLink}>
-            <Link to={`/p/${address}/settings`}>{t('community_settings')}</Link>
+            <Link to={`/s/${address}/settings`}>{t('community_settings')}</Link>
           </div>
         )}
         {isMobile && isInHomeAboutView && <FAQ />}

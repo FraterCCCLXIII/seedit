@@ -1,4 +1,4 @@
-import { ChallengeVerification } from '@plebbit/plebbit-react-hooks';
+import { ChallengeVerification } from '@bitsocialnet/bitsocial-react-hooks';
 
 export const alertChallengeVerificationFailed = (challengeVerification: ChallengeVerification, publication: any) => {
   if (challengeVerification?.challengeSuccess === false) {
@@ -25,9 +25,9 @@ export const alertChallengeVerificationFailed = (challengeVerification: Challeng
 
     const finalMessage = errorMessages.filter(Boolean).join(' ');
 
-    alert(`p/${publication?.subplebbitAddress} error: ${finalMessage || 'unknown error'}`);
+    alert(`s/${publication?.subplebbitAddress} error: ${finalMessage || 'unknown error'}`);
   } else {
-    console.log(challengeVerification, publication);
+    console.warn('Challenge verification succeeded but no action taken:', challengeVerification);
   }
 };
 

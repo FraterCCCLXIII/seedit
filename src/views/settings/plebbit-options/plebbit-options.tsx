@@ -1,20 +1,20 @@
 import { RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { setAccount, useAccount, usePlebbitRpcSettings } from '@plebbit/plebbit-react-hooks';
+import { setAccount, useAccount, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './plebbit-options.module.css';
 
 interface SettingsProps {
-  ipfsGatewayUrlsRef?: RefObject<HTMLTextAreaElement>;
-  mediaIpfsGatewayUrlRef?: RefObject<HTMLInputElement>;
-  pubsubProvidersRef?: RefObject<HTMLTextAreaElement>;
-  ethRpcRef?: RefObject<HTMLTextAreaElement>;
-  solRpcRef?: RefObject<HTMLTextAreaElement>;
-  maticRpcRef?: RefObject<HTMLTextAreaElement>;
-  avaxRpcRef?: RefObject<HTMLTextAreaElement>;
-  httpRoutersRef?: RefObject<HTMLTextAreaElement>;
-  plebbitRpcRef?: RefObject<HTMLInputElement>;
-  plebbitDataPathRef?: RefObject<HTMLInputElement>;
+  ipfsGatewayUrlsRef?: RefObject<HTMLTextAreaElement | null>;
+  mediaIpfsGatewayUrlRef?: RefObject<HTMLInputElement | null>;
+  pubsubProvidersRef?: RefObject<HTMLTextAreaElement | null>;
+  ethRpcRef?: RefObject<HTMLTextAreaElement | null>;
+  solRpcRef?: RefObject<HTMLTextAreaElement | null>;
+  maticRpcRef?: RefObject<HTMLTextAreaElement | null>;
+  avaxRpcRef?: RefObject<HTMLTextAreaElement | null>;
+  httpRoutersRef?: RefObject<HTMLTextAreaElement | null>;
+  plebbitRpcRef?: RefObject<HTMLInputElement | null>;
+  plebbitDataPathRef?: RefObject<HTMLInputElement | null>;
 }
 
 const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: SettingsProps) => {
@@ -46,8 +46,8 @@ const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: Se
 const PubsubProvidersSettings = ({ pubsubProvidersRef }: SettingsProps) => {
   const account = useAccount();
   const { plebbitOptions } = account || {};
-  const { pubsubHttpClientsOptions } = plebbitOptions || {};
-  const pubsubProvidersDefaultValue = pubsubHttpClientsOptions?.join('\n');
+  const { pubsubKuboRpcClientsOptions } = plebbitOptions || {};
+  const pubsubProvidersDefaultValue = pubsubKuboRpcClientsOptions?.join('\n');
 
   return (
     <div className={styles.pubsubProvidersSettings}>
@@ -57,7 +57,7 @@ const PubsubProvidersSettings = ({ pubsubProvidersRef }: SettingsProps) => {
         autoCorrect='off'
         autoComplete='off'
         spellCheck='false'
-        rows={pubsubHttpClientsOptions?.length || 3}
+        rows={pubsubKuboRpcClientsOptions?.length || 3}
       />
     </div>
   );
@@ -200,7 +200,7 @@ const PlebbitOptions = () => {
 
     const mediaIpfsGatewayUrl = mediaIpfsGatewayUrlRef.current?.value.trim() || undefined;
 
-    const pubsubHttpClientsOptions = pubsubProvidersRef.current?.value
+    const pubsubKuboRpcClientsOptions = pubsubProvidersRef.current?.value
       .split('\n')
       .map((url) => url.trim())
       .filter((url) => url !== '');
@@ -242,7 +242,7 @@ const PlebbitOptions = () => {
 
     const newPlebbitOptions: any = {};
     if (ipfsGatewayUrls?.length) newPlebbitOptions.ipfsGatewayUrls = ipfsGatewayUrls;
-    if (pubsubHttpClientsOptions?.length) newPlebbitOptions.pubsubHttpClientsOptions = pubsubHttpClientsOptions;
+    if (pubsubKuboRpcClientsOptions?.length) newPlebbitOptions.pubsubKuboRpcClientsOptions = pubsubKuboRpcClientsOptions;
     if (httpRoutersOptions?.length) newPlebbitOptions.httpRoutersOptions = httpRoutersOptions;
     if (plebbitRpcClientsOptions) newPlebbitOptions.plebbitRpcClientsOptions = plebbitRpcClientsOptions;
     if (dataPath) newPlebbitOptions.dataPath = dataPath;

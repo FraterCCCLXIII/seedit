@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo, useCallback, startTransition } from 'react';
 import { Link, useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
-import { useAccount, useFeed, Comment } from '@plebbit/plebbit-react-hooks';
+import { useAccount, useFeed, Comment } from '@bitsocialnet/bitsocial-react-hooks';
 import { Trans, useTranslation } from 'react-i18next';
 import { commentMatchesPattern } from '../../lib/utils/pattern-utils';
 import useFeedFiltersStore from '../../stores/use-feed-filters-store';
@@ -307,7 +307,7 @@ const Home = () => {
             />
             <div className={styles.fakePost} />
             <div className={styles.findCommunities}>
-              <Link to='/p/all/hot/1m'>{t('find_communities')}</Link>
+              <Link to='/s/all/hot/1m'>{t('find_communities')}</Link>
             </div>
           </div>
         ) : (

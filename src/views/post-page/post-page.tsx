@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Comment, useAccount, useAccountComment, useAccountComments, useComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { Comment, useAccount, useAccountComment, useAccountComments, useComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import findTopParentCidOfReply from '../../lib/utils/cid-utils';
 import { sortRepliesByBest } from '../../lib/utils/post-utils';
 import { isPendingPostView, isPostContextView } from '../../lib/utils/view-utils';
@@ -147,10 +147,10 @@ const Post = ({ post }: { post: Comment }) => {
                 {replyCount !== undefined
                   ? commentCount
                   : state === 'failed'
-                  ? t('post_has_failed')
-                  : cid
-                  ? `${t('downloading_comments')}...`
-                  : `${t('post_is_pending')}...`}
+                    ? t('post_has_failed')
+                    : cid
+                      ? `${t('downloading_comments')}...`
+                      : `${t('post_is_pending')}...`}
               </span>
             </div>
           )}
@@ -165,7 +165,7 @@ const Post = ({ post }: { post: Comment }) => {
             <div className={styles.singleCommentInfobar}>
               <div className={styles.singleCommentInfobarText}>{t('single_comment_notice')}</div>
               <div className={styles.singleCommentInfobarLink}>
-                <Link to={`/p/${subplebbitAddress}/c/${postCid}`}>{t('single_comment_link')}</Link> →
+                <Link to={`/s/${subplebbitAddress}/c/${postCid}`}>{t('single_comment_link')}</Link> →
               </div>
             </div>
           )}
@@ -224,7 +224,7 @@ const PostWithContext = ({ post }: { post: Comment }) => {
         <div className={styles.singleCommentInfobar}>
           <div className={styles.singleCommentInfobarText}>{t('single_comment_notice')}</div>
           <div className={styles.singleCommentInfobarLink}>
-            <Link to={`/p/${subplebbitAddress}/c/${postCid}`}>{t('single_comment_link')}</Link> →
+            <Link to={`/s/${subplebbitAddress}/c/${postCid}`}>{t('single_comment_link')}</Link> →
           </div>
         </div>
         <div className={styles.replies}>
@@ -268,8 +268,8 @@ const PostPage = () => {
   const resetFeed = useFeedResetStore((state) => state.reset);
   useEffect(() => {
     if (pendingPost?.cid && pendingPost?.subplebbitAddress) {
-      resetFeed && resetFeed();
-      navigate(`/p/${pendingPost?.subplebbitAddress}/c/${pendingPost?.cid}`, { replace: true });
+      if (resetFeed) resetFeed();
+      navigate(`/s/${pendingPost?.subplebbitAddress}/c/${pendingPost?.cid}`, { replace: true });
     }
   }, [pendingPost?.cid, pendingPost?.subplebbitAddress, navigate, resetFeed]);
 
@@ -300,15 +300,8 @@ const PostPage = () => {
     window.scrollTo(0, 0);
   }, [commentCid, subplebbitAddress, accountCommentIndex]);
 
-  // probably not necessary to show the error to the user if the post loaded successfully
-  const [shouldShowErrorToUser, setShouldShowErrorToUser] = useState(false);
-  useEffect(() => {
-    if (post?.error && ((post?.replyCount > 0 && post?.replies?.length === 0) || (post?.state === 'failed' && post?.error))) {
-      setShouldShowErrorToUser(true);
-    } else if (post?.replyCount > 0 && post?.replies?.length > 0) {
-      setShouldShowErrorToUser(false);
-    }
-  }, [post]);
+  // Derive whether to show error directly from current post state
+  const shouldShowErrorToUser = Boolean(post?.error && ((post?.replyCount > 0 && post?.replies?.length === 0) || post?.state === 'failed'));
 
   return isBroadlyNsfwSubplebbit && !hasAcceptedWarning ? (
     <Over18Warning />

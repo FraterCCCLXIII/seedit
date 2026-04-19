@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import { Subplebbit } from '@plebbit/plebbit-react-hooks';
+import { Subplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import { getFormattedTimeAgo } from '../lib/utils/time-utils';
 import useSubplebbitOfflineStore from '../stores/use-subplebbit-offline-store';
 import useSubplebbitsLoadingStartTimestamps from '../stores/use-subplebbits-loading-start-timestamps-store';
@@ -35,8 +35,8 @@ const useIsSubplebbitOffline = (subplebbit: Subplebbit) => {
   const offlineTitle = isLoading
     ? t('loading')
     : updatedAt
-    ? isOffline && t('posts_last_synced_info', { time: getFormattedTimeAgo(updatedAt), interpolation: { escapeValue: false } })
-    : t('subplebbit_offline_info');
+      ? isOffline && t('posts_last_synced_info', { time: getFormattedTimeAgo(updatedAt), interpolation: { escapeValue: false } })
+      : t('subplebbit_offline_info');
 
   // ensure isOffline is false until we have enough information
   const hasEnoughInfo = subplebbitOfflineStore.initialLoad === false || updatedAt !== undefined;

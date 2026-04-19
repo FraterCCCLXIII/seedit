@@ -1,0 +1,264 @@
+name: Test Builds
+
+on:
+  push:
+    branches: [ development, master ]
+  pull_request:
+    branches: [ development, master ]
+
+jobs:
+  test-linux:
+    name: Test Linux (Ubuntu)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+
+      - name: Cache electron binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/electron
+          key: ${{ runner.os }}-electron-v2-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-electron-v2-
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            echo "yarn install attempt $i"
+            yarn install --immutable && break
+            sleep 5
+            [ "$i" = "3" ] && exit 1
+          done
+
+      - name: Build React App
+        run: yarn build
+        env:
+          CI: ''
+
+      - name: Build Preload Script
+        run: yarn build:preload
+
+      - name: Verify build outputs
+        run: |
+          echo "=== Checking build/ directory ==="
+          ls -la build/ || exit 1
+          echo "=== Checking build/electron/preload.cjs ==="
+          ls -la build/electron/preload.cjs || exit 1
+          echo "=== Checking build/index.html ==="
+          ls -la build/index.html || exit 1
+
+      - name: Verify forge config
+        run: |
+          echo "=== forge.config.js exists ==="
+          ls -la forge.config.js
+          echo "=== Validating forge config can be loaded ==="
+          node -e "import('./forge.config.js').then(c => console.log('Config loaded, makers:', c.default.makers?.length || 0)).catch(e => { console.error(e); process.exit(1); })"
+
+      - name: Package Electron App
+        timeout-minutes: 30
+        run: |
+          set -o pipefail
+          yarn electron-forge package 2>&1 | tee forge-output.log
+          echo "=== Checking out/ directory ==="
+          ls -la out/
+
+      - name: Verify Executable
+        run: |
+          ls -la out/
+          EXE=$(node scripts/find-forge-executable.js)
+          echo "Found executable: $EXE"
+          # Verify the file exists and is executable
+          test -f "$EXE" && test -x "$EXE" && echo "✓ Executable is valid"
+
+  test-mac-intel:
+    name: Test Mac (Intel)
+    runs-on: macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+
+      - name: Install setuptools for native modules
+        run: pip3 install --break-system-packages setuptools || pip3 install --user setuptools || true
+
+      - name: Cache electron binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/electron
+          key: ${{ runner.os }}-electron-v2-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-electron-v2-
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            echo "yarn install attempt $i"
+            yarn install --immutable && break
+            sleep 5
+            [ "$i" = "3" ] && exit 1
+          done
+
+      - name: Build React App
+        run: yarn build
+        env:
+          CI: ''
+
+      - name: Build Preload Script
+        run: yarn build:preload
+
+      - name: Verify build outputs
+        run: |
+          ls -la build/ || exit 1
+          ls -la build/electron/preload.cjs || exit 1
+          ls -la build/index.html || exit 1
+
+      - name: Package Electron App
+        timeout-minutes: 30
+        run: |
+          set -o pipefail
+          yarn electron-forge package 2>&1 | tee forge-output.log
+          ls -la out/
+
+      - name: Verify Executable
+        run: |
+          ls -la out/
+          EXE=$(node scripts/find-forge-executable.js)
+          echo "Found executable: $EXE"
+          test -f "$EXE" && test -x "$EXE" && echo "✓ Executable is valid"
+
+  test-mac-arm:
+    name: Test Mac (Apple Silicon)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+
+      - name: Install setuptools for native modules
+        run: pip3 install --break-system-packages setuptools || pip3 install --user setuptools || true
+
+      - name: Cache electron binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/electron
+          key: ${{ runner.os }}-electron-v2-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-electron-v2-
+
+      - name: Install dependencies
+        run: |
+          for i in 1 2 3; do
+            echo "yarn install attempt $i"
+            yarn install --immutable && break
+            sleep 5
+            [ "$i" = "3" ] && exit 1
+          done
+
+      - name: Build React App
+        run: yarn build
+        env:
+          CI: ''
+
+      - name: Build Preload Script
+        run: yarn build:preload
+
+      - name: Verify build outputs
+        run: |
+          ls -la build/ || exit 1
+          ls -la build/electron/preload.cjs || exit 1
+          ls -la build/index.html || exit 1
+
+      - name: Package Electron App
+        timeout-minutes: 30
+        run: |
+          set -o pipefail
+          yarn electron-forge package 2>&1 | tee forge-output.log
+          ls -la out/
+
+      - name: Verify Executable
+        run: |
+          ls -la out/
+          EXE=$(node scripts/find-forge-executable.js)
+          echo "Found executable: $EXE"
+          test -f "$EXE" && test -x "$EXE" && echo "✓ Executable is valid"
+
+  test-windows:
+    name: Test Windows
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+
+      - name: Cache electron binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/AppData/Local/electron/Cache
+          key: ${{ runner.os }}-electron-v2-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-electron-v2-
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            echo "yarn install attempt $i"
+            yarn install --immutable && break
+            sleep 5
+            [ "$i" = "3" ] && exit 1
+          done
+
+      - name: Build React App
+        shell: bash
+        run: yarn build
+        env:
+          CI: ''
+
+      - name: Build Preload Script
+        shell: bash
+        run: yarn build:preload
+
+      - name: Verify build outputs
+        shell: bash
+        run: |
+          ls -la build/ || exit 1
+          ls -la build/electron/preload.cjs || exit 1
+          ls -la build/index.html || exit 1
+
+      - name: Package Electron App
+        shell: bash
+        timeout-minutes: 30
+        run: |
+          set -o pipefail
+          yarn electron-forge package 2>&1 | tee forge-output.log
+          ls -la out/
+
+      - name: Verify Executable
+        shell: bash
+        run: |
+          ls -la out/
+          EXE=$(node scripts/find-forge-executable.js)
+          echo "Found executable: $EXE"
+          test -f "$EXE" && test -x "$EXE" && echo "✓ Executable is valid"

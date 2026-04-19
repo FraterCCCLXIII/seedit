@@ -11,17 +11,18 @@ import {
   useBlock,
   useComment,
   useSubplebbits,
-} from '@plebbit/plebbit-react-hooks';
+} from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import styles from './author-sidebar.module.css';
 import { getFormattedTimeDuration } from '../../lib/utils/time-utils';
+import { getOldestAccountHistoryTimestamp } from '../../lib/utils/account-history-utils';
 import { isAuthorView, isProfileView } from '../../lib/utils/view-utils';
 import { findAuthorSubplebbits, estimateAuthorKarma } from '../../lib/utils/user-utils';
 import { useTranslation } from 'react-i18next';
 import { useDefaultSubplebbitAddresses } from '../../hooks/use-default-subplebbits';
 
 interface AuthorModeratingListProps {
-  accountSubplebbits: AccountSubplebbit[];
+  accountSubplebbits: Record<string, AccountSubplebbit>;
   authorSubplebbits: string[];
   isAuthor?: boolean;
 }
@@ -38,7 +39,7 @@ const AuthorModeratingList = ({ accountSubplebbits, authorSubplebbits, isAuthor 
         <ul className={`${styles.modListContent} ${styles.modsList}`}>
           {subplebbitAddresses.map((address, index) => (
             <li key={index}>
-              <Link to={`/p/${address}`}>p/{Plebbit.getShortAddress(address)}</Link>
+              <Link to={`/s/${address}`}>s/{Plebbit.getShortAddress({ address })}</Link>
             </li>
           ))}
         </ul>
@@ -63,11 +64,9 @@ const AuthorSidebar = () => {
 
   const userAccount = useAccount();
   const { imageUrl: profilePageAvatar } = useAuthorAvatar({ author: userAccount?.author });
-  const { accountComments } = useAccountComments();
+  const { accountComments: oldestAccountComment } = useAccountComments({ page: 0, pageSize: 1, order: 'asc' });
   const { accountSubplebbits } = useAccountSubplebbits();
-  const profileOldestAccountTimestamp = accountComments?.length
-    ? Math.min(...accountComments.filter((comment): comment is NonNullable<typeof comment> => comment != null).map((comment) => comment.timestamp))
-    : Date.now();
+  const profileOldestAccountTimestamp = getOldestAccountHistoryTimestamp(oldestAccountComment as { timestamp?: number }[]);
 
   const defaultSubplebbitAddresses = useDefaultSubplebbitAddresses();
   const accountSubscriptions = userAccount?.subscriptions || [];

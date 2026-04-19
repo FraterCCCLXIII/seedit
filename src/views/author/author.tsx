@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useAuthorComments, useAuthor } from '@plebbit/plebbit-react-hooks';
+import { useAuthorComments, useAuthor } from '@bitsocialnet/bitsocial-react-hooks';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { isAuthorCommentsView, isAuthorSubmittedView } from '../../lib/utils/view-utils';
 import useWindowWidth from '../../hooks/use-window-width';
@@ -27,7 +27,7 @@ const Author = () => {
 
   const { authorComments, error, lastCommentCid, hasMore, loadMore } = useAuthorComments({ commentCid, authorAddress });
 
-  const prevErrorMessageRef = useRef<string | undefined>();
+  const prevErrorMessageRef = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (error && error.message !== prevErrorMessageRef.current) {
       console.log(error);

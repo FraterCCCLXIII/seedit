@@ -1,19 +1,5 @@
 import './log.js';
-import {
-  app,
-  BrowserWindow,
-  Menu,
-  MenuItem,
-  Tray,
-  screen as electronScreen,
-  shell,
-  dialog,
-  nativeTheme,
-  ipcMain,
-  Notification,
-  systemPreferences,
-  clipboard,
-} from 'electron';
+import { app, BrowserWindow, Menu, MenuItem, Tray, shell, dialog, nativeTheme, ipcMain, Notification, systemPreferences, clipboard } from 'electron';
 import isDev from 'electron-is-dev';
 import fs from 'fs';
 import path from 'path';
@@ -24,6 +10,22 @@ import { URL, fileURLToPath } from 'node:url';
 import contextMenu from 'electron-context-menu';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
+
+// Linux startup hardening: default to X11 ozone and sanitize env to avoid GTK mixups
+const isLinux = process.platform === 'linux';
+if (isLinux && !process.env.SEEDIT_NO_ENV_SANITIZE) {
+  // Default to X11 unless the user explicitly sets a hint
+  if (!process.env.ELECTRON_OZONE_PLATFORM_HINT) {
+    process.env.ELECTRON_OZONE_PLATFORM_HINT = 'x11';
+  }
+  // Unset common injectors known to trigger mixed GTK majors
+  delete process.env.GTK_MODULES;
+  delete process.env.GTK_PATH;
+  delete process.env.LD_PRELOAD;
+}
+
+// Keep a global Tray reference to prevent GC removing the tray icon
+let tray;
 
 // Determine __filename and dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -319,51 +321,67 @@ const createMainWindow = () => {
   });
 
   // deny attaching webview https://www.electronjs.org/docs/latest/tutorial/security#12-verify-webview-options-before-creation
-  mainWindow.webContents.on('will-attach-webview', (e, webPreferences, params) => {
+  mainWindow.webContents.on('will-attach-webview', (e) => {
     // deny all
     e.preventDefault();
   });
 
   if (process.platform !== 'darwin') {
-    // tray
-    const trayIconPath = path.join(dirname, '..', isDev ? 'public' : 'build', 'electron-tray-icon.png');
-    const tray = new Tray(trayIconPath);
-    tray.setToolTip('seedit');
-    const trayMenu = Menu.buildFromTemplate([
-      {
-        label: 'Open seedit',
-        click: () => {
-          mainWindow.show();
-        },
-      },
-      {
-        label: 'Quit seedit',
-        click: () => {
-          mainWindow.destroy();
-          app.quit();
-        },
-      },
-    ]);
-    tray.setContextMenu(trayMenu);
+    const isWayland =
+      process.platform === 'linux' &&
+      (process.env.XDG_SESSION_TYPE === 'wayland' || process.env.WAYLAND_DISPLAY || process.env.ELECTRON_OZONE_PLATFORM_HINT === 'wayland');
+    const trayDisabled = isWayland && process.env.SEEDIT_ENABLE_TRAY !== '1';
 
-    // show/hide on tray right click
-    tray.on('right-click', () => {
-      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
-    });
+    if (!trayDisabled) {
+      // tray
+      const trayIconPath = path.join(dirname, '..', isDev ? 'public' : 'build', 'electron-tray-icon.png');
+      if (tray) {
+        try {
+          tray.destroy();
+        } catch {}
+      }
+      tray = new Tray(trayIconPath);
+      tray.setToolTip('seedit');
+      const trayMenu = Menu.buildFromTemplate([
+        {
+          label: 'Open seedit',
+          click: () => {
+            mainWindow.show();
+          },
+        },
+        {
+          label: 'Quit seedit',
+          click: () => {
+            mainWindow.destroy();
+            app.quit();
+          },
+        },
+      ]);
+      tray.setContextMenu(trayMenu);
 
-    // close to tray
-    if (!isDev) {
-      let isQuiting = false;
-      app.on('before-quit', () => {
-        isQuiting = true;
-      });
-      mainWindow.on('close', (event) => {
-        if (!isQuiting) {
-          event.preventDefault();
+      // show/hide on tray right click
+      tray.on('right-click', () => {
+        if (mainWindow.isVisible()) {
           mainWindow.hide();
-          event.returnValue = false;
+        } else {
+          mainWindow.show();
         }
       });
+
+      // close to tray
+      if (!isDev) {
+        let isQuiting = false;
+        app.on('before-quit', () => {
+          isQuiting = true;
+        });
+        mainWindow.on('close', (event) => {
+          if (!isQuiting) {
+            event.preventDefault();
+            mainWindow.hide();
+            event.returnValue = false;
+          }
+        });
+      }
     }
   }
 
@@ -400,6 +418,15 @@ const createMainWindow = () => {
 };
 
 app.whenReady().then(() => {
+  // Set app name and dock icon for development mode on macOS
+  if (process.platform === 'darwin') {
+    app.setName('seedit');
+    if (app.dock) {
+      const iconPath = path.join(dirname, '..', isDev ? 'public' : 'build', 'icon.png');
+      app.dock.setIcon(iconPath);
+    }
+  }
+
   createMainWindow();
 
   app.on('activate', () => {

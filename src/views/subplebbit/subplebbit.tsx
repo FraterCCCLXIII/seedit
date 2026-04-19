@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useAccountComments, useBlock, useFeed, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { useAccountComments, useBlock, useFeed, useSubplebbit, type Comment } from '@bitsocialnet/bitsocial-react-hooks';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
 import { Trans, useTranslation } from 'react-i18next';
 import styles from '../home/home.module.css';
 import { useFeedStateString } from '../../hooks/use-state-string';
+import { filterOptimisticLocalPosts } from '../../lib/utils/account-history-utils';
 import { commentMatchesPattern } from '../../lib/utils/pattern-utils';
 import useContentOptionsStore from '../../stores/use-content-options-store';
 import useFeedFiltersStore from '../../stores/use-feed-filters-store';
@@ -41,8 +42,8 @@ const Footer = ({
   subplebbitAddress,
   feedLength,
   isOnline,
-  started,
-  isSubCreatedButNotYetPublished,
+  started: _started,
+  isSubCreatedButNotYetPublished: _isSubCreatedButNotYetPublished,
   hasMore,
   timeFilterName,
   reset,
@@ -190,7 +191,7 @@ const Footer = ({
           i18nKey='show_all_instead'
           values={{ timeFilterName }}
           components={{
-            1: <Link key='show_all_instead_link' to={`/p/${subplebbitAddress}`} />,
+            1: <Link key='show_all_instead_link' to={`/s/${subplebbitAddress}`} />,
           }}
         />
       </div>
@@ -267,24 +268,8 @@ const Subplebbit = () => {
   const { feed, hasMore, loadMore, reset } = useFeed(feedOptions);
 
   // show account comments instantly in the feed once published (cid defined), instead of waiting for the feed to update
-  const { accountComments } = useAccountComments();
-  const filteredComments = useMemo(
-    () =>
-      accountComments.filter((comment) => {
-        const { cid, deleted, postCid, removed, state, timestamp } = comment || {};
-        return (
-          !deleted &&
-          !removed &&
-          timestamp > Date.now() / 1000 - 60 * 60 &&
-          state === 'succeeded' &&
-          cid &&
-          cid === postCid &&
-          comment?.subplebbitAddress === subplebbitAddress &&
-          !feed.some((post) => post.cid === cid)
-        );
-      }),
-    [accountComments, subplebbitAddress, feed],
-  );
+  const { accountComments } = useAccountComments({ communityAddress: subplebbitAddress, newerThan: 60 * 60 });
+  const filteredComments = useMemo(() => filterOptimisticLocalPosts(accountComments, feed, subplebbitAddress), [accountComments, subplebbitAddress, feed]);
 
   // reset the feed when a new account comment is published, so it shows instantly in the feed
   const setResetFunction = useFeedResetStore((state) => state.setResetFunction);
@@ -354,7 +339,7 @@ const Subplebbit = () => {
   const hasUnhiddenAnyNsfwCommunity = !hideAdultCommunities || !hideGoreCommunities || !hideAntiCommunities || !hideVulgarCommunities;
   const isBroadlyNsfwSubplebbit = useIsBroadlyNsfwSubplebbit(subplebbitAddress || '');
 
-  const prevErrorMessageRef = useRef<string | undefined>();
+  const prevErrorMessageRef = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (error && error.message !== prevErrorMessageRef.current) {
       console.log(error);
@@ -367,15 +352,8 @@ const Subplebbit = () => {
     document.title = title ? title : shortAddress || subplebbitAddress;
   }, [title, shortAddress, subplebbitAddress]);
 
-  // probably not necessary to show the error to the user if the feed loaded successfully
-  const [shouldShowErrorToUser, setShouldShowErrorToUser] = useState(false);
-  useEffect(() => {
-    if (error?.message && feed.length === 0) {
-      setShouldShowErrorToUser(true);
-    } else if (feed.length > 0) {
-      setShouldShowErrorToUser(false);
-    }
-  }, [error, feed]);
+  // Derive whether to show error directly from current feed state
+  const shouldShowErrorToUser = Boolean(error?.message && feed.length === 0);
 
   return isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity ? (
     <Over18Warning />

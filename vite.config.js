@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import eslint from 'vite-plugin-eslint';
 import { VitePWA } from 'vite-plugin-pwa';
 import reactScan from '@react-scan/vite-plugin-react-scan';
 
@@ -14,24 +13,21 @@ export default defineConfig({
     react({
       babel: {
         plugins: [
-          ['babel-plugin-react-compiler', { 
-            verbose: true 
-          }]
-        ]
-      }
+          [
+            'babel-plugin-react-compiler',
+            {
+              verbose: true,
+            },
+          ],
+        ],
+      },
     }),
     // Only include React Scan in development mode - never in production builds
-    (isDevelopment || (!isProduction && process.env.NODE_ENV !== 'production')) && reactScan({
-      showToolbar: true,
-      playSound: true,
-    }),
-    !isProduction && eslint({
-      lintOnStart: true,
-      overrideConfigFile: './.eslintrc.cjs',
-      failOnError: false,
-      failOnWarning: false,
-      cache: true,
-    }),
+    !isProduction &&
+      reactScan({
+        showToolbar: true,
+        playSound: true,
+      }),
     nodePolyfills({
       globals: {
         Buffer: true,
@@ -57,7 +53,7 @@ export default defineConfig({
       manifest: {
         name: 'Seedit',
         short_name: 'Seedit',
-        description: 'A GUI for plebbit similar to old.reddit',
+        description: 'A serverless, adminless, decentralized reddit alternative',
         theme_color: '#ffffff',
         background_color: '#ffffee',
         display: 'standalone',
@@ -65,20 +61,20 @@ export default defineConfig({
           {
             src: '/android-chrome-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '/android-chrome-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
             src: '/android-chrome-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
-          }
-        ]
+          },
+          {
+            src: '/android-chrome-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
       },
       workbox: {
         clientsClaim: true,
@@ -86,16 +82,15 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api/, /^\/_(.*)/],
-        
+        maximumFileSizeToCacheInBytes: 6000000,
         runtimeCaching: [
-          // Always get fresh HTML from network first
+          // Fix index.html not refreshing on new versions
           {
             urlPattern: ({ url }) => url.pathname === '/' || url.pathname === '/index.html',
-            handler: 'NetworkFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'html-cache',
-              networkTimeoutSeconds: 3
-            }
+            },
           },
           // PNG caching
           {
@@ -104,9 +99,9 @@ export default defineConfig({
             options: {
               cacheName: 'images',
               expiration: {
-                maxEntries: 50
-              }
-            }
+                maxEntries: 50,
+              },
+            },
           },
           // Add additional asset caching
           {
@@ -116,9 +111,9 @@ export default defineConfig({
               cacheName: 'assets-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-              }
-            }
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
           },
           // Google Fonts caching
           {
@@ -128,12 +123,12 @@ export default defineConfig({
               cacheName: 'google-fonts-cache',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
               },
               cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
+                statuses: [0, 200],
+              },
+            },
           },
           {
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
@@ -142,74 +137,90 @@ export default defineConfig({
               cacheName: 'google-fonts-webfonts',
               expiration: {
                 maxEntries: 30,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
               },
               cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
-      }
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
+      },
     }),
   ],
   resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
-      'node-fetch': 'isomorphic-fetch',
-      'assert': 'assert',
-      'stream': 'stream-browserify',
-      'crypto': 'crypto-browserify',
-      'buffer': 'buffer',
-    }
+    alias: [
+      {
+        find: /^@bitsocialnet\/bitsocial-react-hooks$/,
+        replacement: resolve(__dirname, 'src/lib/bitsocial-react-hooks-compat.ts'),
+      },
+      {
+        find: /^@\//,
+        replacement: `${resolve(__dirname, 'src')}/`,
+      },
+      {
+        find: 'node-fetch',
+        replacement: 'isomorphic-fetch',
+      },
+      {
+        find: 'assert',
+        replacement: 'assert',
+      },
+      {
+        find: 'stream',
+        replacement: 'stream-browserify',
+      },
+      {
+        find: 'crypto',
+        replacement: 'crypto-browserify',
+      },
+      {
+        find: 'buffer',
+        replacement: 'buffer',
+      },
+      {
+        find: 'util/',
+        replacement: 'util',
+      },
+      {
+        find: 'util',
+        replacement: 'util',
+      },
+    ],
   },
   server: {
     port: 3000,
-    open: true,
+    open: process.env.PORT ? 'http://seedit.localhost:1355/' : true,
     watch: {
       usePolling: true,
     },
     hmr: {
-      overlay: false
-    }
+      overlay: false,
+    },
   },
   build: {
+    // Use 'build' to match what electron/main.js expects (../build/index.html)
     outDir: 'build',
     emptyOutDir: true,
     sourcemap: process.env.GENERATE_SOURCEMAP === 'true',
-    target: process.env.ELECTRON ? 'electron-renderer' : 'modules',
-    chunkSizeWarningLimit: 1000,
+    target: process.env.ELECTRON ? 'electron-renderer' : 'esnext',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom', 'react-i18next', 'i18next', 'i18next-browser-languagedetector', 'i18next-http-backend']
-        }
-      }
-    }
+        manualChunks(id) {
+          if (/[\\/]node_modules[\\/](react|react-dom|react-router-dom|react-i18next|i18next|i18next-browser-languagedetector|i18next-http-backend)[\\/]/.test(id)) {
+            return 'vendor';
+          }
+        },
+      },
+    },
   },
   base: process.env.PUBLIC_URL || '/',
   optimizeDeps: {
-    esbuildOptions: {
-      target: 'es2020',
-      define: {
-        global: 'globalThis',
-      },
-    },
-    include: [
-      'ethers',
-      'assert',
-      'buffer',
-      'process',
-      'stream-browserify',
-      'isomorphic-fetch'
-    ],
-  },
-  esbuild: {
-    target: 'es2020'
+    include: ['ethers', 'assert', 'buffer', 'process', 'util', 'stream-browserify', 'isomorphic-fetch', 'workbox-core', 'workbox-precaching'],
   },
   define: {
     'process.env.VITE_COMMIT_REF': JSON.stringify(process.env.COMMIT_REF),
-    'global': 'globalThis',
-    '__dirname': '""',
-  }
+    global: 'globalThis',
+    __dirname: '""',
+  },
 });

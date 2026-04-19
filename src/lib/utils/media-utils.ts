@@ -1,5 +1,5 @@
-import localForageLru from '@plebbit/plebbit-react-hooks/dist/lib/localforage-lru/index.js';
-import { Comment } from '@plebbit/plebbit-react-hooks';
+import localForageLru from '@bitsocialnet/bitsocial-react-hooks/dist/lib/localforage-lru/index.js';
+import { Comment } from '@bitsocialnet/bitsocial-react-hooks';
 import extName from 'ext-name';
 import { canEmbed } from '../../components/post/embed';
 import memoize from 'memoizee';
@@ -46,6 +46,23 @@ const getPatternThumbnailUrl = (url: URL): string | undefined => {
   if (url.host.includes('streamable.com')) {
     const videoId = url.pathname.split('/')[1];
     return `https://cdn-cf-east.streamable.com/image/${videoId}.jpg`;
+  }
+};
+
+// some sites don't show thumbnails, so the backend-side thumbnail fetching needs to be  disabled, or it might fetch non-thumbnails such as emojis
+const THUMBNAIL_BLACKLISTED_DOMAINS = ['twitter.com', 'x.com'];
+
+const isThumbnailDomainBlacklisted = (link: string | undefined): boolean => {
+  if (!link) {
+    return false;
+  }
+
+  try {
+    const hostname = new URL(link).hostname.toLowerCase();
+    return THUMBNAIL_BLACKLISTED_DOMAINS.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`));
+  } catch (error) {
+    console.error('Error parsing link while checking thumbnail blacklist:', error);
+    return false;
   }
 };
 
@@ -103,8 +120,14 @@ export const getCommentMediaInfo = (comment: Comment): CommentMediaInfo | undefi
   }
   const linkInfo = comment.link ? getLinkMediaInfo(comment.link) : undefined;
   if (linkInfo) {
-    linkInfo.thumbnail = comment.thumbnailUrl || linkInfo.thumbnail;
-    return linkInfo;
+    const linkInfoClone: CommentMediaInfo = { ...linkInfo };
+    if (isThumbnailDomainBlacklisted(comment.link)) {
+      linkInfoClone.thumbnail = undefined;
+      linkInfoClone.patternThumbnailUrl = undefined;
+    } else if (comment.thumbnailUrl) {
+      linkInfoClone.thumbnail = comment.thumbnailUrl;
+    }
+    return linkInfoClone;
   }
   return;
 };

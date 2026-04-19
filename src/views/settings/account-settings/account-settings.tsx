@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
-import { createAccount, deleteAccount, exportAccount, importAccount, setActiveAccount, useAccount, useAccounts } from '@plebbit/plebbit-react-hooks';
+import { createAccount, deleteAccount, exportAccount, importAccount, setActiveAccount, useAccount, useAccounts } from '@bitsocialnet/bitsocial-react-hooks';
 import { processImportedAccount } from '../../../lib/utils/account-import-utils';
 import { exportFile } from '../../../lib/utils/file-export-utils';
 import styles from './account-settings.module.css';
@@ -137,10 +137,10 @@ const ExportAccountButton = () => {
       // exportAccount might not include plebbitOptions, so we need to include it from useAccount()
       let accountDataToInclude;
       if (includePlebbitOptions) {
-        const { plebbit, ...completeAccountData } = account;
+        const { plebbit: _plebbit, ...completeAccountData } = account;
         accountDataToInclude = completeAccountData;
       } else {
-        const { plebbit, plebbitOptions, ...completeAccountData } = account;
+        const { plebbit: _plebbit, plebbitOptions: _plebbitOptions, ...completeAccountData } = account;
         accountDataToInclude = completeAccountData;
       }
       exportedAccount.account = accountDataToInclude;

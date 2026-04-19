@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useAccount, usePublishComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { useAccount, usePublishComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import { Capacitor } from '@capacitor/core';
 import FileUploader from '../../plugins/file-uploader';
@@ -101,7 +101,7 @@ const UploadMediaForm = () => {
       if (!(isAndroid || isElectron)) {
         if (window.confirm(t('upload_button_warning'))) {
           const link = document.createElement('a');
-          link.href = 'https://github.com/plebbit/seedit/releases/latest';
+          link.href = 'https://github.com/bitsocialhq/seedit/releases/latest';
           link.target = '_blank';
           link.rel = 'noopener noreferrer';
           link.click();
@@ -170,7 +170,7 @@ const UploadMediaForm = () => {
     if (!(isAndroid || isElectron)) {
       if (window.confirm(t('upload_button_warning'))) {
         const link = document.createElement('a');
-        link.href = 'https://github.com/plebbit/seedit/releases/latest';
+        link.href = 'https://github.com/bitsocialhq/seedit/releases/latest';
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.click();
@@ -314,12 +314,8 @@ const SubplebbitAddressField = () => {
   const [isInputAddressFocused, setIsInputAddressFocused] = useState(false);
   const [activeDropdownIndex, setActiveDropdownIndex] = useState<number>(-1);
 
-  // show list of random subplebbits only once when the component mounts
-  const [randomSubplebbitSuggestions, setRandomSubplebbitSuggestions] = useState<string[]>([]);
-  useEffect(() => {
-    const generatedSubplebbits = getRandomSubplebbits(defaultSubplebbitAddresses, 10);
-    setRandomSubplebbitSuggestions(generatedSubplebbits);
-  }, [defaultSubplebbitAddresses]);
+  // Generate random suggestions derived from defaults without an effect
+  const randomSubplebbitSuggestions = useMemo(() => getRandomSubplebbits(defaultSubplebbitAddresses, 10), [defaultSubplebbitAddresses]);
   const listSource = subscriptions?.length > 5 ? subscriptions : randomSubplebbitSuggestions;
 
   const handleKeyDown = useCallback(
@@ -353,10 +349,11 @@ const SubplebbitAddressField = () => {
     setActiveDropdownIndex(-1);
   };
 
-  const getRandomSubplebbits = (addresses: string[], count: number) => {
-    let shuffled = addresses.sort(() => 0.5 - Math.random());
+  function getRandomSubplebbits(addresses: string[], count: number) {
+    // Non-mutating shuffle (copy first), avoids side effects
+    const shuffled = [...addresses].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
-  };
+  }
 
   const defaultSubplebbitsDropdown = (
     <ul className={styles.dropdown}>
@@ -408,7 +405,7 @@ const SubplebbitAddressField = () => {
                 setPublishPostStore({ subplebbitAddress: subscription });
               }}
             >
-              {Plebbit.getShortAddress(subscription)}
+              {Plebbit.getShortAddress({ address: subscription })}
             </span>
           ))}
         </div>
@@ -423,11 +420,15 @@ const RulesInfo = ({ shortAddress, rules }: { shortAddress: string; rules: strin
   return (
     <div className={styles.box}>
       <span className={`${styles.boxTitle} ${styles.rulesTitle}`}>
-        {t('rules_for')} p/{shortAddress}
+        {t('rules_for')} s/{shortAddress}
       </span>
       <div className={styles.boxContent}>
         <div className={styles.description}>
-          <ol className={styles.rules}>{rules?.map((rule: string, index: number) => <li key={index}>{rule}</li>)}</ol>
+          <ol className={styles.rules}>
+            {rules?.map((rule: string, index: number) => (
+              <li key={index}>{rule}</li>
+            ))}
+          </ol>
         </div>
       </div>
     </div>
@@ -474,7 +475,7 @@ const SubmitPage = () => {
 
   const selectedSubplebbitData = useSubplebbit({ subplebbitAddress });
   const { rules, title: subplebbitTitle } = selectedSubplebbitData;
-  const shortAddress = subplebbitAddress && Plebbit.getShortAddress(subplebbitAddress);
+  const shortAddress = subplebbitAddress && Plebbit.getShortAddress({ address: subplebbitAddress });
   const { isOffline, offlineTitle } = useIsSubplebbitOffline(selectedSubplebbitData);
 
   const { index, publishComment } = usePublishComment(publishCommentOptions);
@@ -527,7 +528,7 @@ const SubmitPage = () => {
             link: subplebbitTitle || shortAddress || 'seedit',
           }}
           components={{
-            1: shortAddress ? <Link key='submit_to_link' to={`/p/${subplebbitAddress}`} className={styles.location} /> : <span key='submit_to_span' />,
+            1: shortAddress ? <Link key='submit_to_link' to={`/s/${subplebbitAddress}`} className={styles.location} /> : <span key='submit_to_span' />,
           }}
         />
       </h1>

@@ -3,7 +3,7 @@ import { HashLink } from 'react-router-hash-link';
 import useIsMobile from '../../hooks/use-is-mobile';
 import { Footer } from '../../components/sidebar';
 import styles from './about.module.css';
-import { useAccount, useComment, useSubplebbit } from '@plebbit/plebbit-react-hooks';
+import { useAccount, useComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import { Capacitor } from '@capacitor/core';
 import { isHomeAboutView } from '../../lib/utils/view-utils';
 import { useEffect } from 'react';
@@ -79,7 +79,7 @@ export const FAQ = () => {
           <br />
           <br />
           Seedit is free and open source software under GPL-2.0 license, you can check the source code{' '}
-          <a href='https://github.com/plebbit/seedit' target='_blank' rel='noopener noreferrer'>
+          <a href='https://github.com/bitsocialhq/seedit' target='_blank' rel='noopener noreferrer'>
             here
           </a>
           .
@@ -88,11 +88,11 @@ export const FAQ = () => {
         <h3 id='createCommunity'>How do I create my own community?</h3>
         <p>
           If you're comfortable with the command line, you can use{' '}
-          <a href='https://github.com/plebbit/plebbit-cli' target='_blank' rel='noopener noreferrer'>
-            plebbit-cli
+          <a href='https://github.com/bitsocialhq/bitsocial-cli' target='_blank' rel='noopener noreferrer'>
+            bitsocial-cli
           </a>{' '}
           to create your own community. Otherwise, you can download{' '}
-          <a href='https://github.com/plebbit/seedit/releases/latest' target='_blank' rel='noopener noreferrer'>
+          <a href='https://github.com/bitsocialhq/seedit/releases/latest' target='_blank' rel='noopener noreferrer'>
             Seedit desktop
           </a>
           , which automatically runs a full node and lets you create communities with the ease of a reddit-like graphical user interface. You can also open a remote
