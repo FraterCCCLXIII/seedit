@@ -16,6 +16,7 @@ import useIsMobile from '../../hooks/use-is-mobile';
 import { useIsNsfwSubplebbit } from '../../hooks/use-is-nsfw-subplebbit';
 import useUpvote from '../../hooks/use-upvote';
 import useWindowWidth from '../../hooks/use-window-width';
+import { Button } from '@/components/ui/button';
 import CommentEditForm from '../comment-edit-form';
 import ExpandButton from './expand-button';
 import Expando from './expando';
@@ -299,12 +300,16 @@ const Post = ({ index, post = {} }: PostProps) => {
                       <span className={styles.subscribeHoverGroup}>
                         {isInAllView && (!subscribed || (subscribed && hasClickedSubscribe)) && (
                           <span className={styles.subscribeButtonWrapper}>
-                            <button
+                            <Button
+                              type='button'
+                              variant='ghost'
+                              size='icon'
                               className={`${styles.subscribeButton} ${subscribed ? styles.buttonSubscribed : styles.buttonSubscribe}`}
                               onClick={() => {
                                 subscribe();
                                 setHasClickedSubscribe(true);
                               }}
+                              aria-label={t('subscribe')}
                             />
                           </span>
                         )}

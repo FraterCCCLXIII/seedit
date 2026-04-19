@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { useAccountComments, useBlock, useFeed, useSubplebbit, type Comment } from '@bitsocialnet/bitsocial-react-hooks';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
 import { Trans, useTranslation } from 'react-i18next';
@@ -20,6 +21,7 @@ import Over18Warning from '../../components/over-18-warning';
 import Post from '../../components/post';
 import Sidebar from '../../components/sidebar';
 import { sortTypes } from '../../constants/sort-types';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
 
@@ -360,33 +362,35 @@ const Subplebbit = () => {
     <Over18Warning />
   ) : (
     <div className={styles.content}>
-      <div className={styles.sidebar}>
-        <Sidebar subplebbit={subplebbit} isSubCreatedButNotYetPublished={started && isSubCreatedButNotYetPublished} settings={settings} reset={reset} />
-      </div>
-      {shouldShowErrorToUser && (
-        <div className={styles.error}>
-          <ErrorDisplay error={error} />
-        </div>
-      )}
-      <div className={styles.feed}>
-        {process.env.NODE_ENV !== 'production' && (
-          <button className={styles.debugButton} onClick={reset}>
-            Reset Feed
-          </button>
+      <div {...feedShellMainProps}>
+        {shouldShowErrorToUser && (
+          <div className={styles.error}>
+            <ErrorDisplay error={error} />
+          </div>
         )}
-        <Virtuoso
-          increaseViewportBy={{ bottom: 1200, top: 600 }}
-          totalCount={combinedFeed?.length || 0}
-          data={combinedFeed}
-          computeItemKey={(index, post) => post?.cid || index}
-          itemContent={(index, post) => <Post key={post?.cid} index={index} post={post} />}
-          useWindowScroll={true}
-          components={{ Footer: () => <Footer {...footerProps} /> }}
-          endReached={loadMore}
-          ref={virtuosoRef}
-          restoreStateFrom={lastVirtuosoState}
-          initialScrollTop={lastVirtuosoState?.scrollTop}
-        />
+        <div className={styles.feed}>
+          {process.env.NODE_ENV !== 'production' && (
+            <Button type='button' variant='outline' size='sm' className={styles.debugButton} onClick={reset}>
+              Reset Feed
+            </Button>
+          )}
+          <Virtuoso
+            increaseViewportBy={{ bottom: 1200, top: 600 }}
+            totalCount={combinedFeed?.length || 0}
+            data={combinedFeed}
+            computeItemKey={(index, post) => post?.cid || index}
+            itemContent={(index, post) => <Post key={post?.cid} index={index} post={post} />}
+            useWindowScroll={true}
+            components={{ Footer: () => <Footer {...footerProps} /> }}
+            endReached={loadMore}
+            ref={virtuosoRef}
+            restoreStateFrom={lastVirtuosoState}
+            initialScrollTop={lastVirtuosoState?.scrollTop}
+          />
+        </div>
+      </div>
+      <div className={styles.sidebar} {...feedShellSidebarProps}>
+        <Sidebar subplebbit={subplebbit} isSubCreatedButNotYetPublished={started && isSubCreatedButNotYetPublished} settings={settings} reset={reset} />
       </div>
     </div>
   );

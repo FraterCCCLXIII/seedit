@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { useAccount, useNotifications } from '@bitsocialnet/bitsocial-react-hooks';
+import { feedShellMainProps } from '../../lib/feed-shell-data';
 import styles from './inbox.module.css';
 import Reply from '../../components/reply/reply';
 import { isInboxCommentRepliesView, isInboxPostRepliesView, isInboxUnreadView } from '../../lib/utils/view-utils';
@@ -109,35 +111,37 @@ const Inbox = () => {
 
   return (
     <div className={styles.content}>
-      <InboxTabs />
-      <div className={styles.markAllAsReadButton}>
-        {account && notifications.length ? (
-          <button onClick={markAsRead} disabled={!unreadNotificationCount} className={styles.markAsReadButton}>
-            {t('mark_all_read')}
-          </button>
-        ) : (
-          <div className={styles.noNotifications}>{t('nothing_found')}</div>
-        )}
-      </div>
-      {shouldShowErrorToUser && (
-        <div className={styles.error}>
-          <ErrorDisplay error={error} />
+      <div {...feedShellMainProps}>
+        <InboxTabs />
+        <div className={styles.markAllAsReadButton}>
+          {account && notifications.length ? (
+            <Button type='button' variant='outline' onClick={markAsRead} disabled={!unreadNotificationCount} className={styles.markAsReadButton}>
+              {t('mark_all_read')}
+            </Button>
+          ) : (
+            <div className={styles.noNotifications}>{t('nothing_found')}</div>
+          )}
         </div>
-      )}
-      <Virtuoso
-        increaseViewportBy={{ bottom: 1200, top: 600 }}
-        totalCount={notifications?.length || 0}
-        data={comments}
-        itemContent={(index, notification) => (
-          <div className={styles.notification}>
-            <Reply index={index} isSingleReply={true} reply={notification} isNotification={true} />
+        {shouldShowErrorToUser && (
+          <div className={styles.error}>
+            <ErrorDisplay error={error} />
           </div>
         )}
-        useWindowScroll={true}
-        ref={virtuosoRef}
-        restoreStateFrom={lastVirtuosoState}
-        initialScrollTop={lastVirtuosoState?.scrollTop}
-      />
+        <Virtuoso
+          increaseViewportBy={{ bottom: 1200, top: 600 }}
+          totalCount={notifications?.length || 0}
+          data={comments}
+          itemContent={(index, notification) => (
+            <div className={styles.notification}>
+              <Reply index={index} isSingleReply={true} reply={notification} isNotification={true} />
+            </div>
+          )}
+          useWindowScroll={true}
+          ref={virtuosoRef}
+          restoreStateFrom={lastVirtuosoState}
+          initialScrollTop={lastVirtuosoState?.scrollTop}
+        />
+      </div>
     </div>
   );
 };

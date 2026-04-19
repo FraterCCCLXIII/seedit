@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import styles from './over-18-warning.module.css';
 import useContentOptionsStore from '../../stores/use-content-options-store';
 
@@ -23,10 +24,12 @@ const Over18Warning = () => {
         <p>{t('must_be_over_18_explanation')}</p>
       </div>
       <div className={styles.warningButtons}>
-        <button>
+        <Button variant='outline' asChild>
           <Link to='/'>{t('no_thank_you')}</Link>
-        </button>
-        <button onClick={handleAcceptWarning}>{t('continue')}</button>
+        </Button>
+        <Button type='button' onClick={handleAcceptWarning}>
+          {t('continue')}
+        </Button>
       </div>
     </div>
   );

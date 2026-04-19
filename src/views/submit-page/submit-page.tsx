@@ -14,6 +14,10 @@ import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Markdown from '../../components/markdown';
 import Embed from '../../components/post/embed';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { FormattingHelpTable } from '../../components/reply-form/reply-form';
 import styles from './submit-page.module.css';
 import InfoTooltip from '../../components/info-tooltip';
@@ -61,7 +65,7 @@ const UrlField = () => {
             x
           </span>
         )}
-        <input
+        <Input
           className={`${styles.input} ${styles.inputUrl}`}
           type='text'
           value={url ?? ''}
@@ -241,7 +245,7 @@ const TitleField = () => {
     <div className={styles.box}>
       <span className={styles.boxTitleRequired}>{t('title')}</span>
       <div className={styles.boxContent}>
-        <textarea
+        <Textarea
           className={`${styles.input} ${styles.inputTitle}`}
           value={title}
           onChange={(e) => {
@@ -266,7 +270,7 @@ const ContentField = () => {
       <span className={styles.optional}> ({t('optional')})</span>
       <div className={styles.boxContent}>
         {!showPreview ? (
-          <textarea
+          <Textarea
             className={`${styles.input} ${styles.inputText}`}
             value={content || ''}
             onChange={(e) => {
@@ -282,9 +286,9 @@ const ContentField = () => {
         )}
         <div className={styles.contentActions}>
           {showFormattingHelp && (
-            <button className={styles.previewButton} disabled={!content} onClick={() => setShowPreview(!showPreview)}>
+            <Button type='button' variant='outline' className={styles.previewButton} disabled={!content} onClick={() => setShowPreview(!showPreview)}>
               {showPreview ? t('edit') : t('preview')}
-            </button>
+            </Button>
           )}
           <span
             className={styles.formattingHelpButton}
@@ -375,7 +379,7 @@ const SubplebbitAddressField = () => {
       <span className={styles.boxTitleRequired}>{t('submit_choose')}</span>
       <div className={styles.boxContent}>
         <span className={styles.boxSubtitle}>{t('community_address')}:</span>
-        <input
+        <Input
           className={`${styles.input} ${styles.inputCommunity}`}
           type='text'
           value={inputAddress ?? ''}
@@ -446,13 +450,13 @@ const SubmitOptions = () => {
         <div className={styles.options}>
           <div className={styles.option}>
             <label>
-              <input type='checkbox' onChange={(e) => setPublishPostStore({ spoiler: e.target.checked })} />
+              <Checkbox onChange={(e) => setPublishPostStore({ spoiler: e.target.checked })} />
               {t('spoiler')}
             </label>
           </div>
           <div className={styles.option}>
             <label>
-              <input type='checkbox' onChange={(e) => setPublishPostStore({ nsfw: e.target.checked })} />
+              <Checkbox onChange={(e) => setPublishPostStore({ nsfw: e.target.checked })} />
               {t('nsfw')}
             </label>
           </div>
@@ -545,9 +549,9 @@ const SubmitPage = () => {
           <div className={`${styles.box} ${styles.notice}`}>{t('submit_notice')}</div>
           <div>*{t('required')}</div>
           <div className={styles.submit}>
-            <button className={styles.submitButton} onClick={onPublish}>
+            <Button type='button' className={styles.submitButton} onClick={onPublish}>
               {t('submit')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

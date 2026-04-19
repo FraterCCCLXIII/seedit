@@ -6,6 +6,7 @@ import styles from './about.module.css';
 import { useAccount, useComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import { Capacitor } from '@capacitor/core';
 import { isHomeAboutView } from '../../lib/utils/view-utils';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import { useEffect } from 'react';
 
 const isAndroid = Capacitor.getPlatform() === 'android';
@@ -180,8 +181,12 @@ const About = () => {
         )
       ) : (
         <>
-          <Sidebar />
-          <FAQ />
+          <div {...feedShellMainProps}>
+            <FAQ />
+          </div>
+          <div {...feedShellSidebarProps}>
+            <Sidebar />
+          </div>
         </>
       )}
     </div>

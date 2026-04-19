@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FloatingFocusManager, useClick, useDismiss, useFloating, useId, useInteractions, useRole } from '@floating-ui/react';
 import { Challenge as ChallengeType, useComment, useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import useChallengesStore from '../../stores/use-challenges-store';
 import useTheme from '../../hooks/use-theme';
 import styles from './challenge-modal.module.css';
@@ -231,8 +233,12 @@ const RegularChallengeContent = ({ challenge, closeModal }: RegularChallengeCont
             </div>
             <div className={styles.challengeFooter}>
               <span className={styles.buttons}>
-                <button onClick={handleLoadIframe}>{t('open', { defaultValue: 'open' })}</button>
-                <button onClick={closeModal}>{t('cancel')}</button>
+                <Button type='button' onClick={handleLoadIframe}>
+                  {t('open', { defaultValue: 'open' })}
+                </Button>
+                <Button type='button' variant='outline' onClick={closeModal}>
+                  {t('cancel')}
+                </Button>
               </span>
             </div>
           </>
@@ -253,7 +259,9 @@ const RegularChallengeContent = ({ challenge, closeModal }: RegularChallengeCont
                 {t('iframe_challenge_keep_open', { defaultValue: 'Complete the challenge in the box above. Keep this window open until done.' })}
               </div>
               <div className={styles.iframeCloseButton}>
-                <button onClick={onIframeClose}>{t('done', { defaultValue: 'done' })}</button>
+                <Button type='button' onClick={onIframeClose}>
+                  {t('done', { defaultValue: 'done' })}
+                </Button>
               </div>
             </div>
           </>
@@ -278,7 +286,7 @@ const RegularChallengeContent = ({ challenge, closeModal }: RegularChallengeCont
         {isImageChallenge && <img alt={t('loading')} className={styles.challengeMedia} src={`data:image/png;base64,${currentChallenge?.challenge}`} />}
       </div>
       <div>
-        <input
+        <Input
           onKeyDown={onEnterKey}
           onChange={onAnswersChange}
           value={answers[currentChallengeIndex] || ''}
@@ -292,17 +300,23 @@ const RegularChallengeContent = ({ challenge, closeModal }: RegularChallengeCont
         <div className={styles.counter}>{t('challenge_counter', { index: currentChallengeIndex + 1, total: challenges?.length })}</div>
         <span className={styles.buttons}>
           {!challenges?.[currentChallengeIndex + 1] && (
-            <button onClick={onSubmit} disabled={!isValidAnswer(currentChallengeIndex)}>
+            <Button type='button' onClick={onSubmit} disabled={!isValidAnswer(currentChallengeIndex)}>
               {t('submit')}
-            </button>
+            </Button>
           )}
-          <button onClick={closeModal}>{t('cancel')}</button>
+          <Button type='button' variant='outline' onClick={closeModal}>
+            {t('cancel')}
+          </Button>
           {challenges && challenges.length > 1 && (
-            <button disabled={!challenges[currentChallengeIndex - 1]} onClick={() => setCurrentChallengeIndex((prev) => prev - 1)}>
+            <Button type='button' variant='secondary' disabled={!challenges[currentChallengeIndex - 1]} onClick={() => setCurrentChallengeIndex((prev) => prev - 1)}>
               {t('previous')}
-            </button>
+            </Button>
           )}
-          {challenges?.[currentChallengeIndex + 1] && <button onClick={() => setCurrentChallengeIndex((prev) => prev + 1)}>{t('next')}</button>}
+          {challenges?.[currentChallengeIndex + 1] && (
+            <Button type='button' variant='secondary' onClick={() => setCurrentChallengeIndex((prev) => prev + 1)}>
+              {t('next')}
+            </Button>
+          )}
         </span>
       </div>
     </>

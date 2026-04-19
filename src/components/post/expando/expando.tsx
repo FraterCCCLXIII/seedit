@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CommentMediaInfo } from '../../../lib/utils/media-utils';
 import useContentOptionsStore from '../../../stores/use-content-options-store';
 import { useIsNsfwSubplebbit } from '../../../hooks/use-is-nsfw-subplebbit';
+import { Button } from '@/components/ui/button';
 import Markdown from '../../markdown';
 import Embed from '../embed';
 import styles from './expando.module.css';
@@ -114,7 +115,9 @@ const Expando = ({
         <div className={styles.alwaysShowNsfwContainer}>
           <div className={styles.alwaysShowNsfwNotice}>
             <p>{t('always_show_nsfw_notice')}</p>
-            <button onClick={handleUndoAlwaysShowNsfw}>{t('undo')}</button>
+            <Button type='button' variant='ghost' size='sm' onClick={handleUndoAlwaysShowNsfw}>
+              {t('undo')}
+            </Button>
           </div>
         </div>
       )}

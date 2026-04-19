@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { isCreateSubplebbitView } from '../../../lib/utils/view-utils';
 import useSubplebbitSettingsStore, { SubplebbitSettingsState } from '../../../stores/use-subplebbit-settings-store';
 import useChallengesOptions from '../../../hooks/use-challenges-options';
@@ -59,7 +63,7 @@ const ExcludeAddressesFromChallengeInput = ({
   return isReadOnly ? (
     <span>{exclude?.address?.join(', ')}</span>
   ) : (
-    <input
+    <Input
       type='text'
       placeholder='address1.eth, address2.eth, address3.eth'
       value={addressInput}
@@ -184,7 +188,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
           {isReadOnly ? (
             <span>{options && (options[setting?.option] || '')}</span>
           ) : (
-            <input
+            <Input
               type='text'
               value={options && (options[setting?.option] || '')}
               placeholder={setting?.placeholder || ''}
@@ -196,18 +200,18 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
       <div className={styles.challengeDescription}>Exclude groups for challenge #{index + 1}</div>
       <div className={styles.excludeGroupSection}>
         {!isReadOnly && (
-          <button className={`${styles.addButton} ${styles.addExclude}`} onClick={addExcludeGroup} disabled={isReadOnly}>
+          <Button type='button' className={`${styles.addButton} ${styles.addExclude}`} onClick={addExcludeGroup} disabled={isReadOnly}>
             Add Group
-          </button>
+          </Button>
         )}
         {excludeArray.map((exclude: any, excludeIndex: number) => (
           <div key={excludeIndex} className={styles.excludeGroup}>
             Exclude group #{excludeIndex + 1}
             {!isReadOnly && <span className={styles.deleteButton} onClick={() => deleteExcludeGroup(excludeIndex)} title='delete group' />}
             {!isReadOnly && (
-              <button className={styles.hideCombo} onClick={() => toggleExcludeSettings(excludeIndex)} disabled={isReadOnly}>
-                {showExcludeSettings?.[excludeIndex] ?? false ? 'Hide' : 'Show'} Group Settings
-              </button>
+              <Button type='button' className={styles.hideCombo} onClick={() => toggleExcludeSettings(excludeIndex)} disabled={isReadOnly}>
+                {(showExcludeSettings?.[excludeIndex] ?? false) ? 'Hide' : 'Show'} Group Settings
+              </Button>
             )}
             {showExcludeSettings[excludeIndex] && (
               <>
@@ -232,7 +236,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                         {isReadOnly ? (
                           <span>{exclude?.postScore}</span>
                         ) : (
-                          <input
+                          <Input
                             type='number'
                             min={0}
                             value={exclude?.postScore ?? ''}
@@ -250,7 +254,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                         {isReadOnly ? (
                           <span>{exclude?.replyScore}</span>
                         ) : (
-                          <input
+                          <Input
                             min={0}
                             type='number'
                             value={exclude?.replyScore ?? ''}
@@ -271,7 +275,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                     {isReadOnly ? (
                       <span>{exclude?.firstCommentTimestamp}</span>
                     ) : (
-                      <input
+                      <Input
                         type='number'
                         min={0}
                         value={exclude?.firstCommentTimestamp ?? ''}
@@ -294,8 +298,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                             <span className={styles.readOnlyRoleExclude}>{role} excluded</span>
                           ) : (
                             <label>
-                              <input
-                                type='checkbox'
+                              <Checkbox
                                 checked={Boolean(exclude?.role?.includes(role))}
                                 onChange={() => handleExcludeChange(excludeIndex, 'role', role)}
                                 disabled={isReadOnly}
@@ -319,12 +322,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                             <span className={styles.readOnlyActionExclude}>{action} excluded</span>
                           ) : (
                             <label>
-                              <input
-                                type='checkbox'
-                                checked={exclude?.[action]}
-                                onChange={(e) => handleExcludeChange(excludeIndex, action, e.target.checked)}
-                                disabled={isReadOnly}
-                              />
+                              <Checkbox checked={exclude?.[action]} onChange={(e) => handleExcludeChange(excludeIndex, action, e.target.checked)} disabled={isReadOnly} />
                               is {action}
                             </label>
                           )}
@@ -338,8 +336,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                             <span className={styles.readOnlyActionExclude}>{nonAction} excluded</span>
                           ) : (
                             <label>
-                              <input
-                                type='checkbox'
+                              <Checkbox
                                 checked={exclude?.[nonAction.replace('not ', '')] === undefined}
                                 onChange={(e) => handleExcludeChange(excludeIndex, nonAction, e.target.checked)}
                                 disabled={isReadOnly}
@@ -359,7 +356,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                     {isReadOnly ? (
                       <div>{exclude?.rateLimit}</div>
                     ) : (
-                      <input
+                      <Input
                         type='number'
                         min={0}
                         value={exclude?.rateLimit ?? ''}
@@ -372,8 +369,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                     {isReadOnly && !exclude?.rateLimitChallengeSuccess ? null : (
                       <div>
                         <label>
-                          <input
-                            type='checkbox'
+                          <Checkbox
                             checked={exclude?.rateLimitChallengeSuccess === true}
                             onChange={(e) => {
                               if (e.target.checked) {
@@ -387,8 +383,7 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
                           apply rate limit only on challenge success
                         </label>
                         <label className={styles.rateLimitChallengeFail}>
-                          <input
-                            type='checkbox'
+                          <Checkbox
                             checked={exclude?.rateLimitChallengeSuccess === false}
                             onChange={(e) => {
                               if (e.target.checked) {
@@ -502,9 +497,9 @@ const Challenges = ({
       <div className={styles.boxSubtitle}>{t('challenges_subtitle')}</div>
       <div className={styles.boxInput}>
         {!isReadOnly && (
-          <button className={styles.addButton} onClick={handleAddChallenge} disabled={isReadOnly}>
+          <Button type='button' className={styles.addButton} onClick={handleAddChallenge} disabled={isReadOnly}>
             {t('add_a_challenge')}
-          </button>
+          </Button>
         )}
         {challenges.length === 0 && !isInCreateSubplebbitView && <span className={styles.noChallengeWarning}>{t('warning_spam')}</span>}
         {challenges?.map((challenge: any, index: number) => (
@@ -515,18 +510,18 @@ const Challenges = ({
             {isReadOnly ? (
               <span className={styles.readOnlyChallenge}>{challenge?.name}</span>
             ) : (
-              <select value={challenge?.name} onChange={(e) => handleChallengeTypeChange(index, e.target.value)} disabled={isReadOnly}>
+              <Select value={challenge?.name} onChange={(e) => handleChallengeTypeChange(index, e.target.value)} disabled={isReadOnly}>
                 {challengeNames?.map((challenge) => (
                   <option key={challenge} value={challenge}>
                     {challenge}
                   </option>
                 ))}
-              </select>
+              </Select>
             )}
             {!isReadOnly && (
-              <button className={styles.challengeEditButton} onClick={() => toggleSettings(index)} disabled={isReadOnly}>
+              <Button type='button' className={styles.challengeEditButton} onClick={() => toggleSettings(index)} disabled={isReadOnly}>
                 {showSettings[index] ? t('hide_settings') : t('show_settings')}
-              </button>
+              </Button>
             )}
             <ChallengeSettings
               challenge={challenge}

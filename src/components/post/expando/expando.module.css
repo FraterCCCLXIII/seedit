@@ -224,6 +224,6 @@
   justify-content: center;
   align-items: center;
   color: var(--text-info);
-  font-family: verdana, arial, helvetica, sans-serif;
+  font-family: var(--font-sans);
   text-transform: lowercase;
 }

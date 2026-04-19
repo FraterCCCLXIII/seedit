@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import App from './app';
 import { HashRouter as Router } from 'react-router-dom';
 import './lib/init-translations';
+import './styles/shadcn.css';
 import './index.css';
 import './themes.css';
 import './preload-assets.css';

@@ -1,10 +1,15 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { Capacitor } from '@capacitor/core';
 import { setAccount, useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import { isSettingsPlebbitOptionsView, isSettingsContentOptionsView } from '../../lib/utils/view-utils';
 import useTheme from '../../hooks/use-theme';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { VersionWithCommit } from '../../components/version';
 import AccountSettings from './account-settings';
 import AddressSettings from './address-settings';
@@ -13,6 +18,7 @@ import PlebbitOptions from './plebbit-options';
 import ContentOptions from './content-options';
 import WalletSettings from './wallet-settings';
 import NotificationsSettings from './notifications-settings';
+import { feedShellMainProps } from '../../lib/feed-shell-data';
 import styles from './settings.module.css';
 import packageJson from '../../../package.json';
 import _ from 'lodash';
@@ -77,10 +83,12 @@ const CheckForUpdates = () => {
   };
 
   return (
-    <div className={styles.checkForUpdates}>
+    <div className='text-sm text-muted-foreground'>
       <Trans
         i18nKey='check_for_updates'
-        components={{ 1: <button key='checkForUpdatesButton' className={styles.checkForUpdatesButton} onClick={checkForUpdates} disabled={loading} /> }}
+        components={{
+          1: <Button type='button' variant='link' size='sm' className='h-auto p-0' key='checkForUpdatesButton' onClick={checkForUpdates} disabled={loading} />,
+        }}
       />
     </div>
   );
@@ -99,15 +107,20 @@ const LanguageSettings = () => {
   };
 
   return (
-    <div className={styles.languageSettings}>
-      <select value={language} onChange={onSelectLanguage}>
+    <div className='flex max-w-md flex-col gap-3'>
+      <Select value={language} onChange={onSelectLanguage} aria-label={t('interface_language')}>
         {availableLanguages.map((lang) => (
           <option key={lang} value={lang}>
             {lang}
           </option>
         ))}
-      </select>
-      <a href='https://github.com/bitsocialhq/seedit/tree/master/public/translations' target='_blank' rel='noopener noreferrer'>
+      </Select>
+      <a
+        className='text-sm text-primary underline-offset-4 hover:underline'
+        href='https://github.com/bitsocialhq/seedit/tree/master/public/translations'
+        target='_blank'
+        rel='noopener noreferrer'
+      >
         {t('contribute_on_github')}
       </a>
     </div>
@@ -119,10 +132,12 @@ const ThemeSettings = () => {
   const { t } = useTranslation();
 
   return (
-    <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-      <option value='light'>{t('light')}</option>
-      <option value='dark'>{t('dark')}</option>
-    </select>
+    <div className='max-w-xs'>
+      <Select value={theme} onChange={(e) => setTheme(e.target.value)} aria-label={t('theme')}>
+        <option value='light'>{t('light')}</option>
+        <option value='dark'>{t('dark')}</option>
+      </Select>
+    </div>
   );
 };
 
@@ -147,87 +162,87 @@ const DisplayNameSetting = () => {
   };
 
   return (
-    <div className={styles.displayNameSetting}>
-      <div className={styles.usernameInput}>
-        <input type='text' placeholder='My Name' value={displayName || account?.author?.displayName || ''} onChange={(e) => setDisplayName(e.target.value)} />
-        <button className={styles.button} onClick={saveUsername}>
+    <div className='flex max-w-md flex-col gap-2 sm:flex-row sm:items-center'>
+      <Input
+        type='text'
+        placeholder='My Name'
+        value={displayName || account?.author?.displayName || ''}
+        onChange={(e) => setDisplayName(e.target.value)}
+        className='sm:max-w-xs'
+        aria-label={t('display_name')}
+      />
+      <div className='flex items-center gap-2'>
+        <Button type='button' size='sm' onClick={saveUsername}>
           {t('save')}
-        </button>
-        {savedDisplayName && <span className={styles.saved}>{t('saved')}</span>}
+        </Button>
+        {savedDisplayName && <span className='text-xs italic text-muted-foreground'>{t('saved')}</span>}
       </div>
     </div>
   );
 };
+
+type SettingsSectionProps = {
+  title: string;
+  id?: string;
+  highlighted?: boolean;
+  children: ReactNode;
+};
+
+const SettingsSection = ({ title, id, highlighted, children }: SettingsSectionProps) => (
+  <Card id={id} className={cn('overflow-hidden shadow-sm', highlighted && 'ring-2 ring-ring ring-offset-2 ring-offset-background')}>
+    <CardContent className='flex flex-col gap-4 px-4 py-5 sm:flex-row sm:items-start sm:gap-8 sm:px-6'>
+      <div className='shrink-0 sm:w-40 sm:pt-0.5 sm:text-right'>
+        <p className='text-sm font-medium lowercase leading-none text-muted-foreground'>{title}</p>
+      </div>
+      <div className='min-w-0 flex-1 space-y-2'>{children}</div>
+    </CardContent>
+  </Card>
+);
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
   return (
-    <>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('version')}</span>
-        <span className={styles.categorySettings}>
-          <div className={styles.version}>
+    <div className='mx-auto flex w-full max-w-3xl flex-col gap-4'>
+      <SettingsSection title={t('version')}>
+        <div className='space-y-2'>
+          <div className={cn(styles.version, 'text-sm')}>
             <VersionWithCommit />
             {window.electronApi?.isElectron && (
-              <a className={styles.fullNodeStats} href='http://localhost:50019/webui/' target='_blank' rel='noreferrer'>
+              <a className='ml-2 text-xs text-primary underline-offset-4 hover:underline' href='http://localhost:50019/webui/' target='_blank' rel='noreferrer'>
                 {t('node_stats')}
               </a>
             )}
           </div>
           <CheckForUpdates />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('interface_language')}</span>
-        <span className={styles.categorySettings}>
-          <LanguageSettings />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('theme')}</span>
-        <span className={styles.categorySettings}>
-          <ThemeSettings />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('avatar')}</span>
-        <span className={styles.categorySettings}>
-          <AvatarSettings />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#displayName' ? styles.highlightedSetting : ''}`} id='displayName'>
-        <span className={styles.categoryTitle}>{t('display_name')}</span>
-        <span className={styles.categorySettings}>
-          <DisplayNameSetting />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#cryptoAddress' ? styles.highlightedSetting : ''}`} id='cryptoAddress'>
-        <span className={styles.categoryTitle}>{t('crypto_address')}</span>
-        <span className={styles.categorySettings}>
-          <AddressSettings />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#cryptoWallets' ? styles.highlightedSetting : ''}`} id='cryptoWallets'>
-        <span className={styles.categoryTitle}>{t('crypto_wallets')}</span>
-        <span className={styles.categorySettings}>
-          <WalletSettings />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>{t('notifications')}</span>
-        <span className={styles.categorySettings}>
-          <NotificationsSettings />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#exportAccount' ? styles.highlightedSetting : ''}`} id='exportBackup'>
-        <span className={styles.categoryTitle}>{t('account')}</span>
-        <span className={styles.categorySettings}>
-          <AccountSettings />
-        </span>
-      </div>
-    </>
+        </div>
+      </SettingsSection>
+      <SettingsSection title={t('interface_language')}>
+        <LanguageSettings />
+      </SettingsSection>
+      <SettingsSection title={t('theme')}>
+        <ThemeSettings />
+      </SettingsSection>
+      <SettingsSection title={t('avatar')}>
+        <AvatarSettings />
+      </SettingsSection>
+      <SettingsSection title={t('display_name')} id='displayName' highlighted={location.hash === '#displayName'}>
+        <DisplayNameSetting />
+      </SettingsSection>
+      <SettingsSection title={t('crypto_address')} id='cryptoAddress' highlighted={location.hash === '#cryptoAddress'}>
+        <AddressSettings />
+      </SettingsSection>
+      <SettingsSection title={t('crypto_wallets')} id='cryptoWallets' highlighted={location.hash === '#cryptoWallets'}>
+        <WalletSettings />
+      </SettingsSection>
+      <SettingsSection title={t('notifications')}>
+        <NotificationsSettings />
+      </SettingsSection>
+      <SettingsSection title={t('account')} id='exportBackup' highlighted={location.hash === '#exportAccount'}>
+        <AccountSettings />
+      </SettingsSection>
+    </div>
   );
 };
 
@@ -249,7 +264,9 @@ const Settings = () => {
 
   return (
     <div className={styles.content}>
-      {isInSettingsPlebbitOptionsView ? <PlebbitOptions /> : isInSettingsContentOptionsView ? <ContentOptions /> : <GeneralSettings key={account?.id} />}
+      <div className={cn(styles.mainColumn, 'text-foreground')} {...feedShellMainProps}>
+        {isInSettingsPlebbitOptionsView ? <PlebbitOptions /> : isInSettingsContentOptionsView ? <ContentOptions /> : <GeneralSettings key={account?.id} />}
+      </div>
     </div>
   );
 };

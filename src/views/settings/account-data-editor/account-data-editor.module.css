@@ -29,7 +29,7 @@
 }
 
 .securityWarning {
-  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  font-family: var(--font-sans);
   margin: auto;
   text-align: center;
   width: 100%;

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Checkbox } from '@/components/ui/checkbox';
 import { requestNotificationPermission, showLocalNotification } from '../../../lib/push';
 import useContentOptionsStore from '../../../stores/use-content-options-store';
 import styles from './notifications-settings.module.css';
@@ -171,8 +172,7 @@ const NotificationsSettings = () => {
   return (
     <div className={styles.notificationsSettings}>
       <div>
-        <input
-          type='checkbox'
+        <Checkbox
           id='enableLocalNotifications'
           checked={enableLocalNotifications}
           onChange={handleCheckboxChange}

@@ -1,0 +1,191 @@
+/* Aligns fixed rail with the centered shell (same math as max-width + margin: auto) */
+.shell {
+  --feed-shell-align: calc((100vw - min(100vw, var(--feed-shell-site-max))) / 2);
+
+  display: grid;
+  grid-template-columns: var(--feed-shell-left-w) minmax(0, 1fr);
+  width: 100%;
+  max-width: var(--feed-shell-site-max);
+  margin: 0 auto;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.leftRailColumn {
+  position: relative;
+  width: var(--feed-shell-left-w);
+}
+
+/* Reserves horizontal space so main content does not sit under the fixed rail */
+.leftRailSpacer {
+  width: var(--feed-shell-left-w);
+  min-height: 100vh;
+}
+
+/* Primal-style: left column content is fixed to the viewport while the feed scrolls */
+.leftRailFixed {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: var(--feed-shell-align);
+  z-index: 25;
+  width: var(--feed-shell-left-w);
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 12px 10px 16px 0;
+  background-color: hsl(var(--shadcn-background));
+  -webkit-overflow-scrolling: touch;
+  /* Divider belongs on the rail so it stays visible regardless of center column stacking */
+  border-right: 1px solid hsl(var(--shadcn-border));
+}
+
+.center {
+  min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  flex: 1;
+  background-color: hsl(var(--shadcn-background));
+}
+
+/* Main column: Primal uses ~640px center + separate right rail; we bound inner to feed + sidebar */
+.centerInner {
+  width: 100%;
+  max-width: var(--feed-shell-center-inner-max);
+  min-height: 100vh;
+  box-sizing: border-box;
+  /* Left edge: divider is on .leftRailFixed (900px+); avoid double line */
+  border-left: none;
+  border-right: 1px solid hsl(var(--shadcn-border));
+  font-family: var(--feed-shell-font);
+  font-size: var(--feed-shell-font-size);
+  line-height: var(--feed-shell-line-height);
+  background-color: hsl(var(--shadcn-background));
+  color: hsl(var(--shadcn-foreground));
+}
+
+.stickyHeaderSlot {
+  width: 100%;
+}
+
+/**
+ * Header (tabs/title) only in column 1 row 1; feed main in column 1 row 2;
+ * sidebar in column 2 spanning both rows (not under the header).
+ * Child views use display:contents on `.content` and mark columns with [data-feed-shell].
+ */
+.mainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, var(--feed-shell-feed-max)) 300px;
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  column-gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.headerArea {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.mainGrid :global([data-feed-shell='main']) {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-width: 0;
+}
+
+.mainGrid :global([data-feed-shell='sidebar']) {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  min-width: 0;
+}
+
+/* With a sidebar, keep main in column 1 only (header stays feed-width only) */
+.mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='main']) {
+  grid-column: 1;
+}
+
+@media (max-width: 639px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    column-gap: 0;
+    row-gap: 0;
+    padding: 7px 2px 0;
+  }
+
+  .headerArea {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .mainGrid :global([data-feed-shell='main']) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .mainGrid :global([data-feed-shell='sidebar']) {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='main']) {
+    grid-column: 1;
+  }
+}
+
+@media (min-width: 640px) {
+  .mainGrid {
+    padding: 1rem 1rem 0;
+    max-width: var(--feed-shell-center-inner-max);
+    margin-inline: auto;
+  }
+
+  /* Vertical rule between feed and sidebar (gap alone had no visible line) */
+  .mainGrid:has([data-feed-shell='sidebar']) {
+    column-gap: 0;
+  }
+
+  .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='main']) {
+    padding-right: 1.5rem;
+  }
+
+  .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='sidebar']) {
+    border-left: 1px solid hsl(var(--shadcn-border));
+    padding-left: 1.5rem;
+    box-sizing: border-box;
+  }
+}
+
+@media (min-width: 900px) {
+  .leftRailFixed {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Full-height left rail; TopBar lives in rail + center, not a separate strip over the rail */
+  .stickyHeaderSlot {
+    display: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .shell {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+
+  .leftRailColumn {
+    display: none;
+  }
+
+  .centerInner {
+    border-left: none;
+    border-right: none;
+    max-width: none;
+  }
+}

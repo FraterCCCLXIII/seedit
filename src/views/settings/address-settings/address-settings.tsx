@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { setAccount, useAccount, useResolvedAuthorAddress } from '@bitsocialnet/bitsocial-react-hooks';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import styles from './address-settings.module.css';
 
 const AddressSettings = () => {
@@ -110,7 +112,7 @@ const AddressSettings = () => {
     <div className={styles.addressSettings}>
       <div className={styles.cryptoAddressSetting}>
         <div className={styles.usernameInput}>
-          <input
+          <Input
             type='text'
             placeholder='address.eth/.sol'
             autoCorrect='off'
@@ -119,12 +121,12 @@ const AddressSettings = () => {
             value={cryptoState.cryptoAddress}
             onChange={(e) => setCryptoState((prevState) => ({ ...prevState, cryptoAddress: e.target.value }))}
           />
-          <button className={styles.infoButton} onClick={() => setShowCryptoAddressInfo(!showCryptoAddressInfo)}>
+          <Button type='button' className={styles.infoButton} onClick={() => setShowCryptoAddressInfo(!showCryptoAddressInfo)}>
             {showCryptoAddressInfo ? 'x' : '?'}
-          </button>
-          <button className={styles.button} onClick={saveCryptoAddress}>
+          </Button>
+          <Button type='button' className={styles.button} onClick={saveCryptoAddress}>
             {t('save')}
-          </button>
+          </Button>
           {showCryptoAddressInfo && (
             <div className={styles.cryptoAddressInfo}>
               steps to set a .eth user address:
@@ -159,9 +161,9 @@ const AddressSettings = () => {
           {savedCryptoAddress && <span className={styles.saved}>{t('saved')}</span>}
         </div>
         <div className={styles.checkCryptoAddress}>
-          <button className={styles.button} onClick={checkCryptoAddress}>
+          <Button type='button' className={styles.button} onClick={checkCryptoAddress}>
             {t('check')}
-          </button>{' '}
+          </Button>{' '}
           <span className={cryptoState.resolveClass}>{cryptoState.resolveString}</span>
         </div>
       </div>

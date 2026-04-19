@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import { isValidURL } from '../../lib/utils/url-utils';
 import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
@@ -166,22 +170,22 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
         {showOptions && (
           <div className={styles.options}>
             <span className={urlClass}>
-              {t('media_url')}: <input className={`${styles.url} ${urlClass}`} onChange={(e) => setPublishReplyOptions.link(e.target.value)} />
+              {t('media_url')}: <Input className={`${styles.url} ${urlClass}`} onChange={(e) => setPublishReplyOptions.link(e.target.value)} />
             </span>
             <span className={`${styles.spoiler} ${spoilerClass}`}>
               <label>
-                {t('spoiler')}: <input type='checkbox' className={styles.checkbox} onChange={(e) => setPublishReplyOptions.spoiler(e.target.checked)} />
+                {t('spoiler')}: <Checkbox className={styles.checkbox} onChange={(e) => setPublishReplyOptions.spoiler(e.target.checked)} />
               </label>
             </span>
             <span className={`${styles.spoiler} ${nsfwClass}`}>
               <label>
-                {t('nsfw')}: <input type='checkbox' className={styles.checkbox} onChange={(e) => setPublishReplyOptions.nsfw(e.target.checked)} />
+                {t('nsfw')}: <Checkbox className={styles.checkbox} onChange={(e) => setPublishReplyOptions.nsfw(e.target.checked)} />
               </label>
             </span>
           </div>
         )}
         {!showPreview ? (
-          <textarea
+          <Textarea
             className={styles.textarea}
             value={publishReplyOptions?.content || ''}
             onChange={(e) => setPublishReplyOptions.content(e.target.value)}
@@ -195,18 +199,18 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
         )}
       </div>
       <div className={styles.bottomArea}>
-        <button className={styles.save} onClick={onPublish}>
+        <Button type='button' className={styles.save} onClick={onPublish}>
           {t('save')}
-        </button>
+        </Button>
         {showFormattingHelp && (
-          <button className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!publishReplyOptions?.content}>
+          <Button type='button' variant='outline' className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!publishReplyOptions?.content}>
             {showPreview ? t('edit') : t('preview')}
-          </button>
+          </Button>
         )}
         {isReplyingToReply && (
-          <button className={styles.cancel} onClick={hideReplyForm}>
+          <Button type='button' variant='ghost' className={styles.cancel} onClick={hideReplyForm}>
             {t('cancel')}
-          </button>
+          </Button>
         )}
         <span className={styles.optionsButton} onClick={() => setShowFormattingHelp(!showFormattingHelp)}>
           {showFormattingHelp ? t('hide_help') : t('formatting_help')}

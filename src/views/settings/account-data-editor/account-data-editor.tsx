@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState, lazy, Suspense, Component } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { setAccount, useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import useTheme from '../../../stores/use-theme-store';
 import stringify from 'json-stringify-pretty-compact';
@@ -45,7 +47,7 @@ const FallbackEditor = ({ value, onChange, height }: { value: string; onChange: 
   return (
     <div>
       <div className={styles.infobar}>{t('editor_fallback_warning', 'Advanced editor failed to load. Using basic text editor as fallback.')}</div>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} className={styles.fallbackEditor} style={{ height }} spellCheck={false} />
+      <Textarea value={value} onChange={(e) => onChange(e.target.value)} className={styles.fallbackEditor} style={{ height }} spellCheck={false} />
     </div>
   );
 };
@@ -96,8 +98,12 @@ const AccountDataEditor = () => {
           <p>{t('private_key_warning_description')}</p>
         </div>
         <div className={styles.warningButtons}>
-          <button onClick={() => navigate('/settings')}>{t('go_back')}</button>
-          <button onClick={() => setShowEditor(true)}>{t('continue')}</button>
+          <Button type='button' onClick={() => navigate('/settings')}>
+            {t('go_back')}
+          </Button>
+          <Button type='button' onClick={() => setShowEditor(true)}>
+            {t('continue')}
+          </Button>
         </div>
       </div>
     );
@@ -165,13 +171,15 @@ const AccountDataEditor = () => {
         <Trans
           i18nKey='save_reset_changes'
           components={{
-            1: <button key='saveAccountButton' onClick={saveAccount} />,
-            2: <button key='resetAccountButton' onClick={() => setText(accountJson)} />,
+            1: <Button type='button' key='saveAccountButton' onClick={saveAccount} />,
+            2: <Button type='button' key='resetAccountButton' onClick={() => setText(accountJson)} />,
           }}
         />
         <div>
           <br />
-          <button onClick={() => navigate('/settings')}>return to settings</button>
+          <Button type='button' onClick={() => navigate('/settings')}>
+            return to settings
+          </Button>
         </div>
       </div>
     </div>

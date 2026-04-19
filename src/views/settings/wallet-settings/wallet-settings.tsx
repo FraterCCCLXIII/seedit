@@ -2,6 +2,8 @@ import { Fragment, useState } from 'react';
 import { Account, setAccount, useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './wallet-settings.module.css';
 import { Trans, useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import InfoTooltip from '../../../components/info-tooltip';
 
 interface Wallet {
@@ -109,14 +111,16 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
         <Trans i18nKey='wallet_number' values={{ index: index + 1 }} />
       </div>
       <div key={index} className={styles.walletBox}>
-        <button className={styles.toggleWallet} onClick={() => toggleShowWallet(index)}>
+        <Button type='button' className={styles.toggleWallet} onClick={() => toggleShowWallet(index)}>
           {showWallet[index] ? t('hide') : t('show')}
-        </button>
-        <button onClick={() => handleRemove(index)}>{t('remove')}</button>
+        </Button>
+        <Button type='button' onClick={() => handleRemove(index)}>
+          {t('remove')}
+        </Button>
         <div className={`${showWallet[index] ? styles.show : styles.hide}`}>
           <div className={styles.walletField}>
             <div className={styles.walletFieldTitle}>{t('chain_ticker')}</div>
-            <input
+            <Input
               autoCorrect='off'
               autoCapitalize='off'
               spellCheck='false'
@@ -127,7 +131,7 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
           </div>
           <div className={styles.walletField}>
             <div className={styles.walletFieldTitle}>{t('wallet_address')}</div>
-            <input
+            <Input
               autoCorrect='off'
               autoCapitalize='off'
               spellCheck='false'
@@ -141,7 +145,7 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               i18nKey='copy_message_etherscan'
               values={{ copy: hasCopied ? t('copied') : t('copy') }}
               components={{
-                1: <button key={`copyMessageEtherscanButton-${index}`} onClick={() => copyMessageToSign(wallet, index)} />,
+                1: <Button type='button' variant='link' key={`copyMessageEtherscanButton-${index}`} onClick={() => copyMessageToSign(wallet, index)} />,
                 // eslint-disable-next-line
                 2: <a key={`etherscanLink-${index}`} href='https://etherscan.io/verifiedSignatures' target='_blank' rel='noopener noreferrer' />,
               }}
@@ -149,7 +153,7 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
           </div>
           <div className={styles.walletField}>
             <div className={styles.walletFieldTitle}>{t('timestamp')}</div>
-            <input
+            <Input
               type='text'
               placeholder='Timestamp'
               autoCorrect='off'
@@ -161,7 +165,7 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
           </div>
           <div className={styles.walletField}>
             <div className={styles.walletFieldTitle}>{t('paste_signature')}</div>
-            <input
+            <Input
               autoCorrect='off'
               autoCapitalize='off'
               spellCheck='false'
@@ -169,9 +173,9 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               value={wallet.signature}
               placeholder='0x...'
             />
-            <button className={styles.save} onClick={handleSave}>
+            <Button type='button' className={styles.save} onClick={handleSave}>
               {t('save')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -183,7 +187,16 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
       <div className={styles.addWallet}>
         <Trans
           i18nKey='add_wallet'
-          components={{ 1: <button key={`addWalletButton-${walletsArray.length}`} onClick={() => setWalletsArray([...walletsArray, defaultWalletObject])} /> }}
+          components={{
+            1: (
+              <Button
+                type='button'
+                variant='link'
+                key={`addWalletButton-${walletsArray.length}`}
+                onClick={() => setWalletsArray([...walletsArray, defaultWalletObject])}
+              />
+            ),
+          }}
         />
         <InfoTooltip
           content={`Link crypto wallets to your account by proving ownership through signed messages. Communities can verify your token/NFT holdings to grant posting privileges or special access.`}

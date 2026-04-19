@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { autoUpdate, flip, FloatingFocusManager, offset, shift, useClick, useDismiss, useFloating, useId, useInteractions, useRole } from '@floating-ui/react';
 import { Trans, useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { PublishCommentModerationOptions, useComment, useEditedComment, usePublishCommentModeration } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './mod-menu.module.css';
 import { alertChallengeVerificationFailed } from '../../../../lib/utils/challenge-utils';
@@ -140,52 +143,52 @@ const ModMenu = ({ cid, isCommentAuthorMod }: ModMenuProps) => {
             <div className={styles.ModMenu}>
               <div className={styles.menuItem}>
                 <label>
-                  <input onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.removed} type='checkbox' id='removed' />
+                  <Checkbox onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.removed} id='removed' />
                   {t('removed')}
                 </label>
               </div>
               <div className={styles.menuItem}>
                 <label>
-                  <input onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.purged} type='checkbox' id='purged' />
+                  <Checkbox onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.purged} id='purged' />
                   <span className={styles.purged}>{t('purged')}</span> <span className={styles.optional}>({t('irreversible')})</span>
                 </label>
               </div>
               {!isReply && (
                 <div className={styles.menuItem}>
                   <label>
-                    <input onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.locked} type='checkbox' id='locked' />
+                    <Checkbox onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.locked} id='locked' />
                     {t('locked')}
                   </label>
                 </div>
               )}
               <div className={styles.menuItem}>
                 <label>
-                  <input onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.spoiler} type='checkbox' id='spoiler' />
+                  <Checkbox onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.spoiler} id='spoiler' />
                   {t('spoiler')}
                 </label>
               </div>
               <div className={styles.menuItem}>
                 <label>
-                  <input onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.nsfw} type='checkbox' id='nsfw' />
+                  <Checkbox onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.nsfw} id='nsfw' />
                   {t('nsfw')}
                 </label>
               </div>
               <div className={styles.menuItem}>
                 <label>
-                  <input onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.pinned} type='checkbox' id='pinned' />
+                  <Checkbox onChange={onCheckbox} checked={publishCommentModerationOptions.commentModeration.pinned} id='pinned' />
                   {isReply ? t('stickied_comment') : t('announcement')}
                 </label>
               </div>
               {!isCommentAuthorMod && (
                 <div className={styles.menuItem}>
                   <label>
-                    <input onChange={onCheckbox} checked={!!publishCommentModerationOptions.commentModeration.banExpiresAt} type='checkbox' id='banUser' />
+                    <Checkbox onChange={onCheckbox} checked={!!publishCommentModerationOptions.commentModeration.banExpiresAt} id='banUser' />
                     <Trans
                       i18nKey='ban_user_for'
                       shouldUnescape={true}
                       components={{
                         1: (
-                          <input
+                          <Input
                             key='ban_user_for_input'
                             className={styles.banInput}
                             onChange={onBanDurationChange}
@@ -202,10 +205,12 @@ const ModMenu = ({ cid, isCommentAuthorMod }: ModMenuProps) => {
               )}
               <div className={`${styles.menuItem} ${styles.menuReason}`}>
                 {t('reason')} <span className={styles.optional}>({t('optional')})</span>
-                <input type='text' onChange={onReason} defaultValue={post?.reason} size={14} />
+                <Input type='text' onChange={onReason} defaultValue={post?.reason} size={14} />
               </div>
               <div className={styles.bottom}>
-                <button onClick={handleSaveClick}>{t('save')}</button>
+                <Button type='button' onClick={handleSaveClick}>
+                  {t('save')}
+                </Button>
               </div>
             </div>
           </div>

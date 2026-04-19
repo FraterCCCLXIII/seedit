@@ -26,6 +26,7 @@ import Header from './components/header';
 import NotificationHandler from './components/notification-handler';
 import StickyHeader from './components/sticky-header';
 import TopBar from './components/topbar';
+import { FeedShellLayout } from './components/layout';
 import styles from './app.module.css';
 
 initializeNotificationSystem();
@@ -51,11 +52,9 @@ const App = () => {
   );
 
   const feedLayout = (
-    <>
-      <StickyHeader />
-      <Header />
+    <FeedShellLayout stickyHeader={<StickyHeader />} header={<Header />}>
       <Outlet />
-    </>
+    </FeedShellLayout>
   );
 
   // add theme className to body so it can set the correct body background in index.css
@@ -87,30 +86,18 @@ const App = () => {
       <Routes>
         <Route element={globalLayout}>
           <Route element={pagesLayout}>
-            <Route path='/about' element={<AboutView />} />
             <Route path='/submit' element={<SubmitPage />} />
 
-            <Route path='/s/:subplebbitAddress/c/:commentCid' element={<PostPage />} />
-            <Route path='/s/:subplebbitAddress/c/:commentCid/about' element={<AboutView />} />
-
             <Route path='/s/:subplebbitAddress/submit' element={<SubmitPage />} />
-            <Route path='/s/:subplebbitAddress/about' element={<AboutView />} />
+          </Route>
+          <Route element={feedLayout}>
+            {/* Splat keeps nested paths (e.g. group chat under /inbox) inside FeedShellLayout */}
+            <Route path='/inbox/*' element={<Inbox />} />
 
             <Route path='/settings' element={<Settings />} />
-            <Route path='/s/:subplebbitAddress/settings' element={<SubplebbitSettings />} />
-            <Route path='/s/:subplebbitAddress/settings/editor' element={<SubplebbitDataEditor />} />
             <Route path='/settings/plebbit-options' element={<Settings />} />
             <Route path='/settings/content-options' element={<Settings />} />
             <Route path='/settings/account-data' element={<AccountDataEditor />} />
-
-            <Route path='/profile/about' element={<AboutView />} />
-
-            <Route path='/u/:authorAddress/c/:commentCid/about' element={<AboutView />} />
-
-            <Route path='/inbox' element={<Inbox />} />
-            <Route path='/inbox/unread' element={<Inbox />} />
-            <Route path='/inbox/commentreplies' element={<Inbox />} />
-            <Route path='/inbox/postreplies' element={<Inbox />} />
 
             <Route path='/communities' element={<Subplebbits />} />
             <Route path='/communities/subscriber' element={<Subplebbits />} />
@@ -121,13 +108,23 @@ const App = () => {
             <Route path='/communities/vote/passing' element={<Subplebbits />} />
             <Route path='/communities/vote/rejecting' element={<Subplebbits />} />
             <Route path='/communities/create' element={<SubplebbitSettings />} />
-          </Route>
-          <Route element={feedLayout}>
+
+            {/* About pages use FeedShellLayout (left nav); keep /about before /:sortType? and /profile/:id */}
+            <Route path='/about' element={<AboutView />} />
+            <Route path='/profile/about' element={<AboutView />} />
+            <Route path='/s/:subplebbitAddress/about' element={<AboutView />} />
+            <Route path='/u/:authorAddress/c/:commentCid/about' element={<AboutView />} />
+            <Route path='/s/:subplebbitAddress/c/:commentCid/about' element={<AboutView />} />
+            <Route path='/s/:subplebbitAddress/c/:commentCid' element={<PostPage />} />
+
             <Route path='/:sortType?/:timeFilterName?' element={<Home />} />
 
             <Route path='/s/all/:sortType?/:timeFilterName?' element={<All />} />
 
             <Route path='/s/mod/:sortType?/:timeFilterName?' element={<Mod />} />
+
+            <Route path='/s/:subplebbitAddress/settings/editor' element={<SubplebbitDataEditor />} />
+            <Route path='/s/:subplebbitAddress/settings' element={<SubplebbitSettings />} />
 
             <Route path='/s/:subplebbitAddress/:sortType?/:timeFilterName?' element={<Subplebbit />} />
 

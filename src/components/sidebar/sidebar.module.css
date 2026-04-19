@@ -1,12 +1,10 @@
+/* Shell: surface + padding from Tailwind on the component */
 .sidebar {
   float: right;
   width: 300px;
   position: relative;
   z-index: 5;
-  background-color: var(--background);
-  padding-left: 5px;
   box-sizing: border-box;
-  padding-bottom: 50px;
   margin-right: 5px;
 }
 
@@ -23,21 +21,24 @@
 }
 
 .titleBox {
-  font-size: 12px;
-  color: var(--text);
+  font-size: 0.8125rem;
+  color: hsl(var(--shadcn-muted-foreground));
   margin-bottom: 12px;
 }
 
-a {
+/* Scope link defaults to the sidebar shell only — a bare `a {}` in CSS modules is global in Vite and was flattening shadcn-styled <Link> CTAs. */
+.sidebar a,
+.mobileSidebar a {
   text-decoration: none;
-  color: var(--text);
+  color: hsl(var(--shadcn-foreground));
 }
 
 .title {
-  font-weight: bold;
-  font-size: 19px;
+  font-weight: 600;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
   word-wrap: break-word;
-  font-family: arial, verdana, helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .title:hover {
@@ -101,58 +102,10 @@ a {
   float: right;
 }
 
-.largeButton {
-  text-align: center;
-  position: relative;
-  border: 1px solid var(--button-border-primary);
-  background: var(--background) none repeat-x scroll center left;
-  background-image: var(--button-large);
-  background-repeat: repeat;
-  font-size: 150%;
-  font-weight: bold;
-  letter-spacing: -1px;
-  line-height: 29px;
-  height: 29px;
-  cursor: pointer;
-  margin-bottom: 12px;
-  color: var(--text-primary);
-  margin-right: -5px;
-}
-
-.nub {
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  height: 31px;
-  width: 24px;
-  background: var(--background) none no-repeat scroll center left;
-  background-image: var(--button-large-nub);
-  background-repeat: no-repeat;
-}
-
-.largeButton:hover {
-  background-image: var(--button-large-hover);
-  border-color: var(--button-border-primary-hover);
-  color: var(--background);
-}
-
-.largeButton:hover .nub {
-  background-image: var(--button-large-hover-nub);
-}
-
-.largeButtonDisabled {
-  background-image: var(--button-large-disabled) !important;
-  border-color: var(--button-border-disabled) !important;
-  color: var(--gray-button-text) !important;
-  cursor: default;
-}
-
-.largeButtonDisabled .nub {
-  background-image: var(--button-large-nub-disabled) !important;
-}
-
-.largeButtonDisabled:hover {
-  cursor: default !important;
+/* Sidebar CTAs use shadcn <Button> (submit, submit community, create community) */
+.cta {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .list {
@@ -242,7 +195,7 @@ a {
   padding: 5px;
   border: 1px solid var(--border-primary);
   background-color: var(--background-secondary);
-  font-family: arial,helvetica,sans-serif;
+  font-family: var(--font-sans);
   font-size: larger;
   border-radius: 3px;
   color: var(--text);
@@ -293,16 +246,17 @@ a {
 .disabledButtonDescription {
   margin: 10px 0 10px 10px;
   font-size: 11px;
-  font-family: verdana, Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   text-transform: lowercase;
 }
 
 .footer {
-  font: normal x-small verdana, arial, helvetica, sans-serif;
   width: 100%;
   box-sizing: border-box;
-  background-color: var(--background);
   overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .subplebbitFooterMargin {
@@ -334,11 +288,17 @@ a {
 }
 
 .footer li a {
-  font-size: 10px;
+  font-size: inherit;
 }
 
 .footer a {
-  color: var(--link-primary);
+  color: hsl(var(--shadcn-muted-foreground));
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: hsl(var(--shadcn-foreground));
+  text-decoration: underline;
 }
 
 .mobileFooter {
@@ -415,6 +375,7 @@ a {
 
 .createCommunitySubtitle {
   margin-left: 15px;
-  color: var(--gray-footer);
-  font-size: 11px;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 0.8125rem;
+  line-height: 1.4;
 }

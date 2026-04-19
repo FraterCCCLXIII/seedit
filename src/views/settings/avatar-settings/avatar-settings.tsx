@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { setAccount, useAccount, useAuthorAvatar } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './avatar-settings.module.css';
 import { Trans, useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface AvatarSettingsProps {
   areSettingsShown?: boolean;
@@ -131,7 +133,7 @@ const AvatarSettings = () => {
         <div className={styles.avatarSettingsForm}>
           <div className={styles.avatarSettingInput}>
             <span className={styles.settingTitle}>{t('chain_ticker')}</span>
-            <input
+            <Input
               type='text'
               placeholder='matic'
               autoCorrect='off'
@@ -158,7 +160,7 @@ const AvatarSettings = () => {
                 }}
               />
             </span>
-            <input
+            <Input
               type='text'
               placeholder='0x...'
               autoCorrect='off'
@@ -170,7 +172,7 @@ const AvatarSettings = () => {
           </div>
           <div className={styles.avatarSettingInput}>
             <span className={styles.settingTitle}>{t('token_id')}</span>
-            <input
+            <Input
               type='text'
               placeholder='Token ID'
               autoCorrect='off'
@@ -185,7 +187,7 @@ const AvatarSettings = () => {
               i18nKey='copy_message_etherscan'
               values={{ copy: hasCopied ? t('copied') : t('copy') }}
               components={{
-                1: <button key='copyMessageEtherscanButton' onClick={copyMessageToSign} />,
+                1: <Button type='button' variant='link' key='copyMessageEtherscanButton' onClick={copyMessageToSign} />,
                 // eslint-disable-next-line
                 2: <a key='etherscanLink' href='https://etherscan.io/verifiedSignatures' target='_blank' rel='noopener noreferrer' />,
               }}
@@ -193,7 +195,7 @@ const AvatarSettings = () => {
           </div>
           <div className={styles.avatarSettingInput}>
             <span className={styles.settingTitle}>{t('timestamp')}</span>
-            <input
+            <Input
               type='text'
               placeholder='Timestamp'
               autoCorrect='off'
@@ -205,7 +207,7 @@ const AvatarSettings = () => {
           </div>
           <div className={styles.pasteSignature}>
             <span className={styles.settingTitle}>{t('paste_signature')}</span>
-            <input
+            <Input
               type='text'
               placeholder='0x...'
               autoCorrect='off'
@@ -214,9 +216,9 @@ const AvatarSettings = () => {
               defaultValue={account?.author?.avatar?.signature?.signature}
               onChange={(e) => setSignature(e.target.value)}
             />
-            <button key='saveButton' onClick={save}>
+            <Button type='button' key='saveButton' onClick={save}>
               {t('save')}
-            </button>
+            </Button>
           </div>
         </div>
       )}

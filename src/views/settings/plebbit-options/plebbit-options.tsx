@@ -1,6 +1,9 @@
 import { RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { setAccount, useAccount, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './plebbit-options.module.css';
 
@@ -26,7 +29,7 @@ const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: Se
   return (
     <div className={styles.ipfsGatewaysSettings}>
       <div className={styles.ipfsGatewaysSetting}>
-        <textarea
+        <Textarea
           defaultValue={ipfsGatewayUrlsDefaultValue}
           ref={ipfsGatewayUrlsRef}
           autoCorrect='off'
@@ -37,7 +40,7 @@ const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: Se
       </div>
       <span className={styles.settingTitle}>nft profile pics gateway</span>
       <div>
-        <input type='text' defaultValue={mediaIpfsGatewayUrl} ref={mediaIpfsGatewayUrlRef} />
+        <Input type='text' defaultValue={mediaIpfsGatewayUrl} ref={mediaIpfsGatewayUrlRef} />
       </div>
     </div>
   );
@@ -51,7 +54,7 @@ const PubsubProvidersSettings = ({ pubsubProvidersRef }: SettingsProps) => {
 
   return (
     <div className={styles.pubsubProvidersSettings}>
-      <textarea
+      <Textarea
         defaultValue={pubsubProvidersDefaultValue}
         ref={pubsubProvidersRef}
         autoCorrect='off'
@@ -71,7 +74,7 @@ const HttpRoutersSettings = ({ httpRoutersRef }: SettingsProps) => {
 
   return (
     <div className={styles.httpRoutersSettings}>
-      <textarea
+      <Textarea
         defaultValue={httpRoutersDefaultValue}
         ref={httpRoutersRef}
         autoCorrect='off'
@@ -96,15 +99,15 @@ const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRp
     <div className={styles.blockchainProvidersSettings}>
       <span className={styles.settingTitle}>ethereum rpc, for .eth addresses</span>
       <div>
-        <textarea defaultValue={ethRpcDefaultValue} ref={ethRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['eth']?.length || 3} />
+        <Textarea defaultValue={ethRpcDefaultValue} ref={ethRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['eth']?.length || 3} />
       </div>
       <span className={styles.settingTitle}>solana rpc, for .sol addresses</span>
       <div>
-        <textarea defaultValue={solRpcDefaultValue} ref={solRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['sol']?.length || 1} />
+        <Textarea defaultValue={solRpcDefaultValue} ref={solRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['sol']?.length || 1} />
       </div>
       <span className={styles.settingTitle}>polygon rpc, for nft profile pics</span>
       <div>
-        <textarea
+        <Textarea
           defaultValue={maticRpcDefaultValue}
           ref={maticRpcRef}
           autoCorrect='off'
@@ -115,7 +118,7 @@ const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRp
       </div>
       <span className={styles.settingTitle}>avalanche rpc</span>
       <div>
-        <textarea
+        <Textarea
           defaultValue={avaxRpcDefaultValue}
           ref={avaxRpcRef}
           autoCorrect='off'
@@ -137,8 +140,10 @@ const PlebbitRPCSettings = ({ plebbitRpcRef }: SettingsProps) => {
   return (
     <div className={styles.plebbitRPCSettings}>
       <div>
-        <input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={plebbitRpcClientsOptions} ref={plebbitRpcRef} />
-        <button onClick={() => setShowInfo(!showInfo)}>{showInfo ? 'X' : '?'}</button>
+        <Input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={plebbitRpcClientsOptions} ref={plebbitRpcRef} />
+        <Button type='button' onClick={() => setShowInfo(!showInfo)}>
+          {showInfo ? 'X' : '?'}
+        </Button>
       </div>
       {showInfo && (
         <div className={styles.plebbitRpcSettingsInfo}>
@@ -167,7 +172,7 @@ const PlebbitDataPathSettings = ({ plebbitDataPathRef }: SettingsProps) => {
   return (
     <div className={styles.plebbitDataPathSettings}>
       <div>
-        <input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={path} disabled={!isConnectedToRpc} ref={plebbitDataPathRef} />
+        <Input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={path} disabled={!isConnectedToRpc} ref={plebbitDataPathRef} />
       </div>
     </div>
   );
@@ -313,9 +318,9 @@ const PlebbitOptions = () => {
           </span>
         </div>
       )}
-      <button className={styles.saveOptions} onClick={handleSave}>
+      <Button type='button' className={styles.saveOptions} onClick={handleSave}>
         {t('save_options')}
-      </button>
+      </Button>
     </div>
   );
 };

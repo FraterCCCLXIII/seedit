@@ -1,18 +1,39 @@
 .header {
-  border-bottom: 1px solid var(--border-primary);
   position: relative;
-  background-color: var(--background-primary);
-  font-size: 12px;
-  /* Add flex display */
   display: flex;
   flex-direction: column;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-muted) / 0.35);
+  font-size: 0.9375rem;
+  font-weight: 400;
 }
 
 .container {
   display: flex;
-  align-items: flex-end; /* This aligns children to bottom */
+  flex-direction: column;
+  align-items: stretch;
   justify-content: flex-start;
-  white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Row 1: logo + page title — row 2: tabs (all breakpoints) */
+.titleBand {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 12px 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pageTitleArea {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
 }
 
 .logoLink {
@@ -26,30 +47,21 @@
   left: 0;
 }
 
-.logo {
-  max-height: 40px;
-  margin: 0 3px 0 5px;
-  filter: var(--filter90);
+@media (min-width: 900px) {
+  :global([data-feed-shell-layout]) .logoContainer {
+    display: none;
+  }
 }
 
-.avatar {
-  max-height: 40px;
-  margin: 0 3px;
-}
-
-.logoText {
-  width: 84px;
-  max-height: 26px;
-  margin-top: 16px;
-  padding-right: 5px;
-  filter: var(--filter90);
+.wordmark {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: hsl(var(--shadcn-foreground));
+  line-height: 1.2;
 }
 
 @media (max-width: 640px) {
-  .container {
-    height: 45px;
-  }
-
   .reducedHeight {
     padding-bottom: 0;
   }
@@ -59,94 +71,122 @@
   }
 }
 
-.increasedHeight {
-  padding-top: 19px;
-}
-
-@media (min-width: 640px) {
-  .container {
-    height: 45px;
-  }
+.increasedHeight .titleBand {
+  padding-top: 12px;
 }
 
 .pageName {
-  font-weight: bold;
-  font-variant: small-caps;
-  font-size: 1.2em;
-  color: var(--text);
+  font-weight: 600;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: hsl(var(--shadcn-foreground));
 }
 
 .pageName a {
-  color: var(--text);
+  color: hsl(var(--shadcn-foreground));
   text-decoration: none;
   cursor: pointer;
 }
 
 .pageName a:hover {
   text-decoration: underline;
-  text-decoration-color: currentcolor;
+  text-decoration-color: hsl(var(--shadcn-muted-foreground));
 }
 
 .soloPageName {
-  padding-left: 10px;
-}
-
-.allOrModPageName {
-  position: absolute;
-  top: 26px;
-  left: 140px;
+  padding-left: 0;
 }
 
 .submitTitle {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  font-size: 11px
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .tabMenu {
   list-style-type: none;
   white-space: nowrap;
   display: flex;
-  align-items: flex-end;
-  text-transform: lowercase;
-  padding-left: 10px;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 12px 10px;
+  margin: 0;
+  flex-wrap: wrap;
+  border-top: 1px solid hsl(var(--shadcn-border) / 0.45);
 }
 
 @media (max-width: 640px) {
   .tabMenu {
-    padding-left: 0;
+    padding-left: 10px;
   }
+}
 
-  .allOrModPageName {
-    top: 46px;
-    left: 138px;
-  }
+/* Tab row <li> markers — link styles from .tabMenu li a / .tabMenu .selected a */
+.choice {
+}
+
+.selected {
+}
+
+.about {
 }
 
 .tabMenu li {
   display: inline-flex;
-  align-items: flex-end;
-  font-weight: bold;
-  margin: 0px 3px;
-  line-height: 1.3;
+  align-items: center;
+  margin: 0;
+  line-height: 1.25;
 }
 
 .tabMenu li a {
-  padding: 2px 6px 0 6px;
-  background-color: var(--background-secondary);
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.65rem;
+  border-radius: calc(var(--shadcn-radius) - 2px);
+  background-color: hsl(var(--shadcn-muted) / 0.55);
   text-decoration: none;
-  color: var(--text-primary);
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 0.8125rem;
+  font-weight: 500;
   box-sizing: border-box;
+  border: 1px solid transparent;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.tabMenu li a:hover {
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
 }
 
 .tabMenu .selected a {
-  color: var(--green);
-  background-color: var(--background);
-  border: 1px solid var(--border-primary);
-  border-bottom: 1px solid var(--background);
-  padding: 2px 6px 0 6px;
+  color: hsl(var(--shadcn-foreground));
+  background-color: hsl(var(--shadcn-background));
+  border-color: hsl(var(--shadcn-border));
+  box-shadow: 0 1px 2px hsl(var(--shadcn-foreground) / 0.06);
+}
+
+.submitButton {
   display: inline-flex;
-  align-items: flex-end;
-  margin-bottom: -1px;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: calc(var(--shadcn-radius) - 2px);
+  background-color: hsl(var(--shadcn-primary));
+  color: hsl(var(--shadcn-primary-foreground));
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.submitButton:hover {
+  opacity: 0.92;
 }
 
 .horizontalScroll {
@@ -154,6 +194,8 @@
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  gap: 6px;
+  padding-bottom: 8px;
 }
 
 .horizontalScroll::-webkit-scrollbar {
@@ -167,16 +209,7 @@
 }
 
 @media (max-width: 639px) {
-  .tabMenu {
-    order: 1;
-  }
-
-  .pageName {
-    order: 2;
-  }
-
   .joinButton {
-    order: 3;
     margin-bottom: 3px;
     margin-left: 5px;
   }

@@ -282,9 +282,6 @@ const Home = () => {
   return (
     <div>
       <div className={styles.content}>
-        <div className={`${styles.sidebar}`}>
-          <Sidebar />
-        </div>
         {subscriptionState === 'loading' && !searchQuery ? (
           <div className={styles.feed}>
             <div className={styles.footer}>
@@ -334,6 +331,9 @@ const Home = () => {
             />
           </div>
         )}
+        <div className={styles.sidebar}>
+          <Sidebar />
+        </div>
       </div>
     </div>
   );

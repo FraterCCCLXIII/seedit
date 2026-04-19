@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFloating, autoUpdate, offset, shift, FloatingPortal } from '@floating-ui/react';
+import { Search } from 'lucide-react';
 import { useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import {
@@ -14,6 +15,12 @@ import {
   isModView,
   isSubplebbitAboutView,
 } from '../../lib/utils/view-utils';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 import useFeedFiltersStore from '../../stores/use-feed-filters-store';
 import { useDefaultSubplebbitAddresses } from '../../hooks/use-default-subplebbits';
 import styles from './search-bar.module.css';
@@ -21,10 +28,9 @@ import _ from 'lodash';
 
 interface SearchBarProps {
   isFocused?: boolean;
-  onExpandoChange?: (expanded: boolean) => void;
 }
 
-const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
+const SearchBar = ({ isFocused = false }: SearchBarProps) => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,10 +52,9 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
   const [isInCommunitySearch, setIsInCommunitySearch] = useState(() => {
     if (currentQuery) return true;
     if (isInFeedView) return false;
-    return false; // always default to 'go to a community' in non-feed views
+    return false;
   });
   const placeholder = isInCommunitySearch && isInFeedView ? t('search_posts') : t('enter_community_address');
-  const [showExpando, setShowExpando] = useState(false);
 
   const searchBarRef = useRef<HTMLFormElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -85,7 +90,6 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
     setInputValue(searchParams.get('q') || '');
   }, [searchParams]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetSearchQuery = useCallback(
     _.debounce((query: string) => {
       if (isInCommunitySearch) {
@@ -117,22 +121,6 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
     }
   }, [isFocused]);
 
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        setShowExpando(false);
-      }
-    },
-    [wrapperRef],
-  );
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [handleClickOutside]);
-
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isInCommunitySearch) {
@@ -149,10 +137,6 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
       navigate(`/s/${searchInput}`);
     }
   };
-
-  useEffect(() => {
-    onExpandoChange?.(showExpando);
-  }, [showExpando, onExpandoChange]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -177,7 +161,6 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
       });
     } else {
       searchInputRef.current?.focus();
-      setShowExpando(true);
     }
   };
 
@@ -190,7 +173,6 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
       setInputValue('');
       setIsInputFocused(false);
       setActiveDropdownIndex(-1);
-      setShowExpando(false);
       searchInputRef.current?.blur();
       navigate(`/s/${address}`);
     },
@@ -229,20 +211,28 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
 
   return (
     <div ref={wrapperRef} className={`${styles.searchBarWrapper} ${isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? styles.mobileInfobar : ''}`}>
-      <form className={styles.searchBar} ref={searchBarRef} onSubmit={handleSearchSubmit}>
-        <input
+      <form
+        className={cn(
+          'flex w-full min-w-0 max-w-full items-stretch overflow-hidden rounded-md border border-input bg-background shadow-sm transition-[box-shadow] focus-within:ring-1 focus-within:ring-ring',
+          styles.searchBarForm,
+        )}
+        ref={searchBarRef}
+        onSubmit={handleSearchSubmit}
+      >
+        <Input
+          variant='grouped'
           type='text'
           autoCorrect='off'
           autoComplete='off'
           spellCheck='false'
           autoCapitalize='off'
           placeholder={placeholder}
+          className={cn('min-w-0', styles.searchTextInput)}
           ref={(instance) => {
             searchInputRef.current = instance;
             refs.setReference(instance);
           }}
           onFocus={() => {
-            setShowExpando(true);
             setIsInputFocused(true);
           }}
           onChange={handleSearchChange}
@@ -250,7 +240,15 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
           onKeyDown={handleKeyDown}
           onBlur={() => setTimeout(() => setIsInputFocused(false), 150)}
         />
-        <input type='submit' value='' />
+        <Button
+          type='submit'
+          variant='ghost'
+          size='icon'
+          className='h-9 min-h-9 w-9 shrink-0 rounded-none border-l border-input text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+          aria-label={t('search')}
+        >
+          <Search className='h-4 w-4' strokeWidth={2} aria-hidden />
+        </Button>
       </form>
       {context.open && (
         <FloatingPortal>
@@ -260,14 +258,17 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
               position: strategy,
               top: y ?? 0,
               left: x ?? 0,
-              width: searchInputRef.current?.offsetWidth ? searchInputRef.current.offsetWidth - 2 : 'auto', // -2 for border
+              width: searchInputRef.current?.offsetWidth ? searchInputRef.current.offsetWidth : 'auto',
             }}
-            className={styles.dropdown}
+            className='z-[9999] max-h-60 list-none overflow-auto rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md'
           >
             {filteredCommunitySuggestions.map((address: string, index: number) => (
               <li
                 key={address}
-                className={`${styles.dropdownItem} ${index === activeDropdownIndex ? styles.activeDropdownItem : ''}`}
+                className={cn(
+                  'cursor-pointer rounded-sm px-2 py-1.5 text-sm text-foreground outline-none hover:bg-accent hover:text-accent-foreground',
+                  index === activeDropdownIndex && 'bg-accent text-accent-foreground',
+                )}
                 onClick={() => handleCommunitySelect(address)}
                 onTouchEnd={() => handleCommunitySelect(address)}
                 onMouseEnter={() => setActiveDropdownIndex(index)}
@@ -278,18 +279,33 @@ const SearchBar = ({ isFocused = false, onExpandoChange }: SearchBarProps) => {
           </ul>
         </FloatingPortal>
       )}
-      <div className={`${styles.infobar} ${showExpando ? styles.slideDown : styles.slideUp} ${!isInFeedView ? styles.lessHeight : ''}`}>
-        <label>
-          <input type='checkbox' checked={!isInCommunitySearch || !isInFeedView} disabled={!isInFeedView} onChange={() => handleCommunitySearchToggle(false)} />
-          {t('go_to_a_community')}
-        </label>
-        {isInFeedView && (
-          <label>
-            <input type='checkbox' checked={isInCommunitySearch} onChange={() => handleCommunitySearchToggle(true)} />
-            {t('search_feed_post')}
-          </label>
-        )}
-      </div>
+      <Card className='mt-3 border-border/80 bg-muted/20 shadow-sm'>
+        <div className='space-y-3 p-3.5'>
+          <div className='flex items-start gap-3'>
+            <Checkbox
+              id='sidebar-search-go-community'
+              checked={!isInCommunitySearch || !isInFeedView}
+              disabled={!isInFeedView}
+              onChange={() => handleCommunitySearchToggle(false)}
+              className='mt-0.5'
+            />
+            <Label
+              htmlFor='sidebar-search-go-community'
+              className={cn('cursor-pointer text-sm font-normal leading-snug', !isInFeedView && 'cursor-not-allowed text-muted-foreground')}
+            >
+              {t('go_to_a_community')}
+            </Label>
+          </div>
+          {isInFeedView && (
+            <div className='flex items-start gap-3 border-t border-border pt-3'>
+              <Checkbox id='sidebar-search-feed' checked={isInCommunitySearch} onChange={() => handleCommunitySearchToggle(true)} className='mt-0.5' />
+              <Label htmlFor='sidebar-search-feed' className='cursor-pointer text-sm font-normal leading-snug'>
+                {t('search_feed_post')}
+              </Label>
+            </div>
+          )}
+        </div>
+      </Card>
     </div>
   );
 };

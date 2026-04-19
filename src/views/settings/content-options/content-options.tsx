@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Radio } from '@/components/ui/radio';
 import { useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './content-options.module.css';
 import useContentOptionsStore from '../../../stores/use-content-options-store';
@@ -27,13 +29,13 @@ const MediaOptions = () => {
       <div className={styles.contentOptionTitle}>thumbnails</div>
       <div>
         <label>
-          <input type='radio' name='thumbnailOption' value='show' checked={thumbnailDisplayOption === 'show'} onChange={() => setThumbnailDisplayOption('show')} />
+          <Radio name='thumbnailOption' value='show' checked={thumbnailDisplayOption === 'show'} onChange={() => setThumbnailDisplayOption('show')} />
           {t('show_thumbnails_next_to_links')}
         </label>
       </div>
       <div>
         <label>
-          <input type='radio' name='thumbnailOption' value='hide' checked={thumbnailDisplayOption === 'hide'} onChange={() => setThumbnailDisplayOption('hide')} />
+          <Radio name='thumbnailOption' value='hide' checked={thumbnailDisplayOption === 'hide'} onChange={() => setThumbnailDisplayOption('hide')} />
           {t('dont_show_thumbnails_next_to_links')}
         </label>
       </div>
@@ -45,8 +47,7 @@ const MediaOptions = () => {
             window.alert('This feature is not available yet');
           }}
         >
-          <input
-            type='radio'
+          <Radio
             name='thumbnailOption'
             value='community'
             checked={thumbnailDisplayOption === 'community'}
@@ -60,8 +61,7 @@ const MediaOptions = () => {
       <div className={styles.contentOptionTitle}>{t('media_previews')}</div>
       <div>
         <label>
-          <input
-            type='radio'
+          <Radio
             name='mediaPreviewOption'
             value='autoExpandAll'
             checked={mediaPreviewOption === 'autoExpandAll'}
@@ -72,8 +72,7 @@ const MediaOptions = () => {
       </div>
       <div>
         <label>
-          <input
-            type='radio'
+          <Radio
             name='mediaPreviewOption'
             value='autoExpandExceptComments'
             checked={mediaPreviewOption === 'autoExpandExceptComments'}
@@ -90,14 +89,7 @@ const MediaOptions = () => {
             window.alert('This feature is not available yet');
           }}
         >
-          <input
-            type='radio'
-            name='mediaPreviewOption'
-            value='community'
-            checked={mediaPreviewOption === 'community'}
-            onChange={() => setMediaPreviewOption('community')}
-            disabled
-          />
+          <Radio name='mediaPreviewOption' value='community' checked={mediaPreviewOption === 'community'} onChange={() => setMediaPreviewOption('community')} disabled />
           {t('expand_media_previews_based_on_community_media_preferences')}
         </label>
       </div>
@@ -105,13 +97,13 @@ const MediaOptions = () => {
       <div className={styles.contentOptionTitle}>{t('video_player')}</div>
       <div>
         <label>
-          <input type='checkbox' checked={autoplayVideosOnComments} onChange={(e) => setAutoplayVideosOnComments(e.target.checked)} />
+          <Checkbox checked={autoplayVideosOnComments} onChange={(e) => setAutoplayVideosOnComments(e.target.checked)} />
           {t('autoplay_videos_on_comments_page')}
         </label>
       </div>
       <div>
         <label>
-          <input type='checkbox' checked={muteVideosOnComments} onChange={(e) => setMuteVideosOnComments(e.target.checked)} />
+          <Checkbox checked={muteVideosOnComments} onChange={(e) => setMuteVideosOnComments(e.target.checked)} />
           {t('mute_videos_by_default')}
         </label>
       </div>
@@ -119,7 +111,7 @@ const MediaOptions = () => {
       <div className={styles.contentOptionTitle}>{t('nsfw_content')}</div>
       <div>
         <label>
-          <input type='checkbox' checked={blurNsfwThumbnails} onChange={(e) => setBlurNsfwThumbnails(e.target.checked)} />
+          <Checkbox checked={blurNsfwThumbnails} onChange={(e) => setBlurNsfwThumbnails(e.target.checked)} />
           {t('blur_media')}
         </label>
       </div>
@@ -127,7 +119,7 @@ const MediaOptions = () => {
       <div className={styles.contentOptionTitle}>{t('avatars')}</div>
       <div>
         <label>
-          <input type='checkbox' checked={hideAvatars} onChange={(e) => setHideAvatars(e.target.checked)} />
+          <Checkbox checked={hideAvatars} onChange={(e) => setHideAvatars(e.target.checked)} />
           {t('hide_avatars_from_replies')}
         </label>
       </div>
@@ -156,8 +148,7 @@ const CommunitiesOptions = () => {
     <div className={styles.contentOptions}>
       <div className={styles.contentOptionTitle}>{t('default_communities')}</div>
       <div>
-        <input
-          type='checkbox'
+        <Checkbox
           id='hideAdultCommunities'
           ref={(el) => {
             if (el) {
@@ -191,8 +182,7 @@ const CommunitiesOptions = () => {
       </div>
       <div className={styles.nsfwTag}>
         <label>
-          <input
-            type='checkbox'
+          <Checkbox
             checked={hideAdultCommunities}
             onChange={async (e) => {
               const newValue = e.target.checked;
@@ -214,8 +204,7 @@ const CommunitiesOptions = () => {
       </div>
       <div className={styles.nsfwTag}>
         <label>
-          <input
-            type='checkbox'
+          <Checkbox
             checked={hideGoreCommunities}
             onChange={async (e) => {
               const newValue = e.target.checked;
@@ -237,8 +226,7 @@ const CommunitiesOptions = () => {
       </div>
       <div className={styles.nsfwTag}>
         <label>
-          <input
-            type='checkbox'
+          <Checkbox
             checked={hideAntiCommunities}
             onChange={async (e) => {
               const newValue = e.target.checked;
@@ -260,8 +248,7 @@ const CommunitiesOptions = () => {
       </div>
       <div className={styles.nsfwTag}>
         <label>
-          <input
-            type='checkbox'
+          <Checkbox
             checked={hideVulgarCommunities}
             onChange={async (e) => {
               const newValue = e.target.checked;
@@ -284,7 +271,7 @@ const CommunitiesOptions = () => {
       <br />
       <div className={styles.contentOptionTitle}>topbar</div>
       <label>
-        <input type='checkbox' checked={hideDefaultCommunities} onChange={(e) => setHideDefaultCommunities(e.target.checked)} />
+        <Checkbox checked={hideDefaultCommunities} onChange={(e) => setHideDefaultCommunities(e.target.checked)} />
         {t('hide_default_communities_from_topbar')}
       </label>
     </div>

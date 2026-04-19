@@ -1,7 +1,15 @@
 .content {
   display: flex;
   flex-direction: column;
-  padding-bottom: 8px;
+  padding: 0.75rem 0.5rem 1rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid hsl(var(--shadcn-border) / 0.55);
+  border-radius: 0;
+  transition: background-color 0.12s ease;
+}
+
+.content:hover {
+  background-color: hsl(var(--shadcn-muted) / 0.25);
 }
 
 .row {
@@ -18,9 +26,10 @@
   padding-left: 3px;
   min-width: 2.2ex;
   margin-top: 15px;
-  color: #c6c6c6;
-  font-family: arial;
-  font-size: medium;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
   text-align: right;
 }
 
@@ -64,7 +73,10 @@
 
 .score {
   text-align: center;
-  color: var(--icon);
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .entry {
@@ -75,49 +87,52 @@
 }
 
 .title {
-  font-size: 16px;
-  font-weight: normal;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
 .link {
   text-decoration: none;
-  color: var(--link);
+  color: hsl(var(--shadcn-foreground));
 }
 
 .link:visited {
-  color: var(--link-visited);
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .internalLink {
-  color: var(--link);
+  color: hsl(var(--shadcn-foreground));
   text-decoration: none;
 }
 
 .internalLink:visited {
-  color: var(--link);
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .externalLink {
-  color: var(--link);
+  color: hsl(var(--shadcn-foreground));
   text-decoration: none;
 }
 
 .externalLink:visited {
-  color: var(--link-visited);
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .pinnedLink {
-  color: var(--green) !important;
-  font-weight: bold !important;
+  color: hsl(var(--shadcn-foreground)) !important;
+  font-weight: 600 !important;
 }
 
 .announcement {
-  color: var(--green) !important;
+  color: hsl(var(--shadcn-muted-foreground)) !important;
+  font-weight: 500;
 }
 
 .domain {
-  color: var(--text-info);
-  font-size: 10px;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 0.75rem;
   white-space: nowrap;
   vertical-align: middle;
   display: inline-block;
@@ -125,7 +140,7 @@
 }
 
 .domain a {
-  color: var(--text-info);
+  color: hsl(var(--shadcn-muted-foreground));
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
@@ -138,11 +153,13 @@
 }
 
 .tagline {
-  font-size: x-small;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .tagline a {
-  color: var(--text-primary);
+  color: hsl(var(--shadcn-foreground));
   text-decoration: none;
 }
 
@@ -226,7 +243,8 @@
 }
 
 .lastClicked {
-  border: 1px dashed gray;
+  border: 1px dashed hsl(var(--shadcn-border));
+  border-radius: calc(var(--shadcn-radius) - 2px);
 }
 
 .subscribeButton {

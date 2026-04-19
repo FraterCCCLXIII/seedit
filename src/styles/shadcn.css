@@ -1,0 +1,78 @@
+/**
+ * Tailwind + shadcn/ui design tokens.
+ * Uses --shadcn-* HSL triplets so legacy themes.css hex vars (--background, etc.) stay unchanged.
+ */
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --app-font-size: 16px;
+  --shadcn-radius: 0.5rem;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* shadcn/ui + Tailwind: default border color and app chrome (see https://ui.shadcn.com/docs/installation) */
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    font-size: var(--app-font-size);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body.light,
+  body.dark {
+    @apply bg-background text-foreground;
+  }
+
+  /* Monochrome neutral palette (shadcn defaults, neutral base) */
+  .light {
+    --shadcn-background: 0 0% 100%;
+    --shadcn-foreground: 0 0% 9%;
+    --shadcn-card: 0 0% 100%;
+    --shadcn-card-foreground: 0 0% 9%;
+    --shadcn-popover: 0 0% 100%;
+    --shadcn-popover-foreground: 0 0% 9%;
+    --shadcn-primary: 0 0% 15%;
+    --shadcn-primary-foreground: 0 0% 98%;
+    --shadcn-secondary: 0 0% 96%;
+    --shadcn-secondary-foreground: 0 0% 9%;
+    --shadcn-muted: 0 0% 96%;
+    --shadcn-muted-foreground: 0 0% 40%;
+    --shadcn-accent: 0 0% 96%;
+    --shadcn-accent-foreground: 0 0% 9%;
+    --shadcn-destructive: 0 0% 28%;
+    --shadcn-destructive-foreground: 0 0% 98%;
+    --shadcn-border: 0 0% 90%;
+    --shadcn-input: 0 0% 90%;
+    --shadcn-ring: 0 0% 45%;
+  }
+
+  .dark {
+    --shadcn-background: 0 0% 6%;
+    --shadcn-foreground: 0 0% 90%;
+    --shadcn-card: 0 0% 8%;
+    --shadcn-card-foreground: 0 0% 90%;
+    --shadcn-popover: 0 0% 8%;
+    --shadcn-popover-foreground: 0 0% 90%;
+    --shadcn-primary: 0 0% 92%;
+    --shadcn-primary-foreground: 0 0% 9%;
+    --shadcn-secondary: 0 0% 14%;
+    --shadcn-secondary-foreground: 0 0% 90%;
+    --shadcn-muted: 0 0% 14%;
+    --shadcn-muted-foreground: 0 0% 55%;
+    --shadcn-accent: 0 0% 14%;
+    --shadcn-accent-foreground: 0 0% 90%;
+    --shadcn-destructive: 0 0% 45%;
+    --shadcn-destructive-foreground: 0 0% 98%;
+    --shadcn-border: 0 0% 18%;
+    --shadcn-input: 0 0% 18%;
+    --shadcn-ring: 0 0% 55%;
+  }
+}

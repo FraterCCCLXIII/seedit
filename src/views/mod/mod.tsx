@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
 import { useAccountSubplebbits, useFeed } from '@bitsocialnet/bitsocial-react-hooks';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +12,7 @@ import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
 import Sidebar from '../../components/sidebar';
 import { sortTypes } from '../../constants/sort-types';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import styles from '../home/home.module.css';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
@@ -184,11 +186,8 @@ const Mod = () => {
   }, [params.timeFilterName, searchQuery, sessionKey, sortType, navigate, location.search, location.pathname, timeFilterNames]);
 
   return (
-    <div>
-      <div className={styles.content}>
-        <div className={`${styles.sidebar}`}>
-          <Sidebar />
-        </div>
+    <div className={styles.content}>
+      <div {...feedShellMainProps}>
         {isSearching ? (
           <div className={styles.feed}>
             <div className={styles.footer}>
@@ -215,9 +214,9 @@ const Mod = () => {
         ) : (
           <div className={styles.feed}>
             {process.env.NODE_ENV !== 'production' && (
-              <button className={styles.debugButton} onClick={reset}>
+              <Button type='button' variant='outline' size='sm' className={styles.debugButton} onClick={reset}>
                 Reset Feed
-              </button>
+              </Button>
             )}
             <Virtuoso
               increaseViewportBy={{ bottom: 1200, top: 600 }}
@@ -234,6 +233,9 @@ const Mod = () => {
             />
           </div>
         )}
+      </div>
+      <div className={styles.sidebar} {...feedShellSidebarProps}>
+        <Sidebar />
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import FeedFooter from '../../components/feed-footer';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
 import Sidebar from '../../components/sidebar';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import styles from '../home/home.module.css';
 import { sortTypes } from '../../constants/sort-types';
 
@@ -175,11 +176,8 @@ const Domain = () => {
   };
 
   return (
-    <div>
-      <div className={styles.content}>
-        <div className={`${styles.sidebar}`}>
-          <Sidebar />
-        </div>
+    <div className={styles.content}>
+      <div {...feedShellMainProps}>
         {isSearching ? (
           <div className={styles.feed}>
             <div className={styles.footer}>
@@ -212,19 +210,24 @@ const Domain = () => {
             </div>
           </div>
         ) : (
-          <Virtuoso
-            increaseViewportBy={{ bottom: 1200, top: 600 }}
-            totalCount={feed?.length || 0}
-            data={feed}
-            itemContent={(index, post) => <Post index={index} post={post} />}
-            useWindowScroll={true}
-            components={{ Footer: () => <FeedFooter {...footerProps} /> }}
-            endReached={loadMore}
-            ref={virtuosoRef}
-            restoreStateFrom={lastVirtuosoState}
-            initialScrollTop={lastVirtuosoState?.scrollTop}
-          />
+          <div className={styles.feed}>
+            <Virtuoso
+              increaseViewportBy={{ bottom: 1200, top: 600 }}
+              totalCount={feed?.length || 0}
+              data={feed}
+              itemContent={(index, post) => <Post index={index} post={post} />}
+              useWindowScroll={true}
+              components={{ Footer: () => <FeedFooter {...footerProps} /> }}
+              endReached={loadMore}
+              ref={virtuosoRef}
+              restoreStateFrom={lastVirtuosoState}
+              initialScrollTop={lastVirtuosoState?.scrollTop}
+            />
+          </div>
         )}
+      </div>
+      <div className={styles.sidebar} {...feedShellSidebarProps}>
+        <Sidebar />
       </div>
     </div>
   );

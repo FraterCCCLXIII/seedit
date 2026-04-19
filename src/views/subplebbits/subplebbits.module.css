@@ -40,7 +40,7 @@
   min-width: 2.2ex;
   margin-top: 15px;
   color: #c6c6c6;
-  font-family: arial;
+  font-family: var(--font-sans);
   font-size: medium;
   text-align: right;
 }
@@ -62,7 +62,7 @@
   min-width: 2.2ex;
   margin-top: 15px;
   color: #c6c6c6;
-  font-family: arial;
+  font-family: var(--font-sans);
   font-size: medium;
   text-align: right;
 }
@@ -237,36 +237,15 @@
   margin-top: 2px;
 }
 
+/* shadcn Tabs (MyCommunitiesTabs / VoteTabs) — layout only; triggers styled by ui/tabs */
 .subplebbitsTabs {
-  border-bottom: 1px dotted gray;
   padding: 5px 10px;
   margin-left: 5px;
   margin-bottom: 5px;
+  margin-right: 15px;
   overflow: hidden;
   font-size: larger;
-  margin-right: 15px;
   text-transform: lowercase;
-}
-
-.subplebbitsTabs a span {
-  display: inline;
-  white-space: nowrap;
-}
-
-.subplebbitsTabs a {
-  text-decoration: none;
-  color: var(--text-primary);
-}
-
-.separator {
-  color: var(--gray);
-  margin: 0px .7ex 0px .7ex;
-  cursor: default;
-}
-
-.selected {
-  color: var(--green) !important;
-  font-weight: bold;
 }
 
 .subscribeButton {
@@ -317,7 +296,8 @@
 
 @media (min-width: 640px) {
   .content {
-    padding: 7px 5px 0px 5px;
+    display: contents;
+    padding: 0;
   }
 
   .infobar {

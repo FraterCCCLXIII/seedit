@@ -212,3 +212,9 @@ scripts/upload-selectors-smoke-snapshots/
 # Android build artifacts
 android/app/build/
 .vercel
+
+# Local reference clone (upstream Primal web app; not part of seedit)
+primal-web-app/
+
+# Vendored tarballs / local dependency workarounds (not for the repo)
+vendor/

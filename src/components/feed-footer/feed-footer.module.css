@@ -27,21 +27,24 @@
   }
 }
 
-.morePostsSuggestion a, .link {
-  color: var(--text-primary);
+.morePostsSuggestion a,
+.link {
+  color: hsl(var(--shadcn-primary-foreground));
   text-decoration: none;
-  padding: 1px 4px;
-  background: var(--pagination-button-background);
-  border: var(--pagination-button-border);
-  border-radius: 3px;
-  font-weight: bold;
+  padding: 0.35rem 0.75rem;
+  background: hsl(var(--shadcn-primary));
+  border: 1px solid hsl(var(--shadcn-primary));
+  border-radius: calc(var(--shadcn-radius) - 2px);
+  font-weight: 500;
+  font-size: 0.8125rem;
   cursor: pointer;
   text-transform: lowercase;
-  color: var(--link-primary);
+  transition: opacity 0.15s ease;
 }
 
-.morePostsSuggestion a:hover, .link:hover {
-  border: var(--pagination-button-border-hover);
+.morePostsSuggestion a:hover,
+.link:hover {
+  opacity: 0.92;
 }
 
 .notModerator {

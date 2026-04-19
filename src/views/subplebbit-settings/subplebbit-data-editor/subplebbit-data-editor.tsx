@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef, lazy, Suspense, Component } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { usePublishSubplebbitEdit, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import useTheme from '../../../stores/use-theme-store';
 import styles from '../../settings/account-data-editor/account-data-editor.module.css';
@@ -46,7 +48,7 @@ const FallbackEditor = ({ value, onChange, height, disabled }: { value: string; 
   return (
     <div>
       <div className={styles.infobar}>{t('editor_fallback_warning', 'Advanced editor failed to load. Using basic text editor as fallback.')}</div>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} className={styles.fallbackEditor} style={{ height }} spellCheck={false} disabled={disabled} />
+      <Textarea value={value} onChange={(e) => onChange(e.target.value)} className={styles.fallbackEditor} style={{ height }} spellCheck={false} disabled={disabled} />
     </div>
   );
 };
@@ -319,13 +321,15 @@ const SubplebbitDataEditor = () => {
           <Trans
             i18nKey='save_reset_changes'
             components={{
-              1: <button key='saveSubplebbitSettingsButton' onClick={saveSubplebbitSettings} />,
-              2: <button key='resetSubplebbitSettingsButton' onClick={() => setText(subplebbitSettings)} />,
+              1: <Button type='button' key='saveSubplebbitSettingsButton' onClick={saveSubplebbitSettings} />,
+              2: <Button type='button' key='resetSubplebbitSettingsButton' onClick={() => setText(subplebbitSettings)} />,
             }}
           />
           <div>
             <br />
-            <button onClick={() => navigate(`/s/${subplebbitAddress}/settings`)}>return to settings</button>
+            <Button type='button' onClick={() => navigate(`/s/${subplebbitAddress}/settings`)}>
+              return to settings
+            </Button>
           </div>
         </div>
       )}

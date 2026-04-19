@@ -75,7 +75,7 @@
   padding: 3px;
   border: 1px solid var(--border-text);
   height: 100px;
-  font-family: verdana, arial, helvetica, sans-serif;
+  font-family: var(--font-sans);
   line-height: 20px;
   font-size: 14px;
 }
@@ -86,7 +86,7 @@
 
 .readOnlyDescription {
   font-size: 14px;
-  font-family: verdana, arial, helvetica, sans-serif;
+  font-family: var(--font-sans);
   word-wrap: break-word;
   white-space: pre-wrap;
 }
@@ -344,7 +344,8 @@
 
 @media (min-width: 640px) {
   .content {
-    padding: 7px 5px 0px 5px;
+    display: contents;
+    padding: 0;
   }
 
   .infobar {
@@ -427,5 +428,5 @@
   color: var(--text);
   box-sizing: border-box;
   line-height: 20px;
-  font-family: verdana, arial, helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

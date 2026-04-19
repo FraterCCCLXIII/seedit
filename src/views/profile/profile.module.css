@@ -137,7 +137,7 @@ div[data-viewport-type="window"] {
 .nothingFound {
   color: var(--red);
   font-size: 13px;
-  font-family: verdana, Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   text-transform: lowercase;
 }
 

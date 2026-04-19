@@ -4,10 +4,34 @@ html, body {
 }
 
 body {
-  background-color: var(--background);
+  font-family: var(--font-sans);
+  font-size: var(--app-font-size);
+  font-weight: 400;
 }
 
-body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td, iframe {
+/* Legacy layout reset (preflight handles most elements; keep list typography reset without stripping shadcn control padding) */
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+p,
+blockquote,
+th,
+td,
+iframe {
   margin: 0;
   padding: 0;
 }

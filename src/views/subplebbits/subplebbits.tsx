@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { Subplebbit as SubplebbitType, useAccount, useAccountSubplebbits, useSubplebbits, useSubplebbitStats } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './subplebbits.module.css';
@@ -11,8 +11,6 @@ import {
   isSubplebbitsAdminView,
   isSubplebbitsOwnerView,
   isSubplebbitsVoteView,
-  isSubplebbitsVotePassingView,
-  isSubplebbitsVoteRejectingView,
 } from '../../lib/utils/view-utils';
 import useErrorStore from '../../stores/use-error-store';
 import { useDefaultSubplebbitAddresses, useDefaultSubplebbits } from '../../hooks/use-default-subplebbits';
@@ -24,8 +22,42 @@ import Markdown from '../../components/markdown';
 import Label from '../../components/post/label';
 import Sidebar from '../../components/sidebar';
 import SubscribeButton from '../../components/subscribe-button';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import { nsfwTags } from '../../constants/nsfw-tags';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import _ from 'lodash';
+
+const MY_COMMUNITIES_ROUTES = {
+  all: '/communities',
+  subscriber: '/communities/subscriber',
+  moderator: '/communities/moderator',
+  admin: '/communities/admin',
+  owner: '/communities/owner',
+} as const;
+
+type MyCommunitiesTab = keyof typeof MY_COMMUNITIES_ROUTES;
+
+const getMyCommunitiesTab = (pathname: string): MyCommunitiesTab => {
+  if (pathname === '/communities/subscriber') return 'subscriber';
+  if (pathname === '/communities/moderator') return 'moderator';
+  if (pathname === '/communities/admin') return 'admin';
+  if (pathname === '/communities/owner') return 'owner';
+  return 'all';
+};
+
+const VOTE_ROUTES = {
+  all: '/communities/vote',
+  passing: '/communities/vote/passing',
+  rejecting: '/communities/vote/rejecting',
+} as const;
+
+type VoteTab = keyof typeof VOTE_ROUTES;
+
+const getVoteTab = (pathname: string): VoteTab => {
+  if (pathname === '/communities/vote/passing') return 'passing';
+  if (pathname === '/communities/vote/rejecting') return 'rejecting';
+  return 'all';
+};
 
 interface SubplebbitProps {
   index?: number;
@@ -42,76 +74,41 @@ const NoCommunitiesMessage = () => {
 
 const MyCommunitiesTabs = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const location = useLocation();
-  const isInSubplebbitsSubscriberView = isSubplebbitsSubscriberView(location.pathname);
-  const isInSubplebbitsModeratorView = isSubplebbitsModeratorView(location.pathname);
-  const isInSubplebbitsAdminView = isSubplebbitsAdminView(location.pathname);
-  const isInSubplebbitsOwnerView = isSubplebbitsOwnerView(location.pathname);
-  const isInSubplebbitsView =
-    isSubplebbitsView(location.pathname) && !isInSubplebbitsSubscriberView && !isInSubplebbitsModeratorView && !isInSubplebbitsAdminView && !isInSubplebbitsOwnerView;
+  const tab = getMyCommunitiesTab(location.pathname);
 
   return (
-    <div className={styles.subplebbitsTabs}>
-      <Link to='/communities' className={isInSubplebbitsView ? styles.selected : styles.choice}>
-        {t('all')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/subscriber' className={isInSubplebbitsSubscriberView ? styles.selected : styles.choice}>
-        {t('subscriber')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/moderator' className={isInSubplebbitsModeratorView ? styles.selected : styles.choice}>
-        {t('moderator')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/admin' className={isInSubplebbitsAdminView ? styles.selected : styles.choice}>
-        {t('admin')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/communities/owner' className={isInSubplebbitsOwnerView ? styles.selected : styles.choice}>
-        {t('owner')}
-      </Link>
-    </div>
+    <Tabs value={tab} onValueChange={(v: string) => navigate(MY_COMMUNITIES_ROUTES[v as MyCommunitiesTab])} className={styles.subplebbitsTabs}>
+      <TabsList className='h-auto w-full flex-wrap justify-start gap-1 bg-transparent p-0'>
+        <TabsTrigger value='all'>{t('all')}</TabsTrigger>
+        <TabsTrigger value='subscriber'>{t('subscriber')}</TabsTrigger>
+        <TabsTrigger value='moderator'>{t('moderator')}</TabsTrigger>
+        <TabsTrigger value='admin'>{t('admin')}</TabsTrigger>
+        <TabsTrigger value='owner'>{t('owner')}</TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 };
 
 const VoteTabs = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const location = useLocation();
-  const isInSubplebbitsVoteView = isSubplebbitsVoteView(location.pathname);
-  const isInSubplebbitsVotePassingView = isSubplebbitsVotePassingView(location.pathname);
-  const isInSubplebbitsVoteRejectingView = isSubplebbitsVoteRejectingView(location.pathname);
+  const tab = getVoteTab(location.pathname);
 
   return (
-    <div className={styles.subplebbitsTabs}>
-      <Link to='/communities/vote' className={isInSubplebbitsVoteView ? styles.selected : styles.choice}>
-        {t('all')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link
-        to='/communities/vote/passing'
-        className={isInSubplebbitsVotePassingView ? styles.selected : styles.choice}
-        onClick={(e) => {
-          e.preventDefault();
-          alert('This feature is not available yet.');
-        }}
-        style={{ cursor: 'not-allowed' }}
-      >
-        {t('passing')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link
-        to='/communities/vote/rejecting'
-        className={isInSubplebbitsVoteRejectingView ? styles.selected : styles.choice}
-        onClick={(e) => {
-          e.preventDefault();
-          alert('This feature is not available yet.');
-        }}
-        style={{ cursor: 'not-allowed' }}
-      >
-        {t('rejecting')}
-      </Link>
-    </div>
+    <Tabs value={tab} onValueChange={(v: string) => navigate(VOTE_ROUTES[v as VoteTab])} className={styles.subplebbitsTabs}>
+      <TabsList className='h-auto w-full flex-wrap justify-start gap-1 bg-transparent p-0'>
+        <TabsTrigger value='all'>{t('all')}</TabsTrigger>
+        <TabsTrigger value='passing' disabled>
+          {t('passing')}
+        </TabsTrigger>
+        <TabsTrigger value='rejecting' disabled>
+          {t('rejecting')}
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 };
 
@@ -608,20 +605,22 @@ const Subplebbits = () => {
 
   return (
     <div className={styles.content}>
-      <div className={styles.sidebar}>
+      <div {...feedShellMainProps}>
+        {isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView || isInSubplebbitsView ? (
+          <MyCommunitiesTabs />
+        ) : (
+          <VoteTabs />
+        )}
+        <Infobar />
+        <div className={styles.error}>{renderErrors()}</div>
+        {isInSubplebbitsVoteView && <AllDefaultSubplebbits />}
+        {(isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView) && <AccountSubplebbits viewRole={viewRole} />}
+        {isInSubplebbitsSubscriberView && <SubscriberSubplebbits />}
+        {isInSubplebbitsView && <AllAccountSubplebbits />}
+      </div>
+      <div className={styles.sidebar} {...feedShellSidebarProps}>
         <Sidebar />
       </div>
-      {isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView || isInSubplebbitsView ? (
-        <MyCommunitiesTabs />
-      ) : (
-        <VoteTabs />
-      )}
-      <Infobar />
-      <div className={styles.error}>{renderErrors()}</div>
-      {isInSubplebbitsVoteView && <AllDefaultSubplebbits />}
-      {(isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView) && <AccountSubplebbits viewRole={viewRole} />}
-      {isInSubplebbitsSubscriberView && <SubscriberSubplebbits />}
-      {isInSubplebbitsView && <AllAccountSubplebbits />}
     </div>
   );
 };

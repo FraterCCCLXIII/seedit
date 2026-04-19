@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select } from '@/components/ui/select';
 import { createAccount, deleteAccount, exportAccount, importAccount, setActiveAccount, useAccount, useAccounts } from '@bitsocialnet/bitsocial-react-hooks';
 import { processImportedAccount } from '../../../lib/utils/account-import-utils';
 import { exportFile } from '../../../lib/utils/file-export-utils';
@@ -36,7 +39,7 @@ const CreateAccountButton = () => {
     <Trans
       i18nKey='create_new_account'
       components={{
-        1: <button key='createNewAccountButton' onClick={handleCreateAccount} />,
+        1: <Button type='button' variant='link' key='createNewAccountButton' onClick={handleCreateAccount} />,
       }}
     />
   );
@@ -112,7 +115,7 @@ const ImportAccountButton = () => {
     <Trans
       i18nKey='import_account_backup'
       components={{
-        1: <button key='importAccountButton' onClick={handleImportAccount} />,
+        1: <Button type='button' variant='link' key='importAccountButton' onClick={handleImportAccount} />,
       }}
     />
   );
@@ -177,7 +180,7 @@ const ExportAccountButton = () => {
       <Trans
         i18nKey='export_account_backup'
         components={{
-          1: <button key='exportAccountButton' onClick={handleExportAccount} />,
+          1: <Button type='button' variant='link' key='exportAccountButton' onClick={handleExportAccount} />,
         }}
       />
       <span className={styles.exportAccountOptions}>
@@ -188,8 +191,7 @@ const ExportAccountButton = () => {
       {showExportAccountOptions && (
         <div className={styles.exportAccountOptions}>
           <div className={styles.exportAccountOption}>
-            <input
-              type='checkbox'
+            <Checkbox
               id='includePlebbitOptions'
               name='includePlebbitOptions'
               checked={includePlebbitOptions}
@@ -198,23 +200,11 @@ const ExportAccountButton = () => {
             <label htmlFor='includePlebbitOptions'>Include plebbit options</label>
           </div>
           <div className={styles.exportAccountOption}>
-            <input
-              type='checkbox'
-              id='includePostHistory'
-              name='includePostHistory'
-              checked={includePostHistory}
-              onChange={(e) => setIncludePostHistory(e.target.checked)}
-            />
+            <Checkbox id='includePostHistory' name='includePostHistory' checked={includePostHistory} onChange={(e) => setIncludePostHistory(e.target.checked)} />
             <label htmlFor='includePostHistory'>Include post history</label>
           </div>
           <div className={styles.exportAccountOption}>
-            <input
-              type='checkbox'
-              id='includeVoteHistory'
-              name='includeVoteHistory'
-              checked={includeVoteHistory}
-              onChange={(e) => setIncludeVoteHistory(e.target.checked)}
-            />
+            <Checkbox id='includeVoteHistory' name='includeVoteHistory' checked={includeVoteHistory} onChange={(e) => setIncludeVoteHistory(e.target.checked)} />
             <label htmlFor='includeVoteHistory'>Include vote history</label>
           </div>
         </div>
@@ -248,9 +238,9 @@ const AccountSettings = () => {
   return (
     <span className={styles.categorySettings}>
       <div className={styles.accountAddress}>
-        <select value={account?.name} onChange={(e) => setActiveAccount(e.target.value)}>
+        <Select value={account?.name} onChange={(e) => setActiveAccount(e.target.value)}>
           {accountsOptions}
-        </select>
+        </Select>
         <Link to='/settings/account-data'>{t('edit')}</Link>
       </div>
       <div className={styles.createAccount}>
@@ -268,7 +258,7 @@ const AccountSettings = () => {
             <Trans
               i18nKey='delete_this_account'
               components={{
-                1: <button key='deleteAccountButton' onClick={() => _deleteAccount(account?.name)} />,
+                1: <Button type='button' variant='link' key='deleteAccountButton' onClick={() => _deleteAccount(account?.name)} />,
               }}
             />
           </div>

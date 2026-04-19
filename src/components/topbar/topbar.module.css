@@ -1,12 +1,17 @@
 .headerArea {
-  background-color: var(--background-text);
+  background-color: hsl(var(--shadcn-muted) / 0.45);
+  color: hsl(var(--shadcn-muted-foreground));
   white-space: nowrap;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border-text);
-  font-size: 90%;
-  height: 18px;
-  line-height: 18px;
-  color: var(--text);
+  text-transform: none;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  min-height: 2.25rem;
+  line-height: 1.45;
+  padding: 0.25rem 0.75rem;
+  display: flex;
+  align-items: center;
 }
 
 .widthClip {
@@ -27,7 +32,7 @@
 .filterDropdown .dropChoices {
   padding: 0 4px 4px 4px;
   text-transform: none;
-  font-size: 11px;
+  font-size: 0.75rem;
 }
 
 .filterDropdownItem label {
@@ -46,23 +51,27 @@
 .nsfwFilters {
   background-image: url("/assets/buttons/droparrowgray.gif");
   background-repeat: no-repeat;
-  background-position: right bottom;
-  display: inline-block;
+  background-position: right center;
+  display: inline-flex;
+  align-items: center;
   padding-right: 21px;
   cursor: pointer;
-  height: 13px;
-  padding-top: 10px;
-  text-transform: uppercase;
-  font-size: 9px;
+  min-height: 1.75rem;
+  text-transform: none;
+  font-size: 0.6875rem;
+  font-weight: 500;
 }
 
 .dropChoices {
-  top: 18px;
-  margin-top: 0;
+  top: 100%;
+  margin-top: 4px;
   position: absolute;
-  left: 0px;
-  border: 1px solid var(--border-text);
-  background-color: var(--background);
+  left: 0;
+  border: 1px solid hsl(var(--shadcn-border));
+  border-radius: calc(var(--shadcn-radius) - 2px);
+  background-color: hsl(var(--shadcn-popover));
+  color: hsl(var(--shadcn-popover-foreground));
+  box-shadow: 0 4px 12px hsl(var(--shadcn-foreground) / 0.08);
   white-space: nowrap;
   line-height: normal;
   z-index: 9;
@@ -86,7 +95,8 @@
 }
 
 .dropdownItem:hover {
-  background-color: var(--background-primary);
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
 }
 
 .myCommunitiesItemButtonDotted {
@@ -100,9 +110,10 @@
   text-transform: uppercase;
 }
 
-.dropChoices a, .dropChoices span {
+.dropChoices a,
+.dropChoices span {
   text-decoration: none;
-  color: var(--text-primary);
+  color: hsl(var(--shadcn-foreground));
 }
 
 .noSubs {
@@ -134,8 +145,8 @@
   vertical-align: bottom;
   padding-right: 21px;
   padding-left: 5px;
-  color: var(--text);
-  font-weight: normal;
+  color: hsl(var(--shadcn-foreground));
+  font-weight: 500;
   margin-left: -5px;
   cursor: pointer;
 }
@@ -162,12 +173,12 @@
 
 .srList .srBar li a {
   text-decoration: none;
-  color: var(--text);
+  color: hsl(var(--shadcn-foreground));
 }
 
 .srList .srBar li .selected {
-  color: var(--green) !important;
-  font-weight: bold;
+  color: hsl(var(--shadcn-foreground)) !important;
+  font-weight: 600;
 }
 
 .srList .srBar li .selected:hover {
@@ -188,11 +199,12 @@
 }
 
 .editLink {
-  color: var(--text);
+  color: hsl(var(--shadcn-muted-foreground));
   text-decoration: none;
-  background-color: var(--background-text);
+  background-color: transparent;
   padding: 0 5px 0 15px;
-  font-weight: bold;
+  font-weight: 500;
+  font-size: 0.75rem;
   margin-left: auto;
 }
 

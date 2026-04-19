@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { Comment, useAccount, useBlock, Role, Subplebbit, useSubplebbitStats, useAccountComment, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
@@ -86,7 +89,7 @@ const PostInfo = ({ comment }: { comment: Comment | undefined }) => {
       </div>
       {subplebbitAddress && cid && (
         <div className={styles.shareLink}>
-          {t('share_link')}: <input type='text' value={`https://seedit.app/s/${subplebbitAddress}/c/${cid}`} readOnly={true} />
+          {t('share_link')}: <Input type='text' readOnly value={`https://seedit.app/s/${subplebbitAddress}/c/${cid}`} />
         </div>
       )}
     </div>
@@ -271,33 +274,17 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
   };
 
   const isMobile = useIsMobile();
-  const [showExpando, setShowExpando] = useState(false);
-
-  const handleSearchBarExpandoChange = (expanded: boolean) => {
-    setShowExpando(expanded);
-  };
 
   return (
-    <div className={`${isMobile ? styles.mobileSidebar : styles.sidebar}`}>
+    <div className={cn(isMobile ? styles.mobileSidebar : styles.sidebar, 'rounded-xl border border-border bg-card px-4 pb-12 pt-4 text-card-foreground shadow-sm')}>
       <div className={styles.searchBarWrapper}>
-        <SearchBar onExpandoChange={handleSearchBarExpandoChange} />
+        <SearchBar />
       </div>
-      <div
-        className={styles.contentWrapper}
-        style={{
-          transform: showExpando ? 'translateY(47px)' : 'translateY(0)',
-          transition: 'transform 0.3s linear',
-          willChange: 'transform',
-          marginTop: '-47px',
-        }}
-      >
+      <div>
         {(isInPostPageView || isInPendingPostView) && <PostInfo comment={comment} />}
         {(isInSubplebbitView || isInHomeView || isInAllView || isInModView || isInDomainView || isInPendingPostView) && (
-          <Link to={submitRoute}>
-            <div className={styles.largeButton}>
-              {t('submit_post')}
-              <div className={styles.nub} />
-            </div>
+          <Link to={submitRoute} className={cn(buttonVariants({ variant: 'default' }), 'mb-3 w-full justify-center shadow-sm no-underline', styles.cta)}>
+            {t('submit_post')}
           </Link>
         )}
         {!isInHomeView &&
@@ -367,17 +354,18 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
           )}
         {(moderatorRole || isOwner) && <ModerationTools address={address} />}
         {isInSubplebbitsView && (
-          <a href='https://github.com/bitsocialhq/lists' target='_blank' rel='noopener noreferrer'>
-            <div className={styles.largeButton}>
-              <div className={styles.nub} />
-              {t('submit_community')}
-            </div>
+          <a
+            href='https://github.com/bitsocialhq/lists'
+            target='_blank'
+            rel='noopener noreferrer'
+            className={cn(buttonVariants({ variant: 'secondary' }), 'mb-3 w-full justify-center shadow-sm no-underline', styles.cta)}
+          >
+            {t('submit_community')}
           </a>
         )}
-        <div className={styles.largeButton} onClick={handleCreateCommunity}>
+        <Button type='button' variant='outline' className={cn('mb-3 w-full justify-center font-medium', styles.cta)} onClick={handleCreateCommunity}>
           {t('create_your_community')}
-          <div className={styles.nub} />
-        </div>
+        </Button>
         <div className={styles.communitySubtitles}>
           <span className={styles.createCommunityImage}>
             <img src='assets/sprout/sprout-2.png' alt='' />

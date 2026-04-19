@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import {
   deleteSubplebbit,
   Role,
@@ -21,6 +25,7 @@ import ErrorDisplay from '../../components/error-display';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Markdown from '../../components/markdown';
 import Sidebar from '../../components/sidebar';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import Challenges from './challenge-settings';
 import { FormattingHelpTable } from '../../components/reply-form';
 import styles from './subplebbit-settings.module.css';
@@ -35,7 +40,7 @@ const Title = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
       <div className={styles.boxTitle}>{t('title')}</div>
       <div className={styles.boxSubtitle}>{t('a_short_title')}</div>
       <div className={styles.boxInput}>
-        {isReadOnly ? <span>{title}</span> : <input type='text' value={title ?? ''} onChange={(e) => setSubplebbitSettingsStore({ title: e.target.value })} />}
+        {isReadOnly ? <span>{title}</span> : <Input type='text' value={title ?? ''} onChange={(e) => setSubplebbitSettingsStore({ title: e.target.value })} />}
       </div>
     </div>
   );
@@ -57,7 +62,7 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
         ) : (
           <>
             {!showPreview ? (
-              <textarea value={description ?? ''} onChange={(e) => setSubplebbitSettingsStore({ description: e.target.value })} />
+              <Textarea value={description ?? ''} onChange={(e) => setSubplebbitSettingsStore({ description: e.target.value })} />
             ) : (
               <div className={styles.preview}>
                 <Markdown content={description ?? ''} />
@@ -65,9 +70,9 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
             )}
             <div className={styles.bottomArea}>
               {showFormattingHelp && (
-                <button className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!description}>
+                <Button type='button' className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!description}>
                   {showPreview ? t('edit') : t('preview')}
-                </button>
+                </Button>
               )}
               <span
                 className={styles.formattingHelpButton}
@@ -114,7 +119,7 @@ const Address = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
         {isReadOnly ? (
           <span className={styles.readOnlyAddress}>{address}</span>
         ) : (
-          <input type='text' value={address ?? ''} onChange={(e) => setSubplebbitSettingsStore({ address: e.target.value })} />
+          <Input type='text' value={address ?? ''} onChange={(e) => setSubplebbitSettingsStore({ address: e.target.value })} />
         )}
       </div>
     </div>
@@ -141,7 +146,7 @@ const Logo = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
         {isReadOnly ? (
           <span>{logoUrl}</span>
         ) : (
-          <input
+          <Input
             type='text'
             value={logoUrl ?? ''}
             onChange={(e) => {
@@ -201,9 +206,9 @@ const Rules = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
       <div className={styles.boxSubtitle}>{t('shown_in_sidebar')}</div>
       <div className={styles.boxInput}>
         {!isReadOnly && (
-          <button className={styles.addButton} onClick={addRule} disabled={isReadOnly}>
+          <Button type='button' className={styles.addButton} onClick={addRule} disabled={isReadOnly}>
             {t('add_rule')}
-          </button>
+          </Button>
         )}
         {rules?.map((rule, index) => (
           <div className={`${styles.rule} ${index === 0 && styles.firstRule}`} key={index}>
@@ -213,7 +218,7 @@ const Rules = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
             {isReadOnly ? (
               <span className={styles.readOnlyRule}>{rule}</span>
             ) : (
-              <input ref={index === rules?.length - 1 ? lastRuleRef : null} value={rule} onChange={(e) => handleRuleChange(index, e.target.value)} />
+              <Input ref={index === rules?.length - 1 ? lastRuleRef : null} value={rule} onChange={(e) => handleRuleChange(index, e.target.value)} />
             )}
           </div>
         ))}
@@ -274,9 +279,9 @@ const Moderators = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
       <div className={styles.boxSubtitle}>{t('moderators_setting_info')}</div>
       <div className={styles.boxInput}>
         {!isReadOnly && (
-          <button className={styles.addButton} onClick={handleAddModerator} disabled={isReadOnly}>
+          <Button type='button' className={styles.addButton} onClick={handleAddModerator} disabled={isReadOnly}>
             {t('add_moderator')}
-          </button>
+          </Button>
         )}
         {roles &&
           Object.entries(roles)?.map(([address, role], index) => (
@@ -290,7 +295,7 @@ const Moderators = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
                 {isReadOnly ? (
                   <span>{address}</span>
                 ) : (
-                  <input
+                  <Input
                     ref={index === Object.keys(roles).length - 1 ? lastModeratorRef : null}
                     type='text'
                     autoCorrect='off'
@@ -308,11 +313,11 @@ const Moderators = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
                 {isReadOnly ? (
                   <span>{role.role}</span>
                 ) : (
-                  <select value={role.role} onChange={(e) => handleRoleChange(address, e.target.value as any)}>
+                  <Select value={role.role} onChange={(e) => handleRoleChange(address, e.target.value as any)}>
                     <option value='moderator'>moderator</option>
                     <option value='admin'>admin</option>
                     <option value='owner'>owner</option>
-                  </select>
+                  </Select>
                 )}
               </span>
             </div>
@@ -332,7 +337,9 @@ const JSONSettings = ({ isReadOnly: _isReadOnly = false }: { isReadOnly?: boolea
       <div className={`${styles.boxTitle} ${styles.JSONSettingsTitle}`}>{t('json_settings')}</div>
       <div className={styles.boxSubtitle}>{t('json_settings_info')}</div>
       <div className={`${styles.boxInput} ${styles.JSONSettings}`}>
-        <button onClick={() => navigate(`/s/${subplebbitAddress}/settings/editor`)}>{t('edit')}</button>
+        <Button type='button' onClick={() => navigate(`/s/${subplebbitAddress}/settings/editor`)}>
+          {t('edit')}
+        </Button>
       </div>
     </div>
   );
@@ -576,47 +583,49 @@ const SubplebbitSettings = () => {
   return (
     <div className={styles.content}>
       {!isInCreateSubplebbitView && (
-        <div className={styles.sidebar}>
+        <div className={styles.sidebar} {...feedShellSidebarProps}>
           <Sidebar subplebbit={subplebbit} />
         </div>
       )}
-      {isReadOnly && !userIsOwnerOrAdmin && <div className={styles.infobar}>{t('owner_settings_notice')}</div>}
-      {isOffline && <div className={styles.infobar}>{offlineTitle}</div>}
-      {isChallengesReadOnly && <div className={styles.infobar}>cannot read or write challenges, community node isn't reachable.</div>}
-      <Title isReadOnly={isReadOnly} />
-      <Description isReadOnly={isReadOnly} />
-      {!isInCreateSubplebbitView && <Address isReadOnly={isReadOnly} />}
-      <Logo isReadOnly={isReadOnly} />
-      <Rules isReadOnly={isReadOnly} />
-      <Moderators isReadOnly={isReadOnly} />
-      <Challenges isReadOnly={isChallengesReadOnly} readOnlyChallenges={subplebbit?.challenges} challengeNames={challengeNames} challengesSettings={rpcChallenges} />
-      {!isInCreateSubplebbitView && <JSONSettings isReadOnly={isReadOnly} />}
-      <div className={styles.saveOptions}>
-        {!isInCreateSubplebbitView && !isReadOnly && (
-          <div className={`${styles.box} ${styles.deleteCommunity}`}>
-            <div className={styles.boxTitle}>{t('delete_community')}</div>
-            <div className={styles.boxSubtitle}>{t('delete_community_description')}</div>
-            <div className={styles.boxInput}>
-              <div className={styles.deleteSubplebbit}>
-                <button onClick={_deleteSubplebbit} disabled={showDeleting || showSaving}>
-                  {t('delete')}
-                </button>
-                <span className={styles.deletingString}>{showDeleting && <LoadingEllipsis string={t('deleting')} />}</span>
+      <div {...feedShellMainProps}>
+        {isReadOnly && !userIsOwnerOrAdmin && <div className={styles.infobar}>{t('owner_settings_notice')}</div>}
+        {isOffline && <div className={styles.infobar}>{offlineTitle}</div>}
+        {isChallengesReadOnly && <div className={styles.infobar}>cannot read or write challenges, community node isn't reachable.</div>}
+        <Title isReadOnly={isReadOnly} />
+        <Description isReadOnly={isReadOnly} />
+        {!isInCreateSubplebbitView && <Address isReadOnly={isReadOnly} />}
+        <Logo isReadOnly={isReadOnly} />
+        <Rules isReadOnly={isReadOnly} />
+        <Moderators isReadOnly={isReadOnly} />
+        <Challenges isReadOnly={isChallengesReadOnly} readOnlyChallenges={subplebbit?.challenges} challengeNames={challengeNames} challengesSettings={rpcChallenges} />
+        {!isInCreateSubplebbitView && <JSONSettings isReadOnly={isReadOnly} />}
+        <div className={styles.saveOptions}>
+          {!isInCreateSubplebbitView && !isReadOnly && (
+            <div className={`${styles.box} ${styles.deleteCommunity}`}>
+              <div className={styles.boxTitle}>{t('delete_community')}</div>
+              <div className={styles.boxSubtitle}>{t('delete_community_description')}</div>
+              <div className={styles.boxInput}>
+                <div className={styles.deleteSubplebbit}>
+                  <Button type='button' onClick={_deleteSubplebbit} disabled={showDeleting || showSaving}>
+                    {t('delete')}
+                  </Button>
+                  <span className={styles.deletingString}>{showDeleting && <LoadingEllipsis string={t('deleting')} />}</span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        {!isReadOnly && (
-          <button onClick={() => (isInCreateSubplebbitView ? _createSubplebbit() : saveSubplebbit())} disabled={showSaving || showDeleting}>
-            {isInCreateSubplebbitView ? t('create_community') : t('save_options')}
-          </button>
-        )}
-        {showSaving && <LoadingEllipsis string={t('saving')} />}
-        {currentError && (
-          <div className={styles.error}>
-            <ErrorDisplay error={currentError} />
-          </div>
-        )}
+          )}
+          {!isReadOnly && (
+            <Button type='button' onClick={() => (isInCreateSubplebbitView ? _createSubplebbit() : saveSubplebbit())} disabled={showSaving || showDeleting}>
+              {isInCreateSubplebbitView ? t('create_community') : t('save_options')}
+            </Button>
+          )}
+          {showSaving && <LoadingEllipsis string={t('saving')} />}
+          {currentError && (
+            <div className={styles.error}>
+              <ErrorDisplay error={currentError} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

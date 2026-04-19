@@ -75,7 +75,7 @@
   padding: 3px;
   margin: 0;
   color: var(--text);
-  font-family: verdana, arial, helvetica, sans-serif
+  font-family: var(--font-sans)
 }
 
 .inputTitle {
