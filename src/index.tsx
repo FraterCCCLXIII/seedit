@@ -23,21 +23,21 @@ if (window.location.hostname.startsWith('p2p.')) {
   };
 }
 
-registerSW({
-  immediate: true,
-  onNeedRefresh() {
-    // Reload the page to load the new version
-    // Use window.location.reload() as it's more reliable than reloadSW(true)
-    if (!sessionStorage.getItem('sw-update-reload')) {
-      sessionStorage.setItem('sw-update-reload', 'true');
-      window.location.reload();
-    }
-  },
-  onOfflineReady() {
-    // Clear the reload flag when offline-ready (prevents loops)
-    sessionStorage.removeItem('sw-update-reload');
-  },
-});
+// Production only: dev + service worker fights Vite HMR and causes reload loops.
+if (import.meta.env.PROD) {
+  registerSW({
+    immediate: true,
+    onNeedRefresh() {
+      if (!sessionStorage.getItem('sw-update-reload')) {
+        sessionStorage.setItem('sw-update-reload', 'true');
+        window.location.reload();
+      }
+    },
+    onOfflineReady() {
+      sessionStorage.removeItem('sw-update-reload');
+    },
+  });
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

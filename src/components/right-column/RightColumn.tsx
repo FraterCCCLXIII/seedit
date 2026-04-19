@@ -54,7 +54,7 @@ const ModeratorsList = ({ roles }: { roles: Record<string, Role> }) => {
       <ul className={`${styles.listContent} ${styles.modsList}`}>
         {rolesList.map(({ address }, index) => (
           <li key={index} onClick={() => window.alert('Direct profile links are not supported yet.')}>
-            u/{Plebbit.getShortAddress(address)}
+            u/{Plebbit.getShortAddress({ address })}
           </li>
         ))}
       </ul>
@@ -124,15 +124,15 @@ const RightColumn = ({ comment, isSubCreatedButNotYetPublished, settings, subple
   const pendingPost = useAccountComment({ commentIndex: params?.accountCommentIndex as any });
 
   const subplebbitCreator = findSubplebbitCreator(roles);
-  const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress(subplebbitCreator)}`;
+  const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress({ address: subplebbitCreator })}`;
   const submitRoute =
     isInHomeView || isInHomeAboutView || isInAllView || isInModView || isInDomainView
       ? '/submit'
       : isInPendingPostView
-      ? `/p/${pendingPost?.subplebbitAddress}/submit`
-      : address || params?.subplebbitAddress
-      ? `/p/${address || params?.subplebbitAddress}/submit`
-      : '/submit';
+        ? `/p/${pendingPost?.subplebbitAddress}/submit`
+        : address || params?.subplebbitAddress
+          ? `/p/${address || params?.subplebbitAddress}/submit`
+          : '/submit';
 
   const { blocked, unblock, block } = useBlock({ address });
 

@@ -78,20 +78,44 @@ const ModernHome = () => {
     }
   }, [params.timeFilterName, searchQuery, sessionKey, timeFilterNames, sortType, navigate]);
 
-  const { feedFilters, setFeedFilters } = useFeedFiltersStore();
+  const { feedFilters } = useFeedFiltersStore();
   const { hideBlockedUsers, hideDownvotedPosts, hideHiddenPosts, hideReadPosts, hideReportedPosts } = feedFilters;
 
-  const feedOptions = useMemo(
-    () => ({
-      subplebbitAddresses,
-      sortType,
-      timeFilter: timeFilterSeconds,
-      ...(searchQuery && { searchQuery }),
-    }),
-    [subplebbitAddresses, sortType, timeFilterSeconds, searchQuery],
+  const commentFilter = useCallback(
+    (comment: Comment) => {
+      if (!searchQuery.trim()) return true;
+      return commentMatchesPattern(comment, searchQuery);
+    },
+    [searchQuery],
   );
 
-  const { comments, hasMore, loadMore, loading, error } = useFeed(feedOptions);
+  const feedOptions = useMemo(() => {
+    const options: {
+      newerThan: number;
+      postsPerPage: number;
+      sortType: string;
+      subplebbitAddresses: string[];
+      filter?: { filter: (c: Comment) => boolean; key: string };
+    } = {
+      newerThan: searchQuery ? 0 : (timeFilterSeconds ?? 0),
+      postsPerPage: 10,
+      sortType,
+      subplebbitAddresses,
+    };
+
+    if (searchQuery) {
+      options.filter = {
+        filter: commentFilter,
+        key: `search-filter-${searchQuery}`,
+      };
+    }
+
+    return options;
+  }, [subplebbitAddresses, sortType, timeFilterSeconds, searchQuery, commentFilter]);
+
+  const { feed, hasMore, loadMore, state: feedState, error } = useFeed(feedOptions);
+  const comments = feed ?? [];
+  const loading = feedState === 'fetching-ipns';
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
@@ -209,7 +233,7 @@ const ModernHome = () => {
         <div className='flex items-center justify-center h-64'>
           <div className='text-center'>
             <h2 className='text-xl font-semibold mb-2'>Error loading feed</h2>
-            <p className='text-muted-foreground mb-4'>{error.message}</p>
+            <p className='text-muted-foreground mb-4'>{error instanceof Error ? error.message : String(error)}</p>
             <button className='modern-button modern-button-primary' onClick={() => window.location.reload()}>
               Retry
             </button>

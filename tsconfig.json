@@ -18,6 +18,9 @@
     "paths": {
       "@bitsocialnet/bitsocial-react-hooks": [
         "./src/lib/bitsocial-react-hooks-compat.ts"
+      ],
+      "@plebbit/plebbit-react-hooks": [
+        "./src/lib/bitsocial-react-hooks-compat.ts"
       ]
     },
     "resolveJsonModule": true,

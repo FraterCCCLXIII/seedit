@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Sidebar } from './sidebar';
+import { Sidebar, type SidebarProps } from './sidebar';
 import { cn } from '../../lib/utils';
 
-interface LayoutProps {
+interface LayoutProps extends Pick<SidebarProps, 'navigation' | 'user' | 'onPostClick'> {
   children: React.ReactNode;
   className?: string;
   showSidebar?: boolean;
@@ -10,11 +10,11 @@ interface LayoutProps {
   rightSidebarContent?: React.ReactNode;
 }
 
-export function Layout({ children, className, showSidebar = true, showRightSidebar = true, rightSidebarContent }: LayoutProps) {
+export function Layout({ children, className, showSidebar = true, showRightSidebar = true, rightSidebarContent, navigation, user, onPostClick }: LayoutProps) {
   return (
     <div className={cn('min-h-screen w-full flex', className)}>
       {/* Left Sidebar */}
-      {showSidebar && <Sidebar />}
+      {showSidebar && <Sidebar navigation={navigation} user={user} onPostClick={onPostClick} />}
 
       {/* Main Content */}
       <main className={cn('flex-1', showSidebar && 'ml-64')}>

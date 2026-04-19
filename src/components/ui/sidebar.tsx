@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Home, Search, Bell, Mail, Bookmark, User, Settings, MoreHorizontal } from 'lucide-react';
 import { Button } from './button';
 import { cn } from '../../lib/utils';
@@ -10,7 +11,7 @@ interface NavigationItem {
   href: string;
 }
 
-interface SidebarProps {
+export interface SidebarProps {
   className?: string;
   navigation?: NavigationItem[];
   user?: {
@@ -44,14 +45,11 @@ export function Sidebar({ className, navigation = defaultNavigation, user = { na
         {navigation.map((item) => {
           const Icon = item.icon;
           return (
-            <Button
-              key={item.name}
-              variant={item.current ? 'secondary' : 'ghost'}
-              className={cn('modern-nav-item', item.current ? 'active' : '')}
-              onClick={() => (window.location.href = item.href)}
-            >
-              <Icon className='icon' />
-              <span>{item.name}</span>
+            <Button key={item.name} variant={item.current ? 'secondary' : 'ghost'} className={cn('modern-nav-item', item.current ? 'active' : '')} asChild>
+              <Link to={item.href}>
+                <Icon className='icon' />
+                <span>{item.name}</span>
+              </Link>
             </Button>
           );
         })}

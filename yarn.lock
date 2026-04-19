@@ -3443,21 +3443,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keyv/serialize@npm:^1.1.0":
+"@keyv/serialize@npm:^1.1.1":
   version: 1.1.1
   resolution: "@keyv/serialize@npm:1.1.1"
   checksum: 10c0/b0008cae4a54400c3abf587b8cc2474c6f528ee58969ce6cf9cb07a04006f80c73c85971d6be6544408318a2bc40108236a19a82aea0a6de95aae49533317374
   languageName: node
   linkType: hard
 
-"@keyv/sqlite@npm:^4.0.5":
-  version: 4.0.6
-  resolution: "@keyv/sqlite@npm:4.0.6"
+"@keyv/sqlite@npm:4.0.8":
+  version: 4.0.8
+  resolution: "@keyv/sqlite@npm:4.0.8"
   dependencies:
     sqlite3: "npm:^5.1.7"
   peerDependencies:
-    keyv: ^5.5.3
-  checksum: 10c0/ee8268f8a35ac4bddb6ebd8669cd8627daa8505e8044a7f263a9715caa0dd348fc3667ba1c304cb3f0cfbee0c60261b2fd5c44f6d4f61975506074862cc3b591
+    keyv: ^5.6.0
+  checksum: 10c0/0c78caa48ff2584523647706dfef74b1d8e10f825050fb2a85e89481e8cc51ecb26e918e633fb71065550b558eb6ccc5dad753f8d12961887ba5e94d1874e983
   languageName: node
   linkType: hard
 
@@ -4360,20 +4360,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mintpass/challenge@npm:1.1.11":
-  version: 1.1.11
-  resolution: "@mintpass/challenge@npm:1.1.11"
+"@mintpass/challenge@file:./vendor/mintpass-challenge-1.3.1.tgz::locator=seedit%40workspace%3A.":
+  version: 1.3.1
+  resolution: "@mintpass/challenge@file:./vendor/mintpass-challenge-1.3.1.tgz#./vendor/mintpass-challenge-1.3.1.tgz::hash=bbf40e&locator=seedit%40workspace%3A."
   dependencies:
-    "@keyv/sqlite": "npm:^4.0.5"
-    "@plebbit/plebbit-logger": "git+https://github.com/plebbit/plebbit-logger.git"
-    env-paths: "npm:^3.0.0"
-    keyv: "npm:5.5.0"
+    "@keyv/sqlite": "npm:4.0.8"
+    "@pkcprotocol/pkc-logger": "github:pkcprotocol/pkc-logger#cb494fbaf332ed5b2cfd9d9d0f90ca7fd0058b4a"
+    env-paths: "npm:4.0.0"
+    keyv: "npm:5.6.0"
     multiformats: "npm:^13.1.0"
     uint8arrays: "npm:^4.0.3"
     viem: "npm:2.45.0"
-  peerDependencies:
-    "@plebbit/plebbit-js": ">=0.0.0"
-  checksum: 10c0/4b501ea00de0adac181dbaceef67af3ab22a627e30ec11cdbecf0da58930a19c3a4fabd923c17d1f733557856e2dc187f9594d47c47c09eb21e7c5470d9f2a74
+  checksum: 10c0/4370a0343cfff2c2f34ea319c32ba66511c652840bcca911715062b4c6c1c36c3e326e7e10dbd6fbe7036e150c4248d55e6e642ed06026ad8580e004b1ca2ea5
   languageName: node
   linkType: hard
 
@@ -5049,6 +5047,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pkcprotocol/pkc-logger@github:pkcprotocol/pkc-logger#cb494fbaf332ed5b2cfd9d9d0f90ca7fd0058b4a":
+  version: 0.0.1
+  resolution: "@pkcprotocol/pkc-logger@https://github.com/pkcprotocol/pkc-logger.git#commit=cb494fbaf332ed5b2cfd9d9d0f90ca7fd0058b4a"
+  dependencies:
+    debug: "npm:4.4.3"
+  checksum: 10c0/1729428ebdc977885dce554893894e7187fb460986119201fddc72e600a0ec07fb61129d884528a9feae83e05cdc71f7889c32d46d12f3292ce6765a96e927ef
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -5056,9 +5063,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@plebbit/plebbit-js@https://github.com/plebbit/plebbit-js.git#10ed04e3866dd986a7f802bc9efd027f0e7d465b":
+"@plebbit/plebbit-js@file:./vendor/plebbit-js::locator=seedit%40workspace%3A.":
   version: 0.0.11
-  resolution: "@plebbit/plebbit-js@https://github.com/plebbit/plebbit-js.git#commit=10ed04e3866dd986a7f802bc9efd027f0e7d465b"
+  resolution: "@plebbit/plebbit-js@file:./vendor/plebbit-js#./vendor/plebbit-js::hash=1c6d08&locator=seedit%40workspace%3A."
   dependencies:
     "@bonfida/spl-name-service": "npm:3.0.16"
     "@enhances/with-resolvers": "npm:0.0.5"
@@ -5074,7 +5081,7 @@ __metadata:
     "@libp2p/peer-id": "npm:6.0.4"
     "@libp2p/peer-id-factory": "npm:4.2.4"
     "@libp2p/websockets": "npm:10.1.3"
-    "@mintpass/challenge": "npm:1.1.11"
+    "@mintpass/challenge": "file:../mintpass-challenge-1.3.1.tgz"
     "@plebbit/plebbit-logger": "git+https://github.com/plebbit/plebbit-logger.git#355a96d7659ed820047980049dfa627d30d83a69"
     "@plebbit/proper-lockfile": "git+https://github.com/plebbit/node-proper-lockfile.git#7fd6332117340c1d3d98dd0afee2d31cc06f72b8"
     "@types/proper-lockfile": "npm:4.1.2"
@@ -5120,16 +5127,7 @@ __metadata:
     uuid: "npm:13.0.0"
     viem: "npm:2.45.0"
     zod: "npm:4.3.6"
-  checksum: 10c0/0000ec5b5abeb961217d874cbaf0d810001e26bd3933aa86b157a9143f87d6f676ef45e5d89e4413e2d133c71f088ef6e8cac1a980f1286c4ea7623f9624d171
-  languageName: node
-  linkType: hard
-
-"@plebbit/plebbit-logger@git+https://github.com/plebbit/plebbit-logger.git":
-  version: 0.0.1
-  resolution: "@plebbit/plebbit-logger@https://github.com/plebbit/plebbit-logger.git#commit=cb494fbaf332ed5b2cfd9d9d0f90ca7fd0058b4a"
-  dependencies:
-    debug: "npm:4.4.3"
-  checksum: 10c0/8768a3995d5fcc495ebf8cc17f3ceb219645d712d261f33995d5b8b99c44d6e5757871b4b25e6f834c2affe447a9a611ab10e775d070ff96029222b16728b5fd
+  checksum: 10c0/c851417965b58b9a228967b70db0b80f9c02fb92cd2f038737b99165ba998d519b9cd0ce7df1a32d15b5ccafce7bb3ebacd19913cc886e0dc3658b0179613686
   languageName: node
   linkType: hard
 
@@ -5241,6 +5239,34 @@ __metadata:
   version: 1.1.0
   resolution: "@protobufjs/utf8@npm:1.1.0"
   checksum: 10c0/a3fe31fe3fa29aa3349e2e04ee13dc170cc6af7c23d92ad49e3eeaf79b9766264544d3da824dba93b7855bd6a2982fb40032ef40693da98a136d835752beb487
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-compose-refs@npm:1.1.2":
+  version: 1.1.2
+  resolution: "@radix-ui/react-compose-refs@npm:1.1.2"
+  peerDependencies:
+    "@types/react": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/d36a9c589eb75d634b9b139c80f916aadaf8a68a7c1c4b8c6c6b88755af1a92f2e343457042089f04cc3f23073619d08bb65419ced1402e9d4e299576d970771
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-slot@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "@radix-ui/react-slot@npm:1.2.4"
+  dependencies:
+    "@radix-ui/react-compose-refs": "npm:1.1.2"
+  peerDependencies:
+    "@types/react": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/8b719bb934f1ae5ac0e37214783085c17c2f1080217caf514c1c6cc3d9ca56c7e19d25470b26da79aa6e605ab36589edaade149b76f5fc0666f1063e2fc0a0dc
   languageName: node
   linkType: hard
 
@@ -8050,6 +8076,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"class-variance-authority@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "class-variance-authority@npm:0.7.1"
+  dependencies:
+    clsx: "npm:^2.1.1"
+  checksum: 10c0/0f438cea22131808b99272de0fa933c2532d5659773bfec0c583de7b3f038378996d3350683426b8e9c74a6286699382106d71fbec52f0dd5fbb191792cccb5b
+  languageName: node
+  linkType: hard
+
 "clean-stack@npm:^2.0.0":
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
@@ -8151,6 +8186,13 @@ __metadata:
   version: 1.0.4
   resolution: "clone@npm:1.0.4"
   checksum: 10c0/2176952b3649293473999a95d7bebfc9dc96410f6cbd3d2595cf12fd401f63a4bf41a7adbfd3ab2ff09ed60cb9870c58c6acdd18b87767366fabfc163700f13b
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: 10c0/c4c8eb865f8c82baab07e71bfa8897c73454881c4f99d6bc81585aecd7c441746c1399d08363dc096c550cceaf97bd4ce1e8854e1771e9998d9f94c4fe075839
   languageName: node
   linkType: hard
 
@@ -9596,10 +9638,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"env-paths@npm:3.0.0, env-paths@npm:^3.0.0":
+"env-paths@npm:3.0.0":
   version: 3.0.0
   resolution: "env-paths@npm:3.0.0"
   checksum: 10c0/76dec878cee47f841103bacd7fae03283af16f0702dad65102ef0a556f310b98a377885e0f32943831eb08b5ab37842a323d02529f3dfd5d0a40ca71b01b435f
+  languageName: node
+  linkType: hard
+
+"env-paths@npm:4.0.0":
+  version: 4.0.0
+  resolution: "env-paths@npm:4.0.0"
+  dependencies:
+    is-safe-filename: "npm:^0.1.0"
+  checksum: 10c0/13ee7fa4047786ca28f1fbf2239606f8a53304bdf71bfc426e95f806e429060181205316f2c45b4ac560e81c854ded5a45fd9dc3105414c01d504b3469a1294b
   languageName: node
   linkType: hard
 
@@ -12468,6 +12519,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-safe-filename@npm:^0.1.0":
+  version: 0.1.1
+  resolution: "is-safe-filename@npm:0.1.1"
+  checksum: 10c0/45c35d2253b96348e2c26590e14feed51d1e6b72aaa567930ccb34e68c0eef00ebcf3b7e01b46bf45e578a27355cd8f5bc12f7d6d79a34d33dc93d4560c0f6b6
+  languageName: node
+  linkType: hard
+
 "is-set@npm:^2.0.3":
   version: 2.0.3
   resolution: "is-set@npm:2.0.3"
@@ -13303,12 +13361,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keyv@npm:5.5.0":
-  version: 5.5.0
-  resolution: "keyv@npm:5.5.0"
+"keyv@npm:5.6.0":
+  version: 5.6.0
+  resolution: "keyv@npm:5.6.0"
   dependencies:
-    "@keyv/serialize": "npm:^1.1.0"
-  checksum: 10c0/2db63fd2abcdf71929f032569673b6edd0de111edb012411658e2589dc5f49793a98aecd56c67fafda3f90a31f32e35555a97f8621040728260c66ad8daeea48
+    "@keyv/serialize": "npm:^1.1.1"
+  checksum: 10c0/c3ea795b6e03593ca57c8f70928a69bad14c13389a7fb75649a115ff55615244b04d8902798d841c17f0bb4a8a8866c97133b543b93f151b440170bba09176db
   languageName: node
   linkType: hard
 
@@ -13961,6 +14019,15 @@ __metadata:
   dependencies:
     es5-ext: "npm:~0.10.2"
   checksum: 10c0/83517032b46843601c4528be65e8aaf85f5a7860a9cfa3e4f2b5591da436e7cd748d95b450c91434c4ffb75d3ae4c069ddbdd9f71ada56a99a00c03088c51b4d
+  languageName: node
+  linkType: hard
+
+"lucide-react@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "lucide-react@npm:1.8.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/f7398f89a0f5b2cbfd1b7a7f6b2f00b0abd05d4b21d948bbd281ab141c42cdff9f1d2aed4e32b78b4bbdfa78308b6577705698af8bf9945bad23ed7d56e255b4
   languageName: node
   linkType: hard
 
@@ -18316,6 +18383,7 @@ __metadata:
     "@electron-forge/maker-zip": "npm:7.6.0"
     "@electron-forge/plugin-auto-unpack-natives": "npm:7.6.0"
     "@floating-ui/react": "npm:0.26.1"
+    "@radix-ui/react-slot": "npm:^1.2.4"
     "@react-scan/vite-plugin-react-scan": "npm:0.1.8"
     "@reforged/maker-appimage": "npm:5.1.1"
     "@types/memoizee": "npm:0.4.9"
@@ -18330,6 +18398,7 @@ __metadata:
     assert: "npm:2.1.0"
     babel-plugin-react-compiler: "npm:1.0.0"
     buffer: "npm:6.0.3"
+    class-variance-authority: "npm:^0.7.1"
     concurrently: "npm:8.0.1"
     conventional-changelog-cli: "npm:4.1.0"
     cordova-res: "npm:0.15.4"
@@ -18356,6 +18425,7 @@ __metadata:
     kubo: "npm:0.39.0"
     lint-staged: "npm:12.3.8"
     lodash: "npm:4.17.23"
+    lucide-react: "npm:^1.8.0"
     memoizee: "npm:0.4.15"
     node-fetch: "npm:2"
     oxfmt: "npm:0.24.0"

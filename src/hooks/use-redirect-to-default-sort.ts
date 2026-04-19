@@ -9,12 +9,9 @@ const useRedirectToDefaultSort = () => {
 
   useEffect(() => {
     const path = location.pathname;
-    const parts = path.split('/').filter(Boolean);
-
-    // If we're at the root or the path doesn't start with a sort type
-    if (path === '/' || (parts.length > 0 && !['hot', 'new', 'active', 'topAll'].includes(parts[0]))) {
-      const newPath = path === '/' ? `/${DEFAULT_SORT}` : `/${DEFAULT_SORT}${path}`;
-      navigate(newPath, { replace: true });
+    // Only normalize the home feed root. Do not prepend /hot to other paths (e.g. /submit).
+    if (path === '/') {
+      navigate(`/${DEFAULT_SORT}`, { replace: true });
     }
   }, [location.pathname, navigate]);
 };

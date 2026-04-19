@@ -6,7 +6,10 @@ import { VitePWA } from 'vite-plugin-pwa';
 import reactScan from '@react-scan/vite-plugin-react-scan';
 
 const isProduction = process.env.NODE_ENV === 'production';
-const isDevelopment = process.env.NODE_ENV === 'development';
+
+// React Scan's Vite plugin can throw (e.g. Cannot read properties of undefined (reading '__H'))
+// with React 19 + babel-plugin-react-compiler. Opt in with VITE_ENABLE_REACT_SCAN=true.
+const enableReactScan = !isProduction && process.env.VITE_ENABLE_REACT_SCAN === 'true';
 
 export default defineConfig({
   plugins: [
@@ -22,12 +25,14 @@ export default defineConfig({
         ],
       },
     }),
-    // Only include React Scan in development mode - never in production builds
-    !isProduction &&
-      reactScan({
-        showToolbar: true,
-        playSound: true,
-      }),
+    ...(enableReactScan
+      ? [
+          reactScan({
+            showToolbar: true,
+            playSound: true,
+          }),
+        ]
+      : []),
     nodePolyfills({
       globals: {
         Buffer: true,
@@ -45,8 +50,9 @@ export default defineConfig({
       },
       srcDir: 'src',
       filename: 'sw.ts',
+      // Disabled in dev: SW + HMR causes reload loops and confusing "update" prompts.
       devOptions: {
-        enabled: true,
+        enabled: false,
         type: 'module',
       },
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
@@ -155,6 +161,10 @@ export default defineConfig({
         replacement: resolve(__dirname, 'src/lib/bitsocial-react-hooks-compat.ts'),
       },
       {
+        find: /^@plebbit\/plebbit-react-hooks$/,
+        replacement: resolve(__dirname, 'src/lib/bitsocial-react-hooks-compat.ts'),
+      },
+      {
         find: /^@\//,
         replacement: `${resolve(__dirname, 'src')}/`,
       },
@@ -195,7 +205,7 @@ export default defineConfig({
       usePolling: true,
     },
     hmr: {
-      overlay: false,
+      overlay: true,
     },
   },
   build: {

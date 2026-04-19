@@ -22,7 +22,6 @@ import Subplebbit from './views/subplebbit';
 import SubplebbitSettings from './views/subplebbit-settings';
 import Subplebbits from './views/subplebbits';
 import { Layout } from './components/ui/layout';
-import { Sidebar } from './components/ui/sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import ChallengeModal from './components/challenge-modal';
 import NotificationHandler from './components/notification-handler';
