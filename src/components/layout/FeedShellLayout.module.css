@@ -142,7 +142,7 @@
   .mainGrid :global([data-feed-shell='sidebar']) {
     grid-column: 1;
     grid-row: 3;
-    padding: 12px 12px 24px;
+    padding: 6px 12px 24px;
   }
 
   .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='main']) {
@@ -176,9 +176,9 @@
     padding: 0;
   }
 
-  /* docs/DESIGN.md .sidebar-right — 12px 24px */
+  /* docs/DESIGN.md .sidebar-right — 6px top; 24px horizontal rhythm */
   .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='sidebar']) {
-    padding: 12px 24px 24px 16px;
+    padding: 6px 24px 24px 16px;
     box-sizing: border-box;
     /* Sticky rail: window scroll moves the feed only; sidebar pins and scrolls inside */
     position: sticky;

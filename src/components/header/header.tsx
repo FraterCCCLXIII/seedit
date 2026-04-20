@@ -470,6 +470,9 @@ const Header = () => {
           ? `/s/${subplebbitAddress}/submit`
           : '/submit';
 
+  /* Home /home about: only logo+wordmark in this row (nav rail has brand on desktop); omit the strip entirely */
+  const showTitleRow = !(isInHomeView || isInHomeAboutView) || showPostThreadBack;
+
   return (
     <div className={styles.header}>
       <div
@@ -477,37 +480,39 @@ const Header = () => {
           isInSubmitView && isInSubplebbitSubmitView && !isInSubplebbitView && isMobile && styles.reduceSubmitPageHeight
         }`}
       >
-        <div
-          className={`${styles.titleRow} ${showCommunityFeedHeader ? styles.titleRowSubplebbitFeed : ''} ${
-            showUserFeedHeader ? styles.titleRowUserFeed : ''
-          }`}
-        >
-          {showPostThreadBack ? (
-            <Link to={postThreadBackTo} className={styles.headerBackLink} aria-label={t('go_back')}>
-              <ArrowLeft className={styles.headerBackIcon} aria-hidden />
-            </Link>
-          ) : null}
-          <div className={styles.logoContainer}>
-            <Link to={logoLink} className={styles.logoLink}>
-              {(logoIsAvatar || (!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-                <img className={`${logoIsAvatar ? styles.avatar : styles.logo}`} src={logoSrc} alt='' />
-              )}
-              {((!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-                <img src={`assets/sprout/seedit-text-${theme === 'dark' ? 'dark' : 'light'}.svg`} className={styles.logoText} alt='' />
-              )}
-            </Link>
-          </div>
-          {!showCommunityFeedHeader && !showUserFeedHeader && !isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
-            <span className={`${styles.pageName} ${!logoIsAvatar && styles.soloPageName}`}>
-              <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
-            </span>
-          )}
-          {(isInModView || isInAllView) && (
-            <div className={`${styles.pageName} ${styles.allOrModPageName}`}>
-              <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
+        {showTitleRow ? (
+          <div
+            className={`${styles.titleRow} ${showCommunityFeedHeader ? styles.titleRowSubplebbitFeed : ''} ${
+              showUserFeedHeader ? styles.titleRowUserFeed : ''
+            }`}
+          >
+            {showPostThreadBack ? (
+              <Link to={postThreadBackTo} className={styles.headerBackLink} aria-label={t('go_back')}>
+                <ArrowLeft className={styles.headerBackIcon} aria-hidden />
+              </Link>
+            ) : null}
+            <div className={styles.logoContainer}>
+              <Link to={logoLink} className={styles.logoLink}>
+                {(logoIsAvatar || (!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
+                  <img className={`${logoIsAvatar ? styles.avatar : styles.logo}`} src={logoSrc} alt='' />
+                )}
+                {((!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
+                  <img src={`assets/sprout/seedit-text-${theme === 'dark' ? 'dark' : 'light'}.svg`} className={styles.logoText} alt='' />
+                )}
+              </Link>
             </div>
-          )}
-        </div>
+            {!showCommunityFeedHeader && !showUserFeedHeader && !isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
+              <span className={`${styles.pageName} ${!logoIsAvatar && styles.soloPageName}`}>
+                <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
+              </span>
+            )}
+            {(isInModView || isInAllView) && (
+              <div className={`${styles.pageName} ${styles.allOrModPageName}`}>
+                <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
+              </div>
+            )}
+          </div>
+        ) : null}
         {showCommunityFeedHeader && subplebbitAddress ? (
           <CommunityFeedHeader subplebbit={subplebbit} subplebbitAddress={subplebbitAddress} placement='shell' />
         ) : null}
