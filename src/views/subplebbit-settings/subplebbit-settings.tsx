@@ -31,7 +31,8 @@ import Sidebar from '../../components/sidebar';
 import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import Challenges from './challenge-settings';
-import { FormattingHelpTable } from '../../components/reply-form';
+import { MarkdownRichTextToolbar } from '../../components/markdown-rich-text-toolbar';
+import toolbarStyles from '../../components/markdown-rich-text-toolbar/markdown-rich-text-toolbar.module.css';
 import styles from './subplebbit-settings.module.css';
 import _ from 'lodash';
 
@@ -53,8 +54,9 @@ const Title = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
 const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
   const { t } = useTranslation();
   const { description, setSubplebbitSettingsStore } = useSubplebbitSettingsStore();
-  const [showFormattingHelp, setShowFormattingHelp] = useState(false);
+  const [showRichText, setShowRichText] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const descriptionTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   return (
     <div className={`${styles.box} ${isReadOnly && !description ? styles.hidden : styles.visible}`}>
@@ -65,44 +67,59 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
           <pre className={styles.readOnlyDescription}>{description}</pre>
         ) : (
           <div className={styles.descriptionEditor}>
-            {!showPreview ? (
+            {showRichText && (
+              <MarkdownRichTextToolbar
+                textareaRef={descriptionTextareaRef}
+                value={description ?? ''}
+                onChange={(next) => setSubplebbitSettingsStore({ description: next })}
+                showMarkdownPreview={showPreview}
+                onToggleMarkdownPreview={() => setShowPreview((v) => !v)}
+              />
+            )}
+            {showRichText ? (
+              <>
+                <Textarea
+                  ref={descriptionTextareaRef}
+                  className={cn(
+                    'min-h-[6.25rem]',
+                    toolbarStyles.attachedFieldBelowToolbar,
+                    showPreview && toolbarStyles.attachedEditorWhenPreviewBelow,
+                  )}
+                  value={description ?? ''}
+                  onChange={(e) => setSubplebbitSettingsStore({ description: e.target.value })}
+                />
+                {showPreview && (
+                  <div className={toolbarStyles.attachedLivePreviewBelow}>
+                    <div className={styles.descriptionLivePreview}>
+                      <Markdown content={description ?? ''} />
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
               <Textarea
+                ref={descriptionTextareaRef}
                 className='min-h-[6.25rem]'
                 value={description ?? ''}
                 onChange={(e) => setSubplebbitSettingsStore({ description: e.target.value })}
               />
-            ) : (
-              <div className={styles.preview}>
-                <Markdown content={description ?? ''} />
-              </div>
             )}
             <div className={styles.bottomArea}>
-              <div className={styles.bottomAreaStart}>
-                {showFormattingHelp ? (
-                  <Button type='button' variant='outline' onClick={() => setShowPreview(!showPreview)} disabled={!description}>
-                    {showPreview ? t('edit') : t('preview')}
-                  </Button>
-                ) : null}
-              </div>
               <button
                 type='button'
                 className={styles.formattingHelpButton}
                 onClick={() => {
-                  const nextShowHelp = !showFormattingHelp;
-                  setShowFormattingHelp(nextShowHelp);
-                  if (!nextShowHelp) {
-                    setShowPreview(false);
-                  }
+                  setShowRichText((v) => {
+                    const next = !v;
+                    if (next) setShowPreview(true);
+                    else setShowPreview(false);
+                    return next;
+                  });
                 }}
               >
-                {showFormattingHelp ? t('hide_help') : t('formatting_help')}
+                {showRichText ? t('hide_rich_text') : t('rich_text')}
               </button>
             </div>
-            {showFormattingHelp ? (
-              <div className={styles.formattingHelpTable}>
-                <FormattingHelpTable />
-              </div>
-            ) : null}
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -19,7 +19,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { FormattingHelpTable } from '../../components/reply-form/reply-form';
+import { MarkdownRichTextToolbar } from '../../components/markdown-rich-text-toolbar';
+import toolbarStyles from '../../components/markdown-rich-text-toolbar/markdown-rich-text-toolbar.module.css';
 import styles from './submit-page.module.css';
 import InfoTooltip from '../../components/info-tooltip';
 
@@ -266,7 +267,8 @@ const TitleField = () => {
 const ContentField = () => {
   const { t } = useTranslation();
   const [showPreview, setShowPreview] = useState(false);
-  const [showFormattingHelp, setShowFormattingHelp] = useState(false);
+  const [showRichText, setShowRichText] = useState(false);
+  const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { content, setPublishPostStore } = usePublishPostStore();
 
@@ -275,40 +277,63 @@ const ContentField = () => {
       <span className={styles.boxTitleOptional}>{t('text')}</span>
       <span className={styles.optional}> ({t('optional')})</span>
       <div className={styles.boxContent}>
-        {!showPreview ? (
+        {showRichText && (
+          <MarkdownRichTextToolbar
+            textareaRef={contentTextareaRef}
+            value={content || ''}
+            onChange={(next) => setPublishPostStore({ content: next })}
+            showMarkdownPreview={showPreview}
+            onToggleMarkdownPreview={() => setShowPreview((v) => !v)}
+          />
+        )}
+        {showRichText ? (
+          <>
+            <Textarea
+              ref={contentTextareaRef}
+              className={cn(
+                styles.input,
+                styles.inputText,
+                toolbarStyles.attachedFieldBelowToolbar,
+                showPreview && toolbarStyles.attachedEditorWhenPreviewBelow,
+              )}
+              value={content || ''}
+              onChange={(e) => {
+                setPublishPostStore({ content: e.target.value });
+              }}
+            />
+            {showPreview && (
+              <div className={toolbarStyles.attachedLivePreviewBelow}>
+                <div className={styles.contentPreviewMarkdown}>
+                  <Markdown content={content || ''} />
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
           <Textarea
-            className={`${styles.input} ${styles.inputText}`}
+            ref={contentTextareaRef}
+            className={cn(styles.input, styles.inputText)}
             value={content || ''}
             onChange={(e) => {
               setPublishPostStore({ content: e.target.value });
             }}
           />
-        ) : (
-          <div className={styles.contentPreview}>
-            <div className={styles.contentPreviewMarkdown}>
-              <Markdown content={content || ''} />
-            </div>
-          </div>
         )}
         <div className={styles.contentActions}>
-          {showFormattingHelp && (
-            <Button type='button' variant='outline' className={styles.previewButton} disabled={!content} onClick={() => setShowPreview(!showPreview)}>
-              {showPreview ? t('edit') : t('preview')}
-            </Button>
-          )}
           <span
             className={styles.formattingHelpButton}
             onClick={() => {
-              if (showFormattingHelp && showPreview) {
-                setShowPreview(false);
-              }
-              setShowFormattingHelp(!showFormattingHelp);
+              setShowRichText((v) => {
+                const next = !v;
+                if (next) setShowPreview(true);
+                else setShowPreview(false);
+                return next;
+              });
             }}
           >
-            {showFormattingHelp ? t('hide_help') : t('formatting_help')}
+            {showRichText ? t('hide_rich_text') : t('rich_text')}
           </span>
         </div>
-        {showFormattingHelp && <FormattingHelpTable />}
       </div>
     </div>
   );

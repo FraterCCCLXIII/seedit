@@ -432,5 +432,20 @@
   "permalink": "permalink",
   "reply_form_comment": "Comment",
   "engagement_tooltip_comments": "Open discussion",
-  "engagement_tooltip_share": "Copy link to clipboard"
+  "engagement_tooltip_share": "Copy link to clipboard",
+  "rich_text": "Rich Text",
+  "hide_rich_text": "Hide rich text",
+  "rte_link_prompt": "Link URL",
+  "rte_link_text": "text",
+  "rte_insert_link": "Insert link",
+  "rte_bullet_list": "Bullet list",
+  "rte_quote": "Quote",
+  "rte_code_indent": "Code indent (4 spaces)",
+  "spoiler_text": "spoiler",
+  "strikethrough": "strikethrough",
+  "superscript": "superscript",
+  "subscript": "subscript",
+  "rte_view_markdown": "Markdown",
+  "rte_show_preview": "Show preview",
+  "rte_hide_preview": "Hide preview"
 }

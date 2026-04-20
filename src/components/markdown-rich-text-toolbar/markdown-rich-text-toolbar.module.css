@@ -1,0 +1,97 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin-bottom: 0;
+  padding: 0.25rem 0.125rem;
+  border: 1px solid hsl(var(--shadcn-border));
+  border-bottom: none;
+  border-radius: var(--shadcn-radius-control) var(--shadcn-radius-control) 0 0;
+  background-color: hsl(var(--shadcn-muted) / 0.25);
+}
+
+/**
+ * Apply to the Textarea (or shadcn input) directly under the rich text toolbar so the pair reads as one control.
+ */
+.attachedFieldBelowToolbar {
+  margin-top: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-top-width: 0 !important;
+}
+
+/**
+ * Live rendered markdown panel directly under the source editor (rich text mode).
+ */
+.attachedLivePreviewBelow {
+  margin-top: 0;
+  border: 1px solid hsl(var(--shadcn-border));
+  border-top: none;
+  border-radius: 0 0 var(--shadcn-radius-control) var(--shadcn-radius-control);
+  background-color: hsl(var(--shadcn-muted) / 0.2);
+  box-sizing: border-box;
+}
+
+/**
+ * Source editor when a live preview panel is shown beneath it (shared outer chrome).
+ */
+.attachedEditorWhenPreviewBelow {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-width: 0 !important;
+}
+
+.formatGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.toolbarEnd {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.previewToggle {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  height: 1.75rem !important;
+  min-height: 1.75rem !important;
+  padding-left: 0.65rem !important;
+  padding-right: 0.65rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 500;
+  line-height: 1 !important;
+}
+
+.previewToggleIcon {
+  width: 0.8125rem;
+  height: 0.8125rem;
+  flex-shrink: 0;
+}
+
+.toolButton {
+  min-width: 2rem;
+  height: 1.75rem !important;
+  min-height: 1.75rem !important;
+  padding-left: 0.45rem !important;
+  padding-right: 0.45rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  line-height: 1 !important;
+}
+
+.toolIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}

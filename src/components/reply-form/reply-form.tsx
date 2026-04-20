@@ -5,10 +5,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
+import { cn } from '@/lib/utils';
 import { isValidURL } from '../../lib/utils/url-utils';
 import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import usePublishReply from '../../hooks/use-publish-reply';
 import Markdown from '../markdown';
+import { MarkdownRichTextToolbar } from '../markdown-rich-text-toolbar';
+import toolbarStyles from '../markdown-rich-text-toolbar/markdown-rich-text-toolbar.module.css';
 import styles from './reply-form.module.css';
 
 type ReplyFormProps = {
@@ -116,15 +119,12 @@ export const FormattingHelpTable = () => {
 const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, postCid }: ReplyFormProps) => {
   const { t } = useTranslation();
   const [showOptions, setShowOptions] = useState(false);
-  const [showFormattingHelp, setShowFormattingHelp] = useState(false);
+  const [showRichText, setShowRichText] = useState(false);
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const { setPublishReplyOptions, resetPublishReplyOptions, replyIndex, publishReply, publishReplyOptions } = usePublishReply({ cid, subplebbitAddress, postCid });
 
   const mdContainerClass = isReplyingToReply ? `${styles.mdContainer} ${styles.mdContainerReplying}` : styles.mdContainer;
-  const urlClass = showOptions ? styles.urlVisible : styles.urlHidden;
-  const spoilerClass = showOptions ? styles.spoilerVisible : styles.spoilerHidden;
-  const nsfwClass = showOptions ? styles.spoilerVisible : styles.spoilerHidden;
 
   const subplebbit = useSubplebbit({ subplebbitAddress, onlyIfCached: true });
   const { isOffline, offlineTitle } = useIsSubplebbitOffline(subplebbit);
@@ -167,34 +167,76 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
     <div className={mdContainerClass}>
       <div className={styles.md}>
         {isOffline && isTextareaFocused && <div className={styles.infobar}>{offlineTitle}</div>}
-        {showOptions && (
-          <div className={styles.options}>
-            <span className={urlClass}>
-              {t('media_url')}: <Input className={`${styles.url} ${urlClass}`} onChange={(e) => setPublishReplyOptions.link(e.target.value)} />
-            </span>
-            <span className={`${styles.spoiler} ${spoilerClass}`}>
-              <label>
-                {t('spoiler')}: <Checkbox className={styles.checkbox} onChange={(e) => setPublishReplyOptions.spoiler(e.target.checked)} />
-              </label>
-            </span>
-            <span className={`${styles.spoiler} ${nsfwClass}`}>
-              <label>
-                {t('nsfw')}: <Checkbox className={styles.checkbox} onChange={(e) => setPublishReplyOptions.nsfw(e.target.checked)} />
-              </label>
-            </span>
-          </div>
+        {showRichText && (
+          <MarkdownRichTextToolbar
+            textareaRef={textRef}
+            value={publishReplyOptions?.content || ''}
+            onChange={(next) => setPublishReplyOptions.content(next)}
+            showMarkdownPreview={showPreview}
+            onToggleMarkdownPreview={() => setShowPreview((v) => !v)}
+          />
         )}
-        {!showPreview ? (
+        {showRichText ? (
+          <>
+            <Textarea
+              ref={textRef}
+              className={cn(
+                styles.textarea,
+                toolbarStyles.attachedFieldBelowToolbar,
+                showPreview && toolbarStyles.attachedEditorWhenPreviewBelow,
+              )}
+              value={publishReplyOptions?.content || ''}
+              onChange={(e) => setPublishReplyOptions.content(e.target.value)}
+              onFocus={() => setIsTextareaFocused(true)}
+              onBlur={() => setIsTextareaFocused(false)}
+            />
+            {showPreview && (
+              <div className={toolbarStyles.attachedLivePreviewBelow}>
+                <div className={styles.preview}>
+                  <Markdown content={publishReplyOptions?.content || ''} />
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
           <Textarea
+            ref={textRef}
             className={styles.textarea}
             value={publishReplyOptions?.content || ''}
             onChange={(e) => setPublishReplyOptions.content(e.target.value)}
             onFocus={() => setIsTextareaFocused(true)}
             onBlur={() => setIsTextareaFocused(false)}
           />
-        ) : (
-          <div className={styles.preview}>
-            <Markdown content={publishReplyOptions?.content || ''} />
+        )}
+        {showOptions && (
+          <div className={styles.options}>
+            <div className={styles.optionsMedia}>
+              <label className={styles.optionsMediaLabel}>
+                <span className={styles.optionsFieldCaption}>{t('media_url')}</span>
+                <Input
+                  className={styles.url}
+                  value={publishReplyOptions?.link ?? ''}
+                  onChange={(e) => setPublishReplyOptions.link(e.target.value)}
+                />
+              </label>
+            </div>
+            <div className={styles.optionsCheckboxes}>
+              <span className={styles.spoiler}>
+                <label className={styles.optionsCheckboxLabel}>
+                  {t('spoiler')}
+                  <Checkbox
+                    checked={!!publishReplyOptions?.spoiler}
+                    onChange={(e) => setPublishReplyOptions.spoiler(e.target.checked)}
+                  />
+                </label>
+              </span>
+              <span className={styles.spoiler}>
+                <label className={styles.optionsCheckboxLabel}>
+                  {t('nsfw')}
+                  <Checkbox checked={!!publishReplyOptions?.nsfw} onChange={(e) => setPublishReplyOptions.nsfw(e.target.checked)} />
+                </label>
+              </span>
+            </div>
           </div>
         )}
       </div>
@@ -202,24 +244,28 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
         <Button type='button' variant='neutral' className={styles.save} onClick={onPublish}>
           {t('reply_form_comment')}
         </Button>
-        {showFormattingHelp && (
-          <Button type='button' variant='outline' className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!publishReplyOptions?.content}>
-            {showPreview ? t('edit') : t('preview')}
-          </Button>
-        )}
         {isReplyingToReply && (
           <Button type='button' variant='ghost' className={styles.cancel} onClick={hideReplyForm}>
             {t('cancel')}
           </Button>
         )}
-        <span className={styles.optionsButton} onClick={() => setShowFormattingHelp(!showFormattingHelp)}>
-          {showFormattingHelp ? t('hide_help') : t('formatting_help')}
+        <span
+          className={styles.optionsButton}
+          onClick={() => {
+            setShowRichText((v) => {
+              const next = !v;
+              if (next) setShowPreview(true);
+              else setShowPreview(false);
+              return next;
+            });
+          }}
+        >
+          {showRichText ? t('hide_rich_text') : t('rich_text')}
         </span>
         <span className={styles.optionsButton} onClick={() => setShowOptions(!showOptions)}>
           {showOptions ? t('hide_options') : t('options')}
         </span>
       </div>
-      {showFormattingHelp && <FormattingHelpTable />}
     </div>
   );
 };
