@@ -48,7 +48,7 @@ export type ErrorDisplayProps = {
   error: unknown;
   /** `bar`: full-width strip under header (feed routes). Default: compact inline block. */
   variant?: 'inline' | 'bar';
-  /** With `variant="bar"`: span feed main column edge-to-edge (cancels `--feed-shell-main-pad-x`). */
+  /** With `variant="bar"`: full-width strip in the feed main column (no horizontal shell padding). */
   fullBleed?: boolean;
 };
 

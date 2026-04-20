@@ -29,10 +29,13 @@ import LoadingEllipsis from '../loading-ellipsis/';
 import Markdown from '../markdown';
 import CommentTools from '../post/comment-tools';
 import Expando from '../post/expando/';
+import postEngagementStyles from '../post/post.module.css';
 import Flair from '../post/flair/';
 import Label from '../post/label/';
 import Thumbnail from '../post/thumbnail/';
 import ReplyForm from '../reply-form';
+import { PixelIcon } from '@/components/ui/pixel-icon';
+import { cn } from '@/lib/utils';
 import styles from './reply.module.css';
 import _ from 'lodash';
 
@@ -430,12 +433,6 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
       {isSingleReply && !isInInboxView && <ParentLink postCid={cid ? postCid : parentOfPendingReply?.postCid} />}
       {isInInboxView && <InboxParentLink commentCid={cid} />}
       <div className={`${!isSingleReply ? styles.replyWrapper : styles.singleReplyWrapper} ${depth > 0 && styles.nested}`}>
-        {!collapsed && (
-          <div className={`${styles.midcol} ${removed || deleted ? styles.hiddenMidcol : ''}`}>
-            <div className={`${styles.arrow} ${upvoted ? styles.upvoted : styles.arrowUp}`} onClick={() => cid && upvote()} />
-            <div className={`${styles.arrow} ${downvoted ? styles.downvoted : styles.arrowDown}`} onClick={() => cid && downvote()} />
-          </div>
-        )}
         <div className={`${isNotification && !markedAsRead ? styles.unreadNotification : ''}`}>
           <div className={`${styles.entry} ${collapsed && styles.collapsedEntry}`}>
             {!isInInboxView && (
@@ -458,7 +455,11 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
                   pinned={pinned}
                   postCid={postCid}
                 />
-                <span className={styles.score}>{scoreString}</span>{' '}
+                {collapsed ? (
+                  <>
+                    <span className={styles.score}>{scoreString}</span>{' '}
+                  </>
+                ) : null}
                 <span className={styles.time}>
                   <span title={formatLocalizedUTCTimestamp(timestamp, language)}>{getFormattedTimeAgo(timestamp)}</span>
                   {edit && <span className={styles.timeEdited}> {t('edited_timestamp', { timestamp: getFormattedTimeAgo(edit.timestamp) })}</span>}
@@ -556,6 +557,31 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
                 postCid={postCid}
                 removed={removed}
                 replyCount={replies.length}
+                replyVoteCluster={
+                  !(removed || deleted) ? (
+                    <div className={postEngagementStyles.voteCluster} onClick={(e) => e.stopPropagation()}>
+                      <button
+                        type='button'
+                        className={cn(postEngagementStyles.voteBtn, upvoted && postEngagementStyles.votedUp)}
+                        onClick={() => cid && upvote()}
+                        disabled={!cid}
+                        aria-label='upvote'
+                      >
+                        <PixelIcon glyph='arrow-up' className={postEngagementStyles.voteIcon} aria-hidden />
+                      </button>
+                      <span className={postEngagementStyles.score}>{formattedScore}</span>
+                      <button
+                        type='button'
+                        className={cn(postEngagementStyles.voteBtn, downvoted && postEngagementStyles.votedDown)}
+                        onClick={() => cid && downvote()}
+                        disabled={!cid}
+                        aria-label='downvote'
+                      >
+                        <PixelIcon glyph='arrow-down' className={postEngagementStyles.voteIcon} aria-hidden />
+                      </button>
+                    </div>
+                  ) : null
+                }
                 subplebbitAddress={subplebbitAddress}
                 showCommentEditForm={showCommentEditForm}
                 showReplyForm={showReplyForm}

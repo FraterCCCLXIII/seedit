@@ -52,6 +52,13 @@
   overflow: hidden;
 }
 
+/* Iframe embeds (YouTube, etc.): use full post column width; images keep capped .mediaPreview */
+.mediaPreview:has(iframe) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
 /* Direct link wrapper: shrink-wrap for img/video; full width for iframe embeds (16:9 box from .videoEmbed) */
 .mediaPreview > a {
   display: inline-block;
@@ -62,7 +69,7 @@
 
 .mediaPreview > a:has(iframe) {
   display: block;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   line-height: normal;
 }

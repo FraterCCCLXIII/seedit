@@ -18,23 +18,11 @@
   font-size: 13px;
 }
 
-.content img {
-  display: block;
-  margin: auto;
-  border: 0;
-  width: 100%;
-  max-width: 750px;
-}
-
 @media (max-width: 640px) {
   .content {
     min-width: 0;
     text-align: center;
     width: auto;
     padding: 10px;
-  }
-
-  .content img {
-    max-width: 100%;
   }
 }

@@ -11,15 +11,14 @@ export type FeedShellLayoutProps = {
 };
 
 /**
- * Primal-style shell: fixed left nav (persistent), bounded center column (~640px feed + sidebar).
- * Sticky nav fails under `.app { overflow-y: hidden }`, so the rail uses `position: fixed` + grid spacer.
+ * Primal-style shell: left nav stays in the first grid column (`position: sticky`) so it cannot
+ * overlap the feed; `.app` uses `overflow-y: visible` so window scroll + sticky work together.
  */
 const FeedShellLayout = ({ stickyHeader, header, children }: FeedShellLayoutProps) => {
   return (
     <div className={styles.shell} data-feed-shell-layout>
       <div className={styles.leftRailColumn}>
-        <div className={styles.leftRailSpacer} aria-hidden />
-        <aside className={styles.leftRailFixed}>
+        <aside className={styles.leftRailSticky}>
           <FeedNavRail />
         </aside>
       </div>

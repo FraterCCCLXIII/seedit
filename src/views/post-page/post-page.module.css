@@ -14,20 +14,6 @@
   padding: 0;
 }
 
-.repliesTitle {
-  margin: 0;
-  padding: 0.75rem var(--page-content-padding-x) 0.25rem;
-  max-width: none;
-  border-bottom: none;
-}
-
-.title {
-  font-size: 16px;
-  font-weight: normal;
-  margin: 10px 0;
-  color: hsl(var(--shadcn-foreground));
-}
-
 /* Full width of main column content (cancels StandardPageContent horizontal inset) */
 .commentsSortBar {
   display: flex;
@@ -44,22 +30,15 @@
   background-color: hsl(var(--shadcn-background));
 }
 
-.sortDropdownRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem 0.5rem;
-}
-
-.dropdownTitle {
-  color: hsl(var(--shadcn-muted-foreground));
-  font-size: 0.9375rem;
-  line-height: 1.35;
-}
-
+/* Full-bleed top rule (same geometry as .commentsSortBar) — was previously provided by sort bar above composer */
 .replyComposerArea {
-  padding: 1rem var(--page-content-padding-x) 0;
+  width: calc(100% + 2 * var(--page-content-padding-x));
+  max-width: none;
+  margin-left: calc(-1 * var(--page-content-padding-x));
+  margin-right: calc(-1 * var(--page-content-padding-x));
   box-sizing: border-box;
+  padding: 1rem var(--page-content-padding-x) 0.75rem;
+  border-top: 1px solid hsl(var(--shadcn-border));
 }
 
 /* Loading / state strip above single-comment context thread */
@@ -70,52 +49,6 @@
   overflow: hidden;
   font-size: larger;
   color: rgb(152, 143, 129);
-}
-
-.dropdown {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-}
-
-.dropdownItems {
-  position: absolute;
-  top: 17px;
-  left: 0;
-  border-style: solid;
-  border-width: 1px;
-  border: 1px solid var(--border-text);
-  z-index: 100;
-  background-color: var(--background);
-  white-space: nowrap;
-  line-height: normal;
-}
-
-.dropdownItem {
-  cursor: pointer;
-  color: var(--link-primary);
-  padding: 2px 3px 1px 3px;
-}
-
-@media (max-width: 640px) {
-  .dropdownItem {
-    padding-bottom: 5px;
-    padding-top: 5px;
-  }
-}
-
-.dropdownItem:hover {
-  background-color: var(--button-link-background-hover);
-}
-
-.selected {
-  background: none no-repeat scroll center right;
-  background-image: url("/assets/buttons/droparrowgray.gif");
-  position: relative;
-  padding-right: 21px;
-  text-decoration: underline;
-  font-weight: 600;
-  color: hsl(var(--shadcn-foreground));
 }
 
 .singleCommentInfobar {

@@ -22,7 +22,6 @@
   margin-right: 0;
   margin-bottom: 0;
   padding-bottom: 1rem;
-  border-bottom: 1px solid hsl(var(--shadcn-border) / 0.85);
 }
 
 .sidebarChrome {
@@ -42,6 +41,20 @@
 
 .ctaStack > a,
 .ctaStack > button {
+  margin-bottom: 0 !important;
+}
+
+/* Community routes: “Create your own community” sits after panel + moderators, above footer links */
+.ctaStackBottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid hsl(var(--shadcn-border) / 0.65);
+}
+
+.ctaStackBottom > button {
   margin-bottom: 0 !important;
 }
 

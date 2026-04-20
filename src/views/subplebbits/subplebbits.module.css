@@ -1,7 +1,6 @@
-/* Bleed past feed main column shell padding only (StandardPageContent feedColumn has no horizontal page pad) */
 .infobar {
-  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
-  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-left: 0;
+  margin-right: 0;
   margin-bottom: 0;
   padding: var(--page-content-padding-x);
   border: none;
@@ -21,8 +20,8 @@
 
 /* List rows: dividers only, full bleed to feed column edges */
 .subplebbit {
-  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
-  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-left: 0;
+  margin-right: 0;
   height: auto;
   overflow: hidden;
   border: none;
@@ -168,26 +167,40 @@
   background-image: url('/assets/indicator-offline.png');
 }
 
-.title {
-  display: inline-flex;
-  font-size: medium;
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
   unicode-bidi: isolate;
-  margin-bottom: -2px;
+  margin-bottom: 0.125rem;
 }
 
 .titlePrimary {
-  margin-right: 5px;
-  flex-grow: 1;
   color: hsl(var(--shadcn-foreground));
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .subplebbit:hover .titlePrimary {
   color: hsl(var(--shadcn-primary));
 }
 
+.titleAddress {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: hsl(var(--shadcn-muted-foreground));
+  letter-spacing: -0.01em;
+}
+
 .tagline {
-  margin-top: 2px;
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .moderatorIcon {
@@ -198,10 +211,6 @@
   width: 16px;
   display: inline-block;
   vertical-align: bottom;
-}
-
-.addMarginRight {
-  margin-right: 2px;
 }
 
 .expandButton {
@@ -234,7 +243,7 @@
 .description {
   max-width: 60em;
   unicode-bidi: isolate;
-  margin: 6px 0 0;
+  margin: 0.5rem 0 0;
   padding: 0;
   border: none;
   border-radius: 0;
@@ -245,40 +254,74 @@
   line-height: 1.45;
 }
 
-.taglineSecondLine {
-  padding-left: 1px;
-  line-height: 1.6em;
-  margin-top: 2px;
+/* Bottom row: role/NSFW/offline + topic chips (monochrome, capitalized labels) */
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.5rem;
+  margin-top: 0;
 }
 
-.tags {
-  margin-left: 4px;
+.badgeRowIconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  line-height: 0;
+  text-decoration: none;
 }
 
-.tags a {
-  color: inherit;
-  cursor: pointer;
-  margin-right: 4px;
+.tagBadgeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Same vertical metrics as post Label `.stamp` (offline badge): 10px / 14px line + 1px border → 16px box */
+.tagBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: 16px;
+  min-height: 16px;
+  padding: 0 4px;
+  border-radius: 3px;
+  border: 1px solid hsl(var(--shadcn-border));
+  background: hsl(var(--shadcn-muted) / 0.35);
+  color: hsl(var(--shadcn-foreground));
   font-size: 10px;
-  background: var(--flair-blank-background);
-  color: var(--flair-blank-color);
-  border: 1px solid var(--flair-blank-border);
-  padding: 0 2px;
-  border-radius: 2px;
-  unicode-bidi: isolate;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  text-decoration: none;
   white-space: nowrap;
   text-overflow: ellipsis;
-  text-decoration: none;
-  outline: none;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  overflow: hidden;
+  unicode-bidi: isolate;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
-.tags a:hover {
-  background: hsl(var(--shadcn-accent) / 0.55);
+.subplebbit:hover .tagBadge {
+  background: hsl(var(--shadcn-accent) / 0.4);
   border-color: hsl(var(--shadcn-border));
 }
 
-.tags a:focus-visible {
+.tagBadge:hover {
+  background: hsl(var(--shadcn-accent) / 0.55);
+  border-color: hsl(var(--shadcn-muted-foreground) / 0.35);
+}
+
+.tagBadge:focus-visible {
   outline: 2px solid hsl(var(--shadcn-ring));
   outline-offset: 2px;
 }

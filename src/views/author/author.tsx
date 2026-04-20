@@ -94,30 +94,41 @@ const Author = () => {
     }
   }, [error, virtuosoData]);
 
+  const isEmptyFeed = virtuosoData?.length === 0 && !hasMore;
+
   return (
     <div className={styles.content}>
-      <div {...feedShellMainProps} className={styles.mainColumn}>
+      <div
+        {...feedShellMainProps}
+        className={styles.mainColumn}
+        {...(isEmptyFeed ? ({ 'data-feed-main-empty': '' } as const) : {})}
+      >
         {shouldShowErrorToUser && (
           <div className={styles.error}>
             <ErrorDisplay error={error} />
           </div>
         )}
-        <Virtuoso
-          increaseViewportBy={{ bottom: 1200, top: 600 }}
-          totalCount={authorComments?.length || 0}
-          data={virtuosoData}
-          itemContent={(index, post) => {
-            const isReply = post?.parentCid;
-            return !isReply ? <Post index={index} post={post} /> : <Reply index={index} isSingleReply={true} reply={post} />;
-          }}
-          useWindowScroll={true}
-          components={{ Footer }}
-          endReached={loadMore}
-          ref={virtuosoRef}
-          restoreStateFrom={lastVirtuosoState}
-          initialScrollTop={lastVirtuosoState?.scrollTop}
-        />
-        {virtuosoData?.length === 0 && !hasMore && <div className={styles.noPosts}>{t('nothing_found')}</div>}
+        {isEmptyFeed ? (
+          <div className={styles.emptyFeed} role='status'>
+            <div className={styles.noPosts}>{t('nothing_found')}</div>
+          </div>
+        ) : (
+          <Virtuoso
+            increaseViewportBy={{ bottom: 1200, top: 600 }}
+            totalCount={authorComments?.length || 0}
+            data={virtuosoData}
+            itemContent={(index, post) => {
+              const isReply = post?.parentCid;
+              return !isReply ? <Post index={index} post={post} /> : <Reply index={index} isSingleReply={true} reply={post} />;
+            }}
+            useWindowScroll={true}
+            components={{ Footer }}
+            endReached={loadMore}
+            ref={virtuosoRef}
+            restoreStateFrom={lastVirtuosoState}
+            initialScrollTop={lastVirtuosoState?.scrollTop}
+          />
+        )}
       </div>
       <div className={styles.sidebarColumn} {...feedShellSidebarProps}>
         <AuthorSidebar />

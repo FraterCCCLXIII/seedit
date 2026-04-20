@@ -19,16 +19,12 @@
   background-color: transparent;
 }
 
-/*
- * Span the feed main column edge-to-edge: shell applies `--feed-shell-main-pad-x` on
- * `[data-feed-shell='main']`; expand width explicitly so the bar (and border) are not
- * clipped to the padded content box.
- */
+/* `[data-feed-shell='main']` has no horizontal shell padding — bar is already full width. */
 .errorBarFullBleed {
-  width: calc(100% + 2 * var(--feed-shell-main-pad-x));
+  width: 100%;
   max-width: none;
-  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
-  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .errorBar .errorMessage {

@@ -1,5 +1,5 @@
 .header {
-  /* --header-pad-x: themes.css (matches --feed-shell-main-pad-x) */
+  /* Horizontal chrome: themes.css `--header-chrome-pad-x` (header/tabs; feed main is unpadded). */
   /* Same vertical extent as .tabMenu li a (padding 14px + 14px + line box ≈ 1.25em at 15px) */
   --header-tab-row-height: calc(28px + 1.25em);
 
@@ -37,26 +37,17 @@
   align-items: center;
   gap: 8px 12px;
   min-height: var(--header-tab-row-height);
-  padding: 0 var(--header-pad-x);
+  padding: 0 var(--header-chrome-pad-x);
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Subplebbit feed: community strip + tabs carry chrome; hide empty branding row on desktop (logo already off in shell ≥900px). */
+/* Community / user feed strips carry chrome; hide empty branding row on desktop (logo already off in shell ≥900px). */
 @media (min-width: 900px) {
-  :global([data-feed-shell-layout]) .titleRowSubplebbitFeed {
+  :global([data-feed-shell-layout]) .titleRowSubplebbitFeed,
+  :global([data-feed-shell-layout]) .titleRowUserFeed {
     display: none;
   }
-}
-
-.container.reducedHeight .titleRow {
-  min-height: 0;
-  padding-top: 0.35rem;
-  padding-bottom: 0.35rem;
-}
-
-.container.increasedHeight .titleRow {
-  min-height: var(--header-tab-row-height);
 }
 
 .logo {
@@ -125,7 +116,7 @@
 .headerBackIcon {
   width: 1.25rem;
   height: 1.25rem;
-  font-size: 1.25rem;
+  flex-shrink: 0;
 }
 
 .logoContainer {
@@ -256,10 +247,17 @@
   gap: 0;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 var(--header-pad-x);
+  padding: 0 var(--header-chrome-pad-x);
   margin: 0;
   flex-wrap: wrap;
   border-top: 1px solid hsl(var(--shadcn-border));
+}
+
+/* No tab chrome (e.g. 404): avoid a second rule under the title — .header border-bottom is enough */
+.tabMenu:empty {
+  border-top: none;
+  padding: 0;
+  min-height: 0;
 }
 
 /* Tab row <li> markers — link styles from .tabMenu li a / .tabMenu .selected a */

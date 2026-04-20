@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { autoUpdate, FloatingPortal, offset, shift, useFloating } from '@floating-ui/react';
+import { autoUpdate, FloatingPortal, flip, offset, shift, size, useFloating } from '@floating-ui/react';
 import { PixelIcon } from '@/components/ui/pixel-icon';
 import { useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
@@ -10,15 +10,14 @@ import {
   isPostPageAboutView,
   isSubplebbitAboutView,
 } from '../../lib/utils/view-utils';
-import { Select } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { useDefaultSubplebbitAddresses } from '../../hooks/use-default-subplebbits';
 import styles from './search-bar.module.css';
 
-const SEARCH_SCOPES = ['posts', 'users', 'communities'] as const;
-type SearchScope = (typeof SEARCH_SCOPES)[number];
-
-const SEARCH_SCOPE_STORAGE_KEY = 'seedit-search-scope';
+type DropdownItem =
+  | { kind: 'community'; key: string; address: string; label: string }
+  | { kind: 'posts'; key: string }
+  | { kind: 'user'; key: string };
 
 interface SearchBarProps {
   isFocused?: boolean;
@@ -36,20 +35,11 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
   const isInSubplebbitAboutView = isSubplebbitAboutView(location.pathname, params);
   const isSearchPage = location.pathname === '/search';
 
-  const [searchScope, setSearchScope] = useState<SearchScope>(() => {
-    try {
-      const stored = sessionStorage.getItem(SEARCH_SCOPE_STORAGE_KEY);
-      if (stored === 'posts' || stored === 'users' || stored === 'communities') return stored;
-    } catch {
-      /* ignore */
-    }
-    return 'posts';
-  });
-
   const [inputValue, setInputValue] = useState('');
   const searchBarRef = useRef<HTMLFormElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const suggestionsListRef = useRef<HTMLUListElement | null>(null);
 
   const account = useAccount();
   const subplebbitAddresses = useMemo(() => account?.subscriptions || [], [account?.subscriptions]);
@@ -57,35 +47,61 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [activeDropdownIndex, setActiveDropdownIndex] = useState<number>(-1);
 
-  useEffect(() => {
-    const q = searchParams.get('q');
-    if (isSearchPage) {
-      setInputValue(q || '');
-      const tab = searchParams.get('tab');
-      if (tab === 'posts' || tab === 'users' || tab === 'communities') {
-        setSearchScope(tab);
-      }
-    } else if (q) {
-      setInputValue(q);
-    }
-  }, [isSearchPage, searchParams]);
+  const trimmedQuery = inputValue.trim();
+  const showDropdown = isInputFocused && trimmedQuery.length > 0;
 
-  const filteredCommunitySuggestions = useMemo(() => {
-    if (!inputValue.trim() || searchScope !== 'communities') return [];
+  const dropdownItems = useMemo((): DropdownItem[] => {
+    if (!trimmedQuery) return [];
+    const qLower = trimmedQuery.toLowerCase();
     const combinedAddresses = Array.from(new Set([...subplebbitAddresses, ...defaultSubplebbitAddresses]));
-    return combinedAddresses.filter((address: string) => address?.toLowerCase()?.includes(inputValue.toLowerCase())).slice(0, 10);
-  }, [inputValue, subplebbitAddresses, defaultSubplebbitAddresses, searchScope]);
+    const communities = combinedAddresses
+      .filter((address: string) => address?.toLowerCase()?.includes(qLower))
+      .slice(0, 8)
+      .map((address) => ({
+        kind: 'community' as const,
+        key: `c:${address}`,
+        address,
+        label: Plebbit.getShortAddress({ address }),
+      }));
+
+    return [
+      ...communities,
+      { kind: 'posts' as const, key: 'action:posts' },
+      { kind: 'user' as const, key: 'action:user' },
+    ];
+  }, [trimmedQuery, subplebbitAddresses, defaultSubplebbitAddresses]);
 
   const { x, y, strategy, refs, context } = useFloating({
-    open: isInputFocused && filteredCommunitySuggestions.length > 0,
+    placement: 'bottom-start',
+    open: showDropdown && dropdownItems.length > 0,
     onOpenChange: (open) => {
       if (!open) {
         setIsInputFocused(false);
       }
     },
-    middleware: [offset(5), shift()],
+    middleware: [
+      offset(6),
+      flip({ padding: 12, fallbackPlacements: ['top-start'] }),
+      shift({ padding: 8, crossAxis: true }),
+      size({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, {
+            width: `${Math.round(rects.reference.width)}px`,
+          });
+        },
+      }),
+    ],
     whileElementsMounted: autoUpdate,
   });
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (isSearchPage) {
+      setInputValue(q || '');
+    } else if (q) {
+      setInputValue(q);
+    }
+  }, [isSearchPage, searchParams]);
 
   useEffect(() => {
     if (isFocused) {
@@ -93,27 +109,13 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
     }
   }, [isFocused]);
 
-  const persistScope = useCallback((scope: SearchScope) => {
-    setSearchScope(scope);
-    try {
-      sessionStorage.setItem(SEARCH_SCOPE_STORAGE_KEY, scope);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const q = searchInputRef.current?.value?.trim() ?? '';
-    if (!q) return;
-    navigate(`/search?q=${encodeURIComponent(q)}&tab=${searchScope}`);
-  };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    setActiveDropdownIndex(-1);
-  };
+  useLayoutEffect(() => {
+    if (!context.open || activeDropdownIndex < 0) return;
+    const root = suggestionsListRef.current;
+    if (!root) return;
+    const el = root.querySelector(`[data-search-suggestion-index="${activeDropdownIndex}"]`);
+    el?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [activeDropdownIndex, context.open, dropdownItems]);
 
   const handleCommunitySelect = useCallback(
     (address: string) => {
@@ -130,6 +132,39 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
     [navigate, params.subplebbitAddress, t],
   );
 
+  const applyDropdownItem = useCallback(
+    (item: DropdownItem) => {
+      const q = trimmedQuery;
+      if (!q) return;
+      if (item.kind === 'community') {
+        handleCommunitySelect(item.address);
+        return;
+      }
+      setIsInputFocused(false);
+      setActiveDropdownIndex(-1);
+      searchInputRef.current?.blur();
+      if (item.kind === 'posts') {
+        navigate(`/search?q=${encodeURIComponent(q)}&tab=posts`);
+        return;
+      }
+      navigate(`/u/${encodeURIComponent(q)}`);
+    },
+    [trimmedQuery, navigate, handleCommunitySelect],
+  );
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const q = searchInputRef.current?.value?.trim() ?? '';
+    if (!q) return;
+    navigate(`/search?q=${encodeURIComponent(q)}&tab=posts`);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    setActiveDropdownIndex(-1);
+  };
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Escape') {
@@ -138,14 +173,14 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
         return;
       }
 
-      const dropdownActive = isInputFocused && searchScope === 'communities' && filteredCommunitySuggestions.length > 0;
+      const dropdownActive = showDropdown && dropdownItems.length > 0;
       if (!dropdownActive) {
         return;
       }
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setActiveDropdownIndex((prevIndex) => (prevIndex < filteredCommunitySuggestions.length - 1 ? prevIndex + 1 : prevIndex));
+        setActiveDropdownIndex((prevIndex) => (prevIndex < dropdownItems.length - 1 ? prevIndex + 1 : prevIndex));
         return;
       }
       if (e.key === 'ArrowUp') {
@@ -155,19 +190,26 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
       }
       if (e.key === 'Enter') {
         e.preventDefault();
-        if (activeDropdownIndex !== -1 && filteredCommunitySuggestions[activeDropdownIndex]) {
-          handleCommunitySelect(filteredCommunitySuggestions[activeDropdownIndex]);
-        } else if (inputValue.trim()) {
+        if (activeDropdownIndex !== -1 && dropdownItems[activeDropdownIndex]) {
+          applyDropdownItem(dropdownItems[activeDropdownIndex]);
+        } else if (trimmedQuery) {
           searchBarRef.current?.requestSubmit();
         }
       }
     },
-    [isInputFocused, searchScope, filteredCommunitySuggestions, activeDropdownIndex, handleCommunitySelect, inputValue],
+    [showDropdown, dropdownItems, activeDropdownIndex, applyDropdownItem, trimmedQuery],
   );
 
   return (
     <div ref={wrapperRef} className={`${styles.searchBarWrapper} ${isInHomeAboutView || isInSubplebbitAboutView || isInPostPageAboutView ? styles.mobileInfobar : ''}`}>
-      <form className={styles.searchBarForm} ref={searchBarRef} onSubmit={handleSearchSubmit}>
+      <form
+        className={styles.searchBarForm}
+        ref={(el) => {
+          searchBarRef.current = el;
+          refs.setReference(el);
+        }}
+        onSubmit={handleSearchSubmit}
+      >
         <input
           type='text'
           autoCorrect='off'
@@ -178,7 +220,6 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
           className={styles.searchInput}
           ref={(instance) => {
             searchInputRef.current = instance;
-            refs.setReference(instance);
           }}
           onFocus={() => {
             setIsInputFocused(true);
@@ -189,55 +230,71 @@ const SearchBar = ({ isFocused = false }: SearchBarProps) => {
           onBlur={() => setTimeout(() => setIsInputFocused(false), 150)}
         />
         <button type='submit' className={styles.searchSubmit} aria-label={t('search')}>
-          <PixelIcon glyph='search' className='text-xl' aria-hidden />
+          <PixelIcon glyph='search' className={styles.searchSubmitIcon} aria-hidden />
         </button>
       </form>
       {context.open && (
         <FloatingPortal>
           <ul
-            ref={refs.setFloating}
+            ref={(node) => {
+              suggestionsListRef.current = node;
+              refs.setFloating(node);
+            }}
             style={{
               position: strategy,
               top: y ?? 0,
               left: x ?? 0,
-              width: searchInputRef.current?.offsetWidth ? searchInputRef.current.offsetWidth : 'auto',
             }}
-            className='z-[9999] max-h-60 list-none overflow-auto rounded-control border border-border bg-popover p-1 text-popover-foreground shadow-[0_0_0_1px_rgba(255,255,255,0.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.12)]'
+            className={styles.suggestionsList}
+            role='listbox'
+            aria-label={t('search')}
+            onPointerDown={(e) => e.preventDefault()}
           >
-            {filteredCommunitySuggestions.map((address: string, index: number) => (
-              <li
-                key={address}
-                className={cn(
-                  'cursor-pointer rounded-control px-2 py-1.5 text-sm text-foreground outline-none hover:bg-accent hover:text-accent-foreground',
-                  index === activeDropdownIndex && 'bg-accent text-accent-foreground',
-                )}
-                onClick={() => handleCommunitySelect(address)}
-                onTouchEnd={() => handleCommunitySelect(address)}
-                onMouseEnter={() => setActiveDropdownIndex(index)}
-              >
-                {Plebbit.getShortAddress({ address })}
-              </li>
-            ))}
+            {dropdownItems.map((item, index) => {
+              const isActive = index === activeDropdownIndex;
+              const secondary =
+                item.kind === 'community'
+                  ? item.address
+                  : item.kind === 'posts'
+                    ? t('search_results_for', { query: trimmedQuery })
+                    : trimmedQuery.length > 36
+                      ? `${trimmedQuery.slice(0, 34)}…`
+                      : trimmedQuery;
+
+              return (
+                <li
+                  key={item.key}
+                  data-search-suggestion-index={index}
+                  role='option'
+                  aria-selected={isActive}
+                  className={cn(
+                    styles.suggestionItem,
+                    isActive && styles.suggestionItemActive,
+                  )}
+                  onClick={() => applyDropdownItem(item)}
+                  onTouchEnd={() => applyDropdownItem(item)}
+                  onMouseEnter={() => setActiveDropdownIndex(index)}
+                >
+                  <div className={styles.suggestionPrimary}>
+                    {item.kind === 'community' ? (
+                      <>
+                        <span className={styles.suggestionKind}>{t('search_scope_communities')}</span>
+                        <span className={styles.suggestionSep}>·</span>
+                        <span>{item.label}</span>
+                      </>
+                    ) : item.kind === 'posts' ? (
+                      t('search_scope_posts')
+                    ) : (
+                      t('search_users_view_profile')
+                    )}
+                  </div>
+                  <div className={styles.suggestionSecondary}>{secondary}</div>
+                </li>
+              );
+            })}
           </ul>
         </FloatingPortal>
       )}
-      <div className={styles.searchModes}>
-        <div className={styles.searchModesInner}>
-          <label htmlFor='sidebar-search-scope' className={styles.searchScopeLabel}>
-            {t('search_scope_label')}
-          </label>
-          <Select
-            id='sidebar-search-scope'
-            value={searchScope}
-            onChange={(e) => persistScope(e.target.value as SearchScope)}
-            aria-label={t('search_scope_label')}
-          >
-            <option value='posts'>{t('search_scope_posts')}</option>
-            <option value='users'>{t('search_scope_users')}</option>
-            <option value='communities'>{t('search_scope_communities')}</option>
-          </Select>
-        </div>
-      </div>
     </div>
   );
 };

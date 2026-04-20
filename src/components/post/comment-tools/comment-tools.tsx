@@ -1,14 +1,15 @@
-import { useCallback, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useCallback, useState, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Author, useAccount, useComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import useScheduledReset from '../../../hooks/use-scheduled-reset';
+import { PixelIcon } from '@/components/ui/pixel-icon';
+import { EngagementActionTooltip } from './engagement-action-tooltip';
 import styles from './comment-tools.module.css';
 import EditMenu from './edit-menu';
 import HideMenu from './hide-menu';
 import Label from '../label';
 import ModMenu from './mod-menu';
-import { isInboxView } from '../../../lib/utils/view-utils';
 import { copyShareLinkToClipboard } from '../../../lib/utils/url-utils';
 
 interface CommentToolsProps {
@@ -34,28 +35,9 @@ interface CommentToolsProps {
   subplebbitAddress: string;
   showCommentEditForm?: () => void;
   showReplyForm?: () => void;
+  /** Vote cluster as first column in reply toolbars (reply / single-reply rows). */
+  replyVoteCluster?: ReactNode;
 }
-
-interface ModOrReportButtonProps {
-  cid: string;
-  isAuthor: boolean | undefined;
-  isAccountMod: boolean | undefined;
-  isCommentAuthorMod?: boolean;
-}
-
-const ModOrReportButton = ({ cid, isAuthor, isAccountMod, isCommentAuthorMod }: ModOrReportButtonProps) => {
-  const { t } = useTranslation();
-
-  return isAccountMod ? (
-    <ModMenu cid={cid} isCommentAuthorMod={isCommentAuthorMod} />
-  ) : (
-    !isAuthor && (
-      <li className={`${styles.button} ${styles.reportButton}`}>
-        <span>{t('report')}</span>
-      </li>
-    )
-  );
-};
 
 const ShareButton = ({ cid, subplebbitAddress }: { cid: string; subplebbitAddress: string }) => {
   const { t } = useTranslation();
@@ -77,8 +59,32 @@ const ShareButton = ({ cid, subplebbitAddress }: { cid: string; subplebbitAddres
   };
 
   return (
-    <li className={`${!hasCopied ? styles.button : styles.text}`} onClick={() => cid && handleCopy()}>
-      {hasCopied ? t('link_copied') : t('share')}
+    <li className={`${!hasCopied ? styles.button : styles.text}`}>
+      <EngagementActionTooltip
+        content={
+          hasCopied
+            ? t('link_copied', { defaultValue: 'Link copied' })
+            : t('engagement_tooltip_share', { defaultValue: 'Copy link to clipboard' })
+        }
+      >
+        <button
+          type='button'
+          className={styles.shareIconButton}
+          onClick={() => cid && handleCopy()}
+          disabled={!cid}
+          aria-label={
+            hasCopied
+              ? t('link_copied', { defaultValue: 'Link copied' })
+              : t('engagement_tooltip_share', { defaultValue: 'Copy link to clipboard' })
+          }
+        >
+          {hasCopied ? (
+            <PixelIcon glyph='check' className={styles.engagementIcon} aria-hidden />
+          ) : (
+            <PixelIcon glyph='share' className={styles.engagementIcon} aria-hidden />
+          )}
+        </button>
+      </EngagementActionTooltip>
     </li>
   );
 };
@@ -98,7 +104,8 @@ const PostTools = ({
 }: CommentToolsProps) => {
   const { t } = useTranslation();
   const validReplyCount = isNaN(replyCount) ? 0 : replyCount;
-  const commentCount = validReplyCount === 0 ? t('post_no_comments') : `${validReplyCount} ${validReplyCount === 1 ? t('post_comment') : t('post_comments')}`;
+  const commentCountDisplay = String(validReplyCount);
+  const commentsAriaLabel = `${validReplyCount} ${validReplyCount === 1 ? t('post_comment') : t('post_comments')}`;
 
   // show gray dotted border around last clicked post
   const handlePostClick = () => {
@@ -111,12 +118,28 @@ const PostTools = ({
     }
   };
 
+  const commentIconCount = (
+    <>
+      <PixelIcon glyph='comment-dots' className={styles.engagementIcon} aria-hidden />
+      <span className={styles.engagementCount}>{commentCountDisplay}</span>
+    </>
+  );
+
   const commentCountButton = failed ? (
-    <span>{commentCount}</span>
+    <span className={styles.engagementAction} aria-label={commentsAriaLabel}>
+      {commentIconCount}
+    </span>
   ) : (
-    <Link to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={() => cid && handlePostClick?.()}>
-      {commentCount}
-    </Link>
+    <EngagementActionTooltip content={t('engagement_tooltip_comments', { defaultValue: 'Open discussion' })}>
+      <Link
+        to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}`}
+        className={styles.engagementAction}
+        aria-label={commentsAriaLabel}
+        onClick={() => cid && handlePostClick?.()}
+      >
+        {commentIconCount}
+      </Link>
+    </EngagementActionTooltip>
   );
 
   return (
@@ -129,13 +152,13 @@ const PostTools = ({
         </li> 
       */}
       {isAuthor && <EditMenu commentCid={cid} showCommentEditForm={showCommentEditForm} />}
-      <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} subplebbitAddress={subplebbitAddress} />
+      <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} isAuthor={isAuthor} subplebbitAddress={subplebbitAddress} />
       {/* TODO: Implement crosspost functionality
         <li className={`${styles.button} ${styles.crosspostButton}`}>
           <span>{t('crosspost')}</span>
         </li> 
       */}
-      <ModOrReportButton cid={cid} isAuthor={isAuthor} isAccountMod={isAccountMod} isCommentAuthorMod={isCommentAuthorMod} />
+      {isAccountMod ? <ModMenu cid={cid} isCommentAuthorMod={isCommentAuthorMod} /> : null}
     </>
   );
 };
@@ -149,23 +172,23 @@ const ReplyTools = ({
   isAuthor,
   isAccountMod,
   isCommentAuthorMod,
+  replyVoteCluster,
   showReplyForm,
   subplebbitAddress,
   showCommentEditForm,
 }: CommentToolsProps) => {
   const { t } = useTranslation();
 
-  const permalink = failed ? (
-    <span>permalink</span>
-  ) : (
-    <Link to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}`} onClick={(e) => !cid && e.preventDefault()}>
-      permalink
-    </Link>
-  );
+  const replyPermalink = failed ? { mode: 'failed' as const } : { mode: 'link' as const, to: cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}` };
 
   return (
     <>
-      <li className={`${styles.button} ${!hasLabel ? styles.firstButton : ''}`}>{permalink}</li>
+      {replyVoteCluster ? <li className={styles.voteToolSlot}>{replyVoteCluster}</li> : null}
+      <li
+        className={`${styles.button} ${!hasLabel && !replyVoteCluster ? styles.firstButton : ''} ${!cid ? styles.hideReply : ''}`}
+      >
+        <span onClick={() => cid && showReplyForm?.()}>{t('reply_reply')}</span>
+      </li>
       <ShareButton cid={cid} subplebbitAddress={subplebbitAddress} />
       {/* TODO: Implement save functionality
         <li className={styles.button}>
@@ -173,11 +196,15 @@ const ReplyTools = ({
         </li> 
       */}
       {isAuthor && <EditMenu commentCid={cid} showCommentEditForm={showCommentEditForm} />}
-      <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} subplebbitAddress={subplebbitAddress} />
-      <li className={!cid ? styles.hideReply : styles.button}>
-        <span onClick={() => cid && showReplyForm?.()}>{t('reply_reply')}</span>
-      </li>
-      <ModOrReportButton cid={cid} isAuthor={isAuthor} isAccountMod={isAccountMod} isCommentAuthorMod={isCommentAuthorMod} />
+      <HideMenu
+        author={author}
+        cid={cid}
+        isAccountMod={isAccountMod}
+        isAuthor={isAuthor}
+        replyPermalink={replyPermalink}
+        subplebbitAddress={subplebbitAddress}
+      />
+      {isAccountMod ? <ModMenu cid={cid} isCommentAuthorMod={isCommentAuthorMod} /> : null}
     </>
   );
 };
@@ -192,6 +219,7 @@ const SingleReplyTools = ({
   isCommentAuthorMod,
   parentCid,
   postCid,
+  replyVoteCluster,
   showReplyForm,
   subplebbitAddress,
   showCommentEditForm,
@@ -227,7 +255,8 @@ const SingleReplyTools = ({
 
   return (
     <>
-      <li className={`${styles.button} ${!hasLabel ? styles.firstButton : ''}`}>{permalinkButton}</li>
+      {replyVoteCluster ? <li className={styles.voteToolSlot}>{replyVoteCluster}</li> : null}
+      <li className={`${styles.button} ${!hasLabel && !replyVoteCluster ? styles.firstButton : ''}`}>{permalinkButton}</li>
       {/* TODO: Implement save functionality
         <li className={styles.button}>
           <span>{t('save')}</span>
@@ -236,11 +265,11 @@ const SingleReplyTools = ({
       {isAuthor && <EditMenu commentCid={cid} showCommentEditForm={showCommentEditForm} />}
       <li className={styles.button}>{contextButton}</li>
       <li className={styles.button}>{fullCommentsButton}</li>
-      <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} subplebbitAddress={subplebbitAddress} />
-      <li className={!cid ? styles.hideReply : styles.button}>
+      <HideMenu author={author} cid={cid} isAccountMod={isAccountMod} isAuthor={isAuthor} subplebbitAddress={subplebbitAddress} />
+      <li className={`${!cid ? styles.hideReply : styles.button}`}>
         <span onClick={() => cid && showReplyForm?.()}>{t('reply_reply')}</span>
       </li>
-      <ModOrReportButton cid={cid} isAuthor={isAuthor} isAccountMod={isAccountMod} isCommentAuthorMod={isCommentAuthorMod} />
+      {isAccountMod ? <ModMenu cid={cid} isCommentAuthorMod={isCommentAuthorMod} /> : null}
     </>
   );
 };
@@ -264,12 +293,18 @@ const CommentToolsLabel = ({ cid, deleted, failed, editState, isReply, nsfw, rem
 
   const visibleLabels = labels.filter((label) => label.show);
 
+  if (visibleLabels.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      {visibleLabels.map((label, index) => (
-        <Label key={label.text} color={label.color} text={label.text} isFirstInLine={index === 0} />
-      ))}
-    </>
+    <li className={styles.labelClusterSlot}>
+      <span className={styles.labelCluster}>
+        {visibleLabels.map((label, index) => (
+          <Label key={label.text} color={label.color} text={label.text} isFirstInLine={index === 0} />
+        ))}
+      </span>
+    </li>
   );
 };
 
@@ -293,6 +328,7 @@ const CommentTools = ({
   subplebbitAddress,
   showCommentEditForm,
   showReplyForm,
+  replyVoteCluster,
 }: CommentToolsProps) => {
   const account = useAccount();
   const isAuthor = account?.author?.address === author?.address;
@@ -301,11 +337,9 @@ const CommentTools = ({
   const commentAuthorRole = subplebbit?.roles?.[author?.address]?.role;
   const isAccountMod = accountAuthorRole === 'admin' || accountAuthorRole === 'owner' || accountAuthorRole === 'moderator';
   const isCommentAuthorMod = commentAuthorRole === 'admin' || commentAuthorRole === 'owner' || commentAuthorRole === 'moderator';
-  const isInInboxView = isInboxView(useLocation().pathname);
-
   return (
     (!(deleted || removed) || (!deleted && isAccountMod)) && (
-      <ul className={`${styles.buttons} ${isReply && !isInInboxView ? styles.buttonsReply : ''} ${hasLabel ? styles.buttonsLabel : ''}`}>
+      <ul className={`${styles.buttons} ${hasLabel ? styles.buttonsLabel : ''}`}>
         {isReply ? (
           isSingleReply ? (
             <SingleReplyTools
@@ -320,6 +354,7 @@ const CommentTools = ({
               isCommentAuthorMod={isCommentAuthorMod}
               parentCid={parentCid}
               postCid={postCid}
+              replyVoteCluster={replyVoteCluster}
               showCommentEditForm={showCommentEditForm}
               showReplyForm={showReplyForm}
               subplebbitAddress={subplebbitAddress}
@@ -335,6 +370,7 @@ const CommentTools = ({
               isAuthor={isAuthor}
               isAccountMod={isAccountMod}
               isCommentAuthorMod={isCommentAuthorMod}
+              replyVoteCluster={replyVoteCluster}
               showCommentEditForm={showCommentEditForm}
               showReplyForm={showReplyForm}
               subplebbitAddress={subplebbitAddress}

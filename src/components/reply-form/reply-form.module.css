@@ -1,7 +1,9 @@
 .mdContainer {
   font-size: small;
   padding: 0 1px;
-  max-width: 500px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   unicode-bidi: isolate;
   margin-top: 5px;
   margin-bottom: -9px;
@@ -25,7 +27,9 @@
   margin-bottom: 5px;
   font-weight: 400;
   width: 100%;
-  max-width: 60em;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .url {
@@ -51,8 +55,11 @@
 }
 
 .textarea {
+  display: block;
   width: 100%;
-  height: 100px;
+  min-width: 0;
+  min-height: 100px;
+  height: auto;
   background-color: var(--background);
   color: var(--text-markdown);
   font: normal small verdana,arial,helvetica,sans-serif;
@@ -62,13 +69,15 @@
   box-sizing: border-box;
 }
 
-.save, .cancel, .previewButton {
+.bottomArea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.save,
+.cancel,
+.previewButton {
   margin: 5px 5px 0 0;
-  -webkit-appearance: button;
-  appearance: button;
-  cursor: pointer;
-  padding: 2px 6px 3px;
-  text-transform: lowercase;
 }
 
 .optionsButton {
@@ -77,9 +86,15 @@
   margin-top: 5px;
   margin-left: 10px;
   margin-right: 5px;
-  color: var(--text-primary);
+  color: hsl(var(--shadcn-muted-foreground));
   cursor: pointer;
-  text-transform: lowercase;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.optionsButton:hover {
+  color: hsl(var(--shadcn-foreground));
+  text-decoration: underline;
 }
 
 .options {
@@ -137,10 +152,6 @@
 }
 
 @media (max-width: 640px) {
-  .mdContainer {
-    max-width: calc(100vw - 31px);
-  }
-  
   .markdownHelp table {
     font-size: 13px;
   }
@@ -162,7 +173,10 @@
 }
 
 .preview {
+  width: 100%;
+  min-width: 0;
   min-height: 98.5px;
+  box-sizing: border-box;
   word-wrap: break-word;
   padding-left: 3px;
   padding-top: 4px;

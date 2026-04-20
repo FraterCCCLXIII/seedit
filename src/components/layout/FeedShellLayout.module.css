@@ -1,7 +1,4 @@
-/* Aligns fixed rail with the centered shell (same math as max-width + margin: auto) */
 .shell {
-  --feed-shell-align: calc((100vw - min(100vw, var(--feed-shell-site-max))) / 2);
-
   display: grid;
   grid-template-columns: var(--feed-shell-left-w) minmax(0, 1fr);
   width: 100%;
@@ -14,27 +11,25 @@
 .leftRailColumn {
   position: relative;
   width: var(--feed-shell-left-w);
+  min-width: 0;
 }
 
-/* Reserves horizontal space so main content does not sit under the fixed rail */
-.leftRailSpacer {
-  width: var(--feed-shell-left-w);
-  min-height: 100vh;
-}
-
-/* Primal-style: left column content is fixed to the viewport while the feed scrolls */
-.leftRailFixed {
+/* Stays in grid flow (never overlaps center): sticks to viewport top while the page scrolls. */
+.leftRailSticky {
   display: none;
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: var(--feed-shell-align);
   z-index: 25;
-  width: var(--feed-shell-left-w);
+  width: 100%;
   height: 100vh;
+  max-height: 100dvh;
+  /* No vertical scroll on the shell — inner `.navScroll` scrolls. Nested `overflow-y: auto` here
+   * captured wheel/touch and broke page scroll next to the feed (Virtuoso `useWindowScroll`). */
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: visible;
   box-sizing: border-box;
   margin: 0;
+  align-self: start;
   /* docs/DESIGN.md .sidebar-left — balanced horizontal inset so items don’t hug edges */
   padding: 12px 14px 20px 14px;
   background-color: hsl(var(--shadcn-background));
@@ -65,6 +60,11 @@
   color: hsl(var(--shadcn-foreground));
 }
 
+/* Author (etc.) empty main: `.centerInner`’s 100vh min was forcing a full-viewport-tall background */
+.centerInner:has([data-feed-main-empty]) {
+  min-height: 0;
+}
+
 .stickyHeaderSlot {
   width: 100%;
 }
@@ -78,7 +78,8 @@
   display: grid;
   /* docs/DESIGN.md: 600px feed + 350px sidebar when right column exists */
   grid-template-columns: minmax(0, var(--feed-shell-feed-max)) minmax(0, 350px);
-  grid-template-rows: auto 1fr;
+  /* `1fr` here made the feed row participate in fr sizing vs window scroll + Virtuoso; both rows size to content. */
+  grid-template-rows: auto auto;
   align-items: start;
   column-gap: 0;
   width: 100%;
@@ -122,20 +123,19 @@
     grid-template-rows: auto auto auto;
     column-gap: 0;
     row-gap: 0;
-    padding: 7px 2px 0;
+    padding: 7px 0 0;
   }
 
   .headerArea {
     grid-column: 1;
     grid-row: 1;
-    padding: 0 12px;
-    border-bottom: 1px solid hsl(var(--shadcn-border));
+    padding: 0;
   }
 
   .mainGrid :global([data-feed-shell='main']) {
     grid-column: 1;
     grid-row: 2;
-    padding: 0 var(--feed-shell-main-pad-x);
+    padding: 0;
     border-right: none;
   }
 
@@ -169,22 +169,42 @@
     border-right: 1px solid hsl(var(--shadcn-border));
     min-height: 100vh;
     box-sizing: border-box;
-    padding: 0 var(--feed-shell-main-pad-x);
+    padding: 0;
   }
 
   .mainGrid:not(:has([data-feed-shell='sidebar'])) :global([data-feed-shell='main']) {
-    padding: 0 var(--feed-shell-main-pad-x);
+    padding: 0;
   }
 
   /* docs/DESIGN.md .sidebar-right — 12px 24px */
   .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='sidebar']) {
     padding: 12px 24px 24px 16px;
     box-sizing: border-box;
+    /* Sticky rail: window scroll moves the feed only; sidebar pins and scrolls inside */
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+  }
+}
+
+/* Narrow desktop/tablet: fixed StickyHeader (TopBar strip) sits above content */
+@media (min-width: 640px) and (max-width: 899px) {
+  .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='sidebar']) {
+    top: calc(5rem + env(safe-area-inset-top, 0px));
+    max-height: calc(100vh - 5rem - env(safe-area-inset-top, 0px));
+    max-height: calc(100dvh - 5rem - env(safe-area-inset-top, 0px));
   }
 }
 
 @media (min-width: 900px) {
-  .leftRailFixed {
+  .leftRailSticky {
     display: flex;
     flex-direction: column;
   }

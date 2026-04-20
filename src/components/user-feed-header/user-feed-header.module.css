@@ -16,8 +16,8 @@
 
 .headerShell {
   margin: 0;
-  padding-left: var(--header-pad-x, 1rem);
-  padding-right: var(--header-pad-x, 1rem);
+  padding-left: var(--header-chrome-pad-x, 1rem);
+  padding-right: var(--header-chrome-pad-x, 1rem);
   border-bottom: none;
 }
 
@@ -26,8 +26,8 @@
     margin-left: 0;
     margin-right: 0;
     width: 100%;
-    padding-left: var(--header-pad-x, 1rem);
-    padding-right: var(--header-pad-x, 1rem);
+    padding-left: var(--header-chrome-pad-x, 1rem);
+    padding-right: var(--header-chrome-pad-x, 1rem);
   }
 }
 
@@ -113,39 +113,48 @@
 
 .titleLink {
   flex: 1;
-  min-width: min(100%, 12rem);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
   text-decoration: none;
   color: hsl(var(--shadcn-foreground));
   font-family: var(--font-sans);
-  line-height: 1.25;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
-.titleLink:hover .userHandle,
-.titleLink:hover .displayName {
+.titleLink:hover .titlePrimary,
+.titleLink:hover .titleAddress {
   color: hsl(var(--shadcn-primary));
 }
 
-.userHandle {
-  font-weight: 800;
-  font-size: 1.125rem;
+/* Same hierarchy as CommunityFeedHeader — display name on top, u/… below */
+.titlePrimary {
+  font-weight: 700;
+  font-size: 1.25rem;
   letter-spacing: -0.03em;
+  color: hsl(var(--shadcn-foreground));
 }
 
 @media (min-width: 640px) {
-  .userHandle {
-    font-size: 1.25rem;
+  .titlePrimary {
+    font-size: 1.5rem;
+    line-height: 1.25;
   }
 }
 
-.displayName {
-  font-weight: 600;
-  font-size: 1.0625rem;
+.titleAddress {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: -0.01em;
   color: hsl(var(--shadcn-muted-foreground));
 }
 
 @media (min-width: 640px) {
-  .displayName {
-    font-size: 1.125rem;
+  .titleAddress {
+    font-size: 0.875rem;
   }
 }
 
@@ -153,6 +162,109 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
+  gap: 0.25rem;
+}
+
+/* ⋮ overflow — aligned with CommunityFeedHeader join slot */
+.overflowButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: hsl(var(--shadcn-foreground));
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .overflowButton:hover {
+    background-color: hsl(var(--shadcn-accent) / 0.45);
+    color: hsl(var(--shadcn-foreground));
+  }
+}
+
+.overflowButton:focus-visible {
+  outline: 2px solid hsl(var(--shadcn-ring));
+  outline-offset: 2px;
+}
+
+.overflowIcon {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.overflowDropdown {
+  z-index: 50;
+  outline: none;
+}
+
+.overflowMenu {
+  min-width: 11rem;
+  padding: 6px;
+  border-radius: var(--shadcn-radius-control);
+  border: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-popover));
+  color: hsl(var(--shadcn-popover-foreground));
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  box-sizing: border-box;
+  box-shadow:
+    0 4px 16px -4px hsl(0 0% 0% / 0.2),
+    0 0 0 1px hsl(0 0% 100% / 0.06);
+}
+
+:global(.dark) .overflowMenu {
+  box-shadow:
+    0 4px 16px -4px hsl(0 0% 0% / 0.45),
+    0 0 0 1px hsl(0 0% 100% / 0.1);
+}
+
+.overflowMenuHint {
+  padding: 6px 12px 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: hsl(var(--shadcn-muted-foreground));
+  line-height: 1.35;
+}
+
+.overflowMenuItem {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  cursor: pointer;
+  padding: 9px 12px;
+  border: none;
+  border-radius: calc(var(--shadcn-radius-control) - 2px);
+  background: transparent;
+  color: hsl(var(--shadcn-popover-foreground));
+  font: inherit;
+  line-height: 1.35;
+  text-align: left;
+  text-transform: capitalize;
+}
+
+.overflowMenuItem:hover {
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
 }
 
 .settingsLink {
@@ -191,4 +303,20 @@
 .metaSep {
   margin: 0 0.35rem;
   opacity: 0.5;
+}
+
+.age {
+  display: block;
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 640px) {
+  .age {
+    font-size: 0.9375rem;
+  }
 }

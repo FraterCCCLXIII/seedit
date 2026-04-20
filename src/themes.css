@@ -242,17 +242,11 @@
   --page-content-max-width-narrow: 48rem;
 }
 
-/* Horizontal padding on `[data-feed-shell='main']` — keep in sync with FeedShellLayout.module.css */
+/* Horizontal inset for feed main — 0 = edge-to-edge with column borders (FeedShellLayout.module.css). */
 :root .dark,
 :root .light {
-  --feed-shell-main-pad-x: 12px;
-  /* Sticky header title row + tab row: same inset as feed main (see header.module.css, community-feed-header). */
+  --feed-shell-main-pad-x: 0px;
   --header-pad-x: var(--feed-shell-main-pad-x);
-}
-
-@media (min-width: 640px) {
-  :root .dark,
-  :root .light {
-    --feed-shell-main-pad-x: 16px;
-  }
+  /* Tab row, community strip, top bar — min ~16px; feed main column has no horizontal shell padding. */
+  --header-chrome-pad-x: max(1rem, var(--feed-shell-main-pad-x));
 }

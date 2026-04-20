@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Comment, useAccount, useAccountComment, useAccountComments, useComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
@@ -20,62 +20,8 @@ import Sidebar from '../../components/sidebar';
 import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import styles from './post-page.module.css';
+import { CommentSortDropdown } from './comment-sort-dropdown';
 import _ from 'lodash';
-
-type SortDropdownProps = {
-  sortBy: string;
-  onSortChange: (sort: string) => void;
-};
-
-const SortDropdown = ({ sortBy, onSortChange }: SortDropdownProps) => {
-  const { t } = useTranslation();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [openDropdown, setOpenDropdown] = useState(false);
-  const dropdownItems = ['best', 'new', 'old'];
-
-  const handleGlobalClick = useCallback((e: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-      setOpenDropdown(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('click', handleGlobalClick);
-    return () => document.removeEventListener('click', handleGlobalClick);
-  }, [handleGlobalClick]);
-
-  return (
-    <div className={styles.sortDropdownRow}>
-      <span className={styles.dropdownTitle}>{t('reply_sorted_by')}: </span>
-      <div
-        ref={dropdownRef}
-        className={styles.dropdown}
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpenDropdown(!openDropdown);
-        }}
-      >
-        <span className={styles.selected}>{t(sortBy)}</span>
-        {openDropdown && (
-          <div className={styles.dropdownItems}>
-            {dropdownItems.map((item) => (
-              <div
-                className={styles.dropdownItem}
-                key={item}
-                onClick={() => {
-                  setOpenDropdown(false);
-                  onSortChange(item);
-                }}
-              >
-                {t(item)}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
 
 const Post = ({ post }: { post: Comment }) => {
   const { t } = useTranslation();
@@ -127,7 +73,6 @@ const Post = ({ post }: { post: Comment }) => {
 
   const isSingleComment = post?.parentCid ? true : false;
 
-  const commentCount = replyCount === 0 ? t('no_comments') : replyCount === 1 ? t('one_comment') : t('all_comments', { count: replyCount });
   const stateString = useStateString(post);
 
   const lockedState = deleted ? t('deleted') : locked ? t('locked') : removed ? t('removed') : '';
@@ -145,25 +90,12 @@ const Post = ({ post }: { post: Comment }) => {
       {timestamp && (
         <div className={styles.replyArea}>
           {!isSingleComment && (
-            <div className={styles.repliesTitle}>
-              <span className={styles.title}>
-                {replyCount !== undefined
-                  ? commentCount
-                  : state === 'failed'
-                    ? t('post_has_failed')
-                    : cid
-                      ? `${t('downloading_comments')}...`
-                      : `${t('post_is_pending')}...`}
-              </span>
-            </div>
-          )}
-          {!isSingleComment && (
             <>
-              <div className={styles.commentsSortBar}>
-                <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
-              </div>
               <div className={styles.replyComposerArea}>
                 {subplebbitAddress && cid && <ReplyForm cid={cid} subplebbitAddress={subplebbitAddress} postCid={postCid} />}
+              </div>
+              <div className={styles.commentsSortBar}>
+                <CommentSortDropdown sortBy={sortBy} onSortChange={setSortBy} />
               </div>
             </>
           )}

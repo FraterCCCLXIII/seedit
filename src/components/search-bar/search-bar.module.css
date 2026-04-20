@@ -1,4 +1,4 @@
-/* docs/DESIGN.md — Search box + sidebar search modes */
+/* docs/DESIGN.md — Search box (suggestions portal attaches via Floating UI) */
 
 .searchBarWrapper {
   position: relative;
@@ -11,7 +11,8 @@
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  min-height: 44px;
+  /* Match `ui/select` and header row controls (36px) */
+  min-height: 36px;
   align-items: stretch;
   overflow: hidden;
   border-radius: var(--shadcn-radius-control);
@@ -50,8 +51,8 @@
   flex: 1 1 auto;
   min-width: 0;
   width: 100%;
-  height: 44px;
-  min-height: 44px;
+  height: 36px;
+  min-height: 36px;
   box-sizing: border-box;
   margin: 0;
   padding: 0 8px 0 16px;
@@ -85,9 +86,9 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  min-width: 44px;
-  height: 44px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
   margin: 0;
   padding: 0;
   border: none;
@@ -110,33 +111,114 @@
   outline-offset: 0;
 }
 
-/* Mode toggles — same control radius as search field */
-.searchModes {
-  margin-top: 12px;
-  padding: 4px 0;
-  border-radius: var(--shadcn-radius-control);
-  border: 1px solid hsl(var(--shadcn-border) / 0.85);
-  background-color: hsl(var(--shadcn-card) / 0.65);
-  box-sizing: border-box;
+.searchSubmitIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
 }
 
-:global(.dark) .searchModes {
-  background-color: rgba(22, 24, 28, 0.65);
-}
-
-.searchModesInner {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-}
-
-.searchScopeLabel {
+/* Portaled suggestions: match full search control width (Floating UI size middleware) */
+.suggestionsList {
+  z-index: 9999;
+  max-height: min(18rem, 70vh);
   margin: 0;
-  font-size: 13px;
+  padding: 4px;
+  list-style: none;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--shadcn-muted-foreground) / 0.45) transparent;
+  border-radius: var(--shadcn-radius-control);
+  border: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-popover));
+  color: hsl(var(--shadcn-popover-foreground));
+  box-shadow:
+    0 4px 16px -4px hsl(0 0% 0% / 0.2),
+    0 0 0 1px hsl(0 0% 100% / 0.08);
+}
+
+:global(.dark) .suggestionsList {
+  box-shadow:
+    0 4px 16px -4px hsl(0 0% 0% / 0.45),
+    0 0 0 1px hsl(0 0% 100% / 0.12);
+}
+
+.suggestionsList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.suggestionsList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.suggestionsList::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--shadcn-muted-foreground) / 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.suggestionsList::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--shadcn-muted-foreground) / 0.55);
+}
+
+.suggestionItem {
+  cursor: pointer;
+  border-radius: var(--shadcn-radius-control);
+  padding: 8px;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  outline: none;
+}
+
+.suggestionItem:hover {
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
+}
+
+.suggestionItemActive {
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
+}
+
+.suggestionPrimary {
   font-weight: 500;
-  line-height: 18px;
+  color: hsl(var(--shadcn-foreground));
+}
+
+.suggestionKind,
+.suggestionSep {
   color: hsl(var(--shadcn-muted-foreground));
+}
+
+.suggestionSep {
+  margin: 0 0.25rem;
+}
+
+.suggestionSecondary {
+  margin-top: 0.125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.suggestionItem:hover .suggestionPrimary,
+.suggestionItemActive .suggestionPrimary {
+  color: hsl(var(--shadcn-accent-foreground));
+}
+
+.suggestionItem:hover .suggestionKind,
+.suggestionItem:hover .suggestionSep,
+.suggestionItemActive .suggestionKind,
+.suggestionItemActive .suggestionSep,
+.suggestionItem:hover .suggestionSecondary,
+.suggestionItemActive .suggestionSecondary {
+  color: hsl(var(--shadcn-accent-foreground) / 0.88);
 }
 
 @media (max-width: 639px) {

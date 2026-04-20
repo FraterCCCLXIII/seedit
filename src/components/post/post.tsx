@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { Comment, useAuthorAddress, useBlock, useComment, useEditedComment, useSubplebbit, useSubscribe } from '@bitsocialnet/bitsocial-react-hooks';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Comment,
+  useAuthorAddress,
+  useAuthorAvatar,
+  useBlock,
+  useComment,
+  useEditedComment,
+  useSubplebbit,
+  useSubscribe,
+} from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import { getPostScore, formatScore } from '../../lib/utils/post-utils';
 import { getFormattedTimeAgo, formatLocalizedUTCTimestamp } from '../../lib/utils/time-utils';
@@ -12,6 +21,7 @@ import { useCommentMediaInfo } from '../../hooks/use-comment-media-info';
 import useDownvote from '../../hooks/use-downvote';
 import { useIsNsfwSubplebbit } from '../../hooks/use-is-nsfw-subplebbit';
 import useUpvote from '../../hooks/use-upvote';
+import useContentOptionsStore from '../../stores/use-content-options-store';
 import CommentEditForm from '../comment-edit-form';
 import SubscribeButton from '../subscribe-button';
 import Expando from './expando';
@@ -142,6 +152,7 @@ const Post = ({ index, post = {} }: PostProps) => {
   const postDate = formatLocalizedUTCTimestamp(timestamp, language);
   const params = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const subplebbit = useSubplebbit({ subplebbitAddress, onlyIfCached: true });
 
   const authorRole = subplebbit?.roles?.[post.author?.address]?.role;
@@ -196,17 +207,51 @@ const Post = ({ index, post = {} }: PostProps) => {
     }
   };
 
-  const [communityAvatarFailed, setCommunityAvatarFailed] = useState(false);
+  const postPermalink =
+    cid && subplebbitAddress
+      ? `/s/${subplebbitAddress}/c/${cid}`
+      : post?.index != null
+        ? `/profile/${post.index}`
+        : null;
+
+  const isPostRowNavEnabled =
+    Boolean(postPermalink) && !isInPostPageView && !(blocked && !isInProfileHiddenView) && !isEditing;
+
+  const handlePostRowClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPostRowNavEnabled || !postPermalink) return;
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    if (
+      target.closest(
+        'a, button, input, textarea, select, summary, label, video, audio, iframe, [role="button"], [role="menuitem"]',
+      )
+    ) {
+      return;
+    }
+    navigate(postPermalink);
+    handlePostClick();
+  };
+
+  const hideAvatars = useContentOptionsStore((s) => s.hideAvatars);
+  const { imageUrl: authorAvatarUrl } = useAuthorAvatar({ author });
+  const [authorAvatarFailed, setAuthorAvatarFailed] = useState(false);
 
   const communityShort = subplebbit?.shortAddress || (subplebbitAddress ? Plebbit.getShortAddress({ address: subplebbitAddress }) : '');
-  const communityAvatarUrl = subplebbit?.suggested?.avatarUrl;
 
   useEffect(() => {
-    setCommunityAvatarFailed(false);
-  }, [subplebbitAddress, communityAvatarUrl]);
+    setAuthorAvatarFailed(false);
+  }, [author?.address, authorAvatarUrl]);
+
+  const showAuthorAvatar = Boolean(!hideAvatars && authorAvatarUrl && !authorAvatarFailed);
+
+  const avatarProfileHref =
+    cid && author?.address ? `/u/${author.address}/c/${cid}` : post?.index != null ? `/profile/${post.index}` : `/s/${subplebbitAddress}`;
+
+  const showFeedRowHover = !isInPostPageView && !(blocked && !isInProfileHiddenView);
 
   return (
-    <div className={styles.content} key={index}>
+    <div className={cn(styles.content, showFeedRowHover && styles.contentInFeed, isInPostPageView && styles.contentPostPage)} key={index}>
       <div className={isLastClicked ? styles.lastClicked : ''}>
         <div className={`${styles.hiddenPost} ${blocked && !isInProfileHiddenView ? styles.visible : styles.hidden}`}>
           <div className={styles.hiddenPostText}>{t('post_hidden').charAt(0).toUpperCase() + t('post_hidden').slice(1)}</div>
@@ -215,18 +260,18 @@ const Post = ({ index, post = {} }: PostProps) => {
           </div>
         </div>
         <div className={`${styles.container} ${blocked && !isInProfileHiddenView ? styles.hidden : styles.visible}`}>
-          <div className={styles.row}>
-            <Link to={`/s/${subplebbitAddress}`} className={styles.avatarColumn}>
-              {communityAvatarUrl && !communityAvatarFailed ? (
+          <div className={`${styles.row} ${isPostRowNavEnabled ? styles.rowClickable : ''}`} onClick={handlePostRowClick}>
+            <Link to={avatarProfileHref} className={styles.avatarColumn}>
+              {showAuthorAvatar ? (
                 <img
-                  src={communityAvatarUrl}
+                  src={authorAvatarUrl}
                   alt=''
                   className={styles.avatarImg}
-                  onError={() => setCommunityAvatarFailed(true)}
+                  onError={() => setAuthorAvatarFailed(true)}
                 />
               ) : (
                 <span className={styles.avatarFallback} aria-hidden>
-                  {(communityShort || '?').slice(0, 1).toUpperCase()}
+                  <PixelIcon glyph='user' className={styles.avatarUserIcon} />
                 </span>
               )}
             </Link>
@@ -276,34 +321,36 @@ const Post = ({ index, post = {} }: PostProps) => {
                   )}
                   {pinned && <span className={styles.pinnedBadge}> · {t('announcement')}</span>}
                 </div>
-                <p className={styles.title}>
-                  {isInPostPageView && link ? (
-                    <a href={link} className={linkClass} target='_blank' rel='noopener noreferrer' onClick={handlePostClick}>
-                      {displayedTitle}
-                    </a>
-                  ) : (
-                    <Link className={linkClass} to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${post?.index}`} onClick={handlePostClick}>
-                      {displayedTitle}
-                    </Link>
-                  )}
-                  {flair && (
-                    <>
-                      {' '}
-                      <Flair flair={flair} />
-                    </>
-                  )}{' '}
-                  <span className={styles.domain}>
-                    (
-                    {hostname ? (
-                      <Link to={`/domain/${hostname}`}>{hostname.length > 25 ? hostname.slice(0, 25) + '...' : hostname}</Link>
+                <div className={styles.titleStack}>
+                  <p className={styles.title}>
+                    {isInPostPageView && link ? (
+                      <a href={link} className={linkClass} target='_blank' rel='noopener noreferrer' onClick={handlePostClick}>
+                        {displayedTitle}
+                      </a>
                     ) : (
-                      <Link to={`/s/${subplebbitAddress}`}>
-                        self.{subplebbit?.shortAddress || (subplebbitAddress && Plebbit.getShortAddress({ address: subplebbitAddress }))}
+                      <Link className={linkClass} to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${post?.index}`} onClick={handlePostClick}>
+                        {displayedTitle}
                       </Link>
                     )}
-                    )
-                  </span>
-                </p>
+                    {flair && (
+                      <>
+                        {' '}
+                        <Flair flair={flair} />
+                      </>
+                    )}
+                  </p>
+                  <div className={styles.postSourceLine}>
+                    <span className={styles.domain}>
+                      {hostname ? (
+                        <Link to={`/domain/${hostname}`}>{hostname.length > 25 ? hostname.slice(0, 25) + '...' : hostname}</Link>
+                      ) : (
+                        <Link to={`/s/${subplebbitAddress}`}>
+                          self.{subplebbit?.shortAddress || (subplebbitAddress && Plebbit.getShortAddress({ address: subplebbitAddress }))}
+                        </Link>
+                      )}
+                    </span>
+                  </div>
+                </div>
               </div>
               {!(!content && !link) && (
                 <>

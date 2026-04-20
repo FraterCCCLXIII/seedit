@@ -1,35 +1,55 @@
-import type { ComponentPropsWithoutRef } from 'react';
+import type { ComponentProps } from 'react';
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowUp,
+  Check,
+  ChevronDown,
+  MessageCircle,
+  Settings,
+  Mail,
+  Globe,
+  Home,
+  Pencil,
+  Search,
+  Share2,
+  X,
+  Trash2,
+  User,
+  Users,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-/**
- * Glyph names map to classes from [@hackernoon/pixel-icon-library](https://github.com/hackernoon/pixel-icon-library).
- * Requires `iconfont.css` (imported once in `src/index.tsx`).
- */
-export const PIXEL_ICON_GLYPHS = {
-  'arrow-down': 'hn-arrow-down',
-  'arrow-left': 'hn-arrow-left',
-  'arrow-up': 'hn-arrow-up',
-  check: 'hn-check',
-  'chevron-down': 'hn-chevron-down',
-  'comment-dots': 'hn-comment-dots',
-  cog: 'hn-cog',
-  envelope: 'hn-envelope',
-  globe: 'hn-globe',
-  home: 'hn-home',
-  pencil: 'hn-pencil',
-  search: 'hn-search',
-  times: 'hn-times',
-  trash: 'hn-trash',
-  user: 'hn-user',
-  users: 'hn-users',
+const GLYPH_ICONS = {
+  'arrow-down': ArrowDown,
+  'arrow-left': ArrowLeft,
+  'arrow-up': ArrowUp,
+  check: Check,
+  'chevron-down': ChevronDown,
+  'comment-dots': MessageCircle,
+  cog: Settings,
+  envelope: Mail,
+  globe: Globe,
+  home: Home,
+  pencil: Pencil,
+  search: Search,
+  share: Share2,
+  times: X,
+  trash: Trash2,
+  user: User,
+  users: Users,
 } as const;
 
-export type PixelIconGlyph = keyof typeof PIXEL_ICON_GLYPHS;
+export type PixelIconGlyph = keyof typeof GLYPH_ICONS;
 
-export type PixelIconProps = {
-  glyph: PixelIconGlyph;
-} & ComponentPropsWithoutRef<'i'>;
+type GlyphIconProps = ComponentProps<(typeof GLYPH_ICONS)[PixelIconGlyph]>;
 
-export function PixelIcon({ glyph, className, ...rest }: PixelIconProps) {
-  return <i className={cn('hn', PIXEL_ICON_GLYPHS[glyph], className)} {...rest} />;
+export type PixelIconProps = { glyph: PixelIconGlyph } & GlyphIconProps;
+
+/**
+ * Renders a Lucide icon. The `PixelIcon` name is legacy; prefer importing from `lucide-react` in new code.
+ */
+export function PixelIcon({ glyph, className, strokeWidth = 2, ...rest }: PixelIconProps) {
+  const Icon = GLYPH_ICONS[glyph];
+  return <Icon className={cn('shrink-0', className)} strokeWidth={strokeWidth} {...rest} />;
 }

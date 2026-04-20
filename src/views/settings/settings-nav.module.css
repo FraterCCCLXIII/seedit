@@ -32,13 +32,24 @@
     max-width: 14rem;
     padding-inline: 0;
   }
+
+  /* Full-width hit targets; radius matches FeedNavRail .navItem (docs/DESIGN.md) */
+  .list li {
+    display: flex;
+    width: 100%;
+  }
+
+  .link {
+    width: 100%;
+  }
 }
 
 .link {
   display: inline-flex;
   align-items: center;
   padding: 0.625rem 0.875rem;
-  border-radius: 9999px;
+  border-radius: var(--shadcn-radius-control);
+  box-sizing: border-box;
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.33;
@@ -59,5 +70,10 @@
 
 .linkActive {
   font-weight: 400;
+  background-color: hsl(var(--shadcn-accent) / 0.55);
+}
+
+/* .link:hover wins over .linkActive alone; keep active fill while hovered */
+.linkActive:hover {
   background-color: hsl(var(--shadcn-accent) / 0.55);
 }

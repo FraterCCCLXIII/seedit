@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { mergeFeedShellRouteParams } from '../../lib/utils/feed-shell-route-params';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useBlock, Role, Subplebbit, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
@@ -17,6 +18,7 @@ import {
   isSubplebbitSettingsView,
   isSubplebbitsView,
   isSubplebbitView,
+  type ParamsType,
 } from '../../lib/utils/view-utils';
 import useIsMobile from '../../hooks/use-is-mobile';
 import useWindowWidth from '../../hooks/use-window-width';
@@ -24,6 +26,7 @@ import { useSubmitPostRoute } from '../../hooks/use-submit-post-route';
 import { FAQ } from '../../views/about/about';
 import Markdown from '../markdown';
 import SearchBar from '../search-bar';
+import CreateCommunityModal from '../create-community-modal';
 import { Version } from '../version';
 import styles from './sidebar.module.css';
 
@@ -137,7 +140,8 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const { address, createdAt, description, roles, rules, title } = subplebbit || {};
 
   const location = useLocation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInAllView = isAllView(location.pathname);
   const isInDomainView = isDomainView(location.pathname);
   const isInHomeAboutView = isHomeAboutView(location.pathname);
@@ -146,6 +150,7 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const isInModView = isModView(location.pathname);
   const isInSubplebbitsView = isSubplebbitsView(location.pathname);
   const isInSubplebbitAboutView = isSubplebbitAboutView(location.pathname, params);
+  const isInSubplebbitView = isSubplebbitView(location.pathname, params);
 
   const { submitRoute } = useSubmitPostRoute(address || params?.subplebbitAddress);
   /** Left feed rail (≥900px) hosts submit under Settings; keep CTA in sidebar when the rail is hidden. */
@@ -183,17 +188,15 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
 
   const isConnectedToRpc = usePlebbitRpcSettings()?.state === 'connected';
   const navigate = useNavigate();
-  const handleCreateCommunity = () => {
-    // creating a community only works if the user is running a full node
-    if (isConnectedToRpc) {
-      navigate('/communities/create');
-    } else if (window.confirm(t('create_community_warning'))) {
-      const link = document.createElement('a');
-      link.href = 'https://github.com/bitsocialhq/seedit/releases/latest';
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.click();
-    }
+  const [createCommunityModalOpen, setCreateCommunityModalOpen] = useState(false);
+
+  const handleCreateCommunityClick = () => {
+    setCreateCommunityModalOpen(true);
+  };
+
+  const handleContinueCreateCommunity = () => {
+    setCreateCommunityModalOpen(false);
+    navigate('/communities/create');
   };
 
   const isMobile = useIsMobile();
@@ -224,9 +227,11 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
               {t('submit_community')}
             </a>
           )}
-          <button type='button' className={cn(styles.ctaBase, styles.ctaOutline)} onClick={handleCreateCommunity}>
-            {t('create_your_community')}
-          </button>
+          {!isInSubplebbitView ? (
+            <button type='button' className={cn(styles.ctaBase, styles.ctaOutline)} onClick={handleCreateCommunityClick}>
+              {t('create_your_community')}
+            </button>
+          ) : null}
         </div>
         {!isInHomeView &&
           !isInHomeAboutView &&
@@ -293,8 +298,21 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
             <Link to={`/s/${address}/settings`}>{t('community_settings')}</Link>
           </div>
         )}
+        {isInSubplebbitView ? (
+          <div className={styles.ctaStackBottom}>
+            <button type='button' className={cn(styles.ctaBase, styles.ctaOutline)} onClick={handleCreateCommunityClick}>
+              {t('create_your_community')}
+            </button>
+          </div>
+        ) : null}
         {isMobile && isInHomeAboutView && <FAQ />}
       </div>
+      <CreateCommunityModal
+        open={createCommunityModalOpen}
+        onClose={() => setCreateCommunityModalOpen(false)}
+        isConnectedToRpc={isConnectedToRpc}
+        onContinueToCreate={handleContinueCreateCommunity}
+      />
     </div>
   );
 };

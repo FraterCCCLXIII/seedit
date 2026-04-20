@@ -16,28 +16,28 @@
   box-shadow: none;
 }
 
-/* Inside scrollable main column: cancel shell pad; no extra horizontal inset */
+/* Inside scrollable main column: main has no horizontal shell padding */
 .headerFeed {
-  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
-  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-left: 0;
+  margin-right: 0;
   padding-left: 0;
   padding-right: 0;
 }
 
-/* Sticky shell: align horizontal inset with tab row (--header-pad-x from parent .header). No bottom rule — .tabMenuRow border-top is the single divider. */
+/* Shell placement: align horizontal inset with tab row (`--header-chrome-pad-x`). No bottom rule — .tabMenuRow border-top is the single divider. */
 .headerShell {
   margin: 0;
-  padding-left: var(--header-pad-x, 1rem);
-  padding-right: var(--header-pad-x, 1rem);
+  padding-left: var(--header-chrome-pad-x, 1rem);
+  padding-right: var(--header-chrome-pad-x, 1rem);
   border-bottom: none;
   /* Space between avatar and body matches horizontal padding */
-  column-gap: var(--header-pad-x, 1rem);
+  column-gap: var(--header-chrome-pad-x, 1rem);
   min-width: 0;
   box-sizing: border-box;
 }
 
 .headerShell .titleRow {
-  column-gap: var(--header-pad-x, 1rem);
+  column-gap: var(--header-chrome-pad-x, 1rem);
   align-items: flex-start;
   min-width: 0;
   width: 100%;
@@ -48,8 +48,8 @@
     margin-left: 0;
     margin-right: 0;
     width: 100%;
-    padding-left: var(--header-pad-x, 1rem);
-    padding-right: var(--header-pad-x, 1rem);
+    padding-left: var(--header-chrome-pad-x, 1rem);
+    padding-right: var(--header-chrome-pad-x, 1rem);
   }
 }
 
@@ -62,11 +62,11 @@
 
   /* Keep shell horizontal gaps tied to padding (overrides .header gap shorthand column-gap). */
   .headerShell {
-    column-gap: var(--header-pad-x);
+    column-gap: var(--header-chrome-pad-x);
   }
 
   .headerShell .titleRow {
-    column-gap: var(--header-pad-x);
+    column-gap: var(--header-chrome-pad-x);
   }
 }
 

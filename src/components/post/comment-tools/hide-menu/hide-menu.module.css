@@ -1,42 +1,121 @@
-/* Hover + padding come from parent `.buttons > li` (comment-tools.module.css). */
-.button {
-  /* class hooks floating-ui ref + a11y; keep display so layout matches siblings */
+/* Overflow ⋮ — sits in `.buttons` row like other tools (comment-tools.module.css) */
+.overflowLi {
   display: inline-flex;
   align-items: center;
+  list-style: none;
 }
 
-.modal {
-  z-index: 7;
-  background-color: var(--background);
-  border: 1px solid var(--border-text);
+.profileHiddenItem {
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+}
+
+.kebabButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .kebabButton:hover:not(:disabled) {
+    background-color: hsl(var(--shadcn-accent) / 0.45);
+    color: hsl(var(--shadcn-foreground));
+  }
+}
+
+.kebabButton:focus-visible {
+  outline: 2px solid hsl(var(--shadcn-ring));
+  outline-offset: 2px;
+}
+
+.kebabButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.kebabIcon {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.dropdown {
+  z-index: 50;
   outline: none;
-  font-size: 12px;
+}
+
+.menu {
+  min-width: 11rem;
+  padding: 6px;
+  border-radius: var(--shadcn-radius-control);
+  border: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-popover));
+  color: hsl(var(--shadcn-popover-foreground));
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  box-sizing: border-box;
+  box-shadow:
+    0 4px 16px -4px hsl(0 0% 0% / 0.2),
+    0 0 0 1px hsl(0 0% 100% / 0.06);
+}
+
+:global(.dark) .menu {
+  box-shadow:
+    0 4px 16px -4px hsl(0 0% 0% / 0.45),
+    0 0 0 1px hsl(0 0% 100% / 0.1);
 }
 
 .menuItem {
-  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
   cursor: pointer;
-  padding: 2px 3px 1px 3px;
-  display: block;
-}
-
-.menuItem a {
-  color: var(--text-primary);
-  text-decoration: none;
+  padding: 9px 12px;
+  border: none;
+  border-radius: calc(var(--shadcn-radius-control) - 2px);
+  background: transparent;
+  color: hsl(var(--shadcn-popover-foreground));
+  font: inherit;
+  line-height: 1.35;
+  text-align: left;
+  text-transform: capitalize;
 }
 
 .menuItem:hover {
-  background-color: var(--background-primary);
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
 }
 
-@media (min-width: 640px) {
-  .reportButton {
-    display: none;
-  }
+.menuItem[aria-disabled='true'] {
+  cursor: default;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
-@media (max-width: 640px) {
-  .reportButton {
-    display: block;
-  }
+.menuItem a {
+  color: inherit;
+  text-decoration: none;
 }

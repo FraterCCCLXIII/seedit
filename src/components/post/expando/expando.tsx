@@ -67,7 +67,9 @@ const Expando = ({
   if (commentMediaInfo?.type === 'image' || commentMediaInfo?.type === 'gif') {
     mediaComponent = <img src={commentMediaInfo.url} alt='' />;
   } else if (commentMediaInfo?.type === 'video' && expanded) {
-    mediaComponent = <video src={`${commentMediaInfo.url}#t=0.001`} controls autoPlay={autoplayVideosOnComments} muted={muteVideosOnComments} />;
+    /* Setting applies to comment/reply expandos only — not feed or OP body (avoids scroll autoplay). */
+    const autoPlayVideo = Boolean(isReply && autoplayVideosOnComments);
+    mediaComponent = <video src={`${commentMediaInfo.url}#t=0.001`} controls autoPlay={autoPlayVideo} muted={muteVideosOnComments} />;
   } else if (commentMediaInfo?.type === 'webpage' && commentMediaInfo?.thumbnail) {
     mediaComponent = <img src={commentMediaInfo.thumbnail} alt='' />;
   } else if (commentMediaInfo?.type === 'audio' && expanded) {
@@ -84,13 +86,42 @@ const Expando = ({
   return (
     <div className={expanded ? styles.expando : styles.expandoHidden}>
       {link && !removed && commentMediaInfo?.type !== 'webpage' && (
-        <div className={`${styles.mediaPreview} ${isReply ? styles.mediaPreviewReply : ''}`} onClick={() => setHideContent(false)}>
+        <div
+          className={`${styles.mediaPreview} ${isReply ? styles.mediaPreviewReply : ''}`}
+          onClick={(e) => {
+            const t = e.target as HTMLElement;
+            if (t.closest('a')) return;
+            setHideContent(false);
+            e.stopPropagation();
+          }}
+        >
           {((nsfw && blurNsfwThumbnails && !isNsfwSubplebbit) || spoiler) && hideContent && link && commentMediaInfo?.type !== 'webpage' && !(deleted || removed) && (
             <>
               <div className={styles.blurContent} />
-              <span className={styles.unblurButton}>{nsfw && spoiler ? t('see_nsfw_spoiler') : spoiler ? t('view_spoiler') : nsfw ? t('see_nsfw') : ''}</span>
+              <span
+                className={styles.unblurButton}
+                role='button'
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key !== 'Enter' && e.key !== ' ') return;
+                  e.preventDefault();
+                  setHideContent(false);
+                }}
+              >
+                {nsfw && spoiler ? t('see_nsfw_spoiler') : spoiler ? t('view_spoiler') : nsfw ? t('see_nsfw') : ''}
+              </span>
               {nsfw && (
-                <span className={styles.alwaysShowNsfwButton} onClick={handleAlwaysShowNsfw}>
+                <span
+                  className={styles.alwaysShowNsfwButton}
+                  role='button'
+                  tabIndex={0}
+                  onClick={handleAlwaysShowNsfw}
+                  onKeyDown={(e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    e.preventDefault();
+                    handleAlwaysShowNsfw();
+                  }}
+                >
                   {t('always_show_nsfw')}
                 </span>
               )}

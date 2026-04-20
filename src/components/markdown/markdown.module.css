@@ -70,8 +70,14 @@
   text-decoration: underline;
 }
 
+/* Body copy: secondary grey (dark grey light mode / light grey dark mode — shadcn muted-foreground) */
 .markdown p {
   margin-bottom: 5px;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.markdown blockquote p {
+  color: inherit;
 }
 
 .markdown pre, .markdown code:not(pre code) {

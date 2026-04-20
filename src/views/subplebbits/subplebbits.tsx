@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Subplebbit as SubplebbitType, useAccount, useAccountSubplebbits, useSubplebbits, useSubplebbitStats } from '@bitsocialnet/bitsocial-react-hooks';
@@ -119,6 +119,11 @@ const Subplebbit = ({ subplebbit, tags, isUnsubscribed, onUnsubscribe }: Subpleb
   const isNsfw = tags?.some((tag) => nsfwTags.includes(tag));
   const communityPath = `/s/${address}`;
   const displayAddress = address?.includes('.') ? address : shortAddress;
+  const hasBadgeRow =
+    Boolean(userRole || isUserOwner) ||
+    isNsfw ||
+    (isOffline && !isOnlineStatusLoading) ||
+    Boolean(tags && tags.length > 0);
 
   const isMobile = useIsMobile();
   const descriptionText =
@@ -137,7 +142,7 @@ const Subplebbit = ({ subplebbit, tags, isUnsubscribed, onUnsubscribe }: Subpleb
         <Link
           className={styles.rowHitArea}
           to={communityPath}
-          aria-label={`${t('go_to_a_community')}: s/${displayAddress}${title ? ` — ${title}` : ''}`}
+          aria-label={`${t('go_to_a_community')}: ${title ? `${title}, s/${displayAddress}` : `s/${displayAddress}`}`}
         />
         <div className={styles.rowMainBody}>
           <div className={styles.leftcol}>
@@ -162,44 +167,48 @@ const Subplebbit = ({ subplebbit, tags, isUnsubscribed, onUnsubscribe }: Subpleb
             </div>
           </div>
           <div className={styles.entry}>
-            <div className={styles.title}>
-              <div className={styles.titleWrapper}>
-                <span className={styles.titlePrimary}>
-                  s/{displayAddress}
-                  {title && `: ${title}`}
-                </span>
-              </div>
+            <div className={styles.titleBlock}>
+              {title ? (
+                <>
+                  <span className={styles.titlePrimary}>{title}</span>
+                  <span className={styles.titleAddress}>s/{displayAddress}</span>
+                </>
+              ) : (
+                <span className={styles.titlePrimary}>s/{displayAddress}</span>
+              )}
             </div>
             <div className={styles.tagline}>
               {t('members_count', { count: allActiveUserCount })}, {t('community_for', { date: getFormattedTimeDuration(createdAt) })}
-              <div className={styles.taglineSecondLine}>
-              {(userRole || isUserOwner) && (
-                <Link to={`/s/${address}/settings`}>
-                  <span className={`${styles.moderatorIcon} ${isNsfw ? styles.addMarginRight : ''}`} title={userRole || 'owner'} />
-                </Link>
-              )}
-              {isNsfw && (
-                <Link to={getTagFilterRoute('nsfw')}>
-                  <span className={styles.over18icon} title='Filter NSFW communities' />
-                </Link>
-              )}
-              {isOffline && !isOnlineStatusLoading && <Label color='red' title={offlineTitle} text={t('offline')} />}
-              {tags && tags.length > 0 && (
-                <span className={styles.tags}>
-                  {tags.map((tag, index) => (
-                    <Fragment key={index}>
-                      <Link to={getTagFilterRoute(tag)}>{tag}</Link>
-                    </Fragment>
-                  ))}
-                </span>
-              )}
-              </div>
             </div>
             {description && (
               <div className={styles.description}>
                 <Markdown content={descriptionText} />
               </div>
             )}
+            {hasBadgeRow ? (
+              <div className={styles.badgeRow}>
+                {(userRole || isUserOwner) && (
+                  <Link to={`/s/${address}/settings`} className={styles.badgeRowIconLink}>
+                    <span className={styles.moderatorIcon} title={userRole || 'owner'} />
+                  </Link>
+                )}
+                {isNsfw && (
+                  <Link to={getTagFilterRoute('nsfw')} className={styles.badgeRowIconLink}>
+                    <span className={styles.over18icon} title='Filter NSFW communities' />
+                  </Link>
+                )}
+                {isOffline && !isOnlineStatusLoading && <Label color='red' title={offlineTitle} text={t('offline')} />}
+                {tags && tags.length > 0 && (
+                  <div className={styles.tagBadgeList}>
+                    {tags.map((tag) => (
+                      <Link key={tag} to={getTagFilterRoute(tag)} className={styles.tagBadge}>
+                        {tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : null}
           </div>
         </div>
         <div className={styles.joinSlot}>

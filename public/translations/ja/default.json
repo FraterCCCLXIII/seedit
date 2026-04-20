@@ -425,5 +425,12 @@
   "challenge_add_exclude_group": "Add group",
   "challenge_show_group_settings": "Show group settings",
   "challenge_hide_group_settings": "Hide group settings",
-  "online_count_inline": "{{online}} Online"
+  "online_count_inline": "{{online}} Online",
+  "create_community_modal_connected_hint": "Your full node is connected. You can continue to create a community.",
+  "create_community_open_downloads": "Open download page",
+  "post_more_menu": "More actions",
+  "permalink": "permalink",
+  "reply_form_comment": "Comment",
+  "engagement_tooltip_comments": "Open discussion",
+  "engagement_tooltip_share": "Copy link to clipboard"
 }

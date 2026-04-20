@@ -21,45 +21,6 @@
   margin-bottom: 5px;
 }
 
-.midcol {
-  visibility: visible;
-  width: 15px;
-  float: left;
-  margin-right: 7px;
-  margin-left: 7px;
-  background: transparent;
-  overflow: hidden;
-}
-
-.arrow {
-  width: 15px;
-  height: 14px;
-  display: block;
-  cursor: pointer;
-  margin: 2px 0px 0px 0px;
-  display: block;
-  cursor: pointer;
-  margin-left: auto;
-  margin-right: auto;
-  outline: none;
-}
-
-.arrowUp {
-  background-image: url("/assets/buttons/arrow-up.png");
-}
-
-.upvoted {
-  background-image: url("/assets/buttons/arrow-upvoted.png") !important;
-}
-
-.arrowDown {
-  background-image: url("/assets/buttons/arrow-down.png");
-}
-
-.downvoted {
-  background-image: url("/assets/buttons/arrow-downvoted.png") !important;
-}
-
 .entry {
   overflow: hidden;
   margin-left: 3px;
@@ -188,18 +149,17 @@
   text-transform: lowercase;
 }
 
-.hiddenMidcol {
-  visibility: hidden !important;
-}
-
 .usertext a {
   color: var(--text);
   text-decoration: none;
 }
 
 .stateLabel {
-  height: 0;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  vertical-align: middle;
 }
 
 .moderatorBrackets {

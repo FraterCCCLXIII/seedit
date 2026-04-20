@@ -6,7 +6,7 @@
   align-items: center;
   gap: 8px 12px;
   min-height: var(--header-tab-row-height);
-  padding: 0 var(--header-pad-x);
+  padding: 0 var(--header-chrome-pad-x);
   width: 100%;
   box-sizing: border-box;
 }

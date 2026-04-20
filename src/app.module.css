@@ -7,8 +7,10 @@
   line-height: 1.5;
   z-index: 1;
   min-height: 100%;
-  overflow-y: hidden;
-  overflow-x: hidden;
+  /* Avoid `overflow-x: hidden` here — it can trap `position: sticky` (left rail, feed sidebar).
+   * Horizontal clipping is handled on `html, body` in index.css. */
+  overflow-x: visible;
+  overflow-y: visible;
   min-height: 100vh;
   color-scheme: var(--color-scheme) !important;
 }

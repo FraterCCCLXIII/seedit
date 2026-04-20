@@ -3,7 +3,7 @@ export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 export { Checkbox } from './checkbox';
 export { Input } from './input';
 export { Label } from './label';
-export { PixelIcon, PIXEL_ICON_GLYPHS, type PixelIconGlyph, type PixelIconProps } from './pixel-icon';
+export { PixelIcon, type PixelIconGlyph, type PixelIconProps } from './pixel-icon';
 export { Radio } from './radio';
 export { Separator } from './separator';
 export { Select } from './select';

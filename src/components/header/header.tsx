@@ -1,4 +1,5 @@
 import { Link, useLocation, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useAccountComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
@@ -7,7 +8,6 @@ import { sortLabels } from '../../constants/sort-labels';
 import {
   getAboutLink,
   isAllView,
-  isAllAboutView,
   isAuthorView,
   isAuthorCommentsView,
   isAuthorSubmittedView,
@@ -50,6 +50,7 @@ import { useIsBroadlyNsfwSubplebbit } from '../../hooks/use-is-broadly-nsfw-subp
 import useTheme from '../../hooks/use-theme';
 import useWindowWidth from '../../hooks/use-window-width';
 import CommunityFeedHeader from '../community-feed-header/community-feed-header';
+import UserFeedHeader from '../user-feed-header/user-feed-header';
 import styles from './header.module.css';
 
 const AboutButton = () => {
@@ -405,13 +406,11 @@ const Header = () => {
   const accountComment = useAccountComment({ commentIndex });
 
   const isMobile = useWindowWidth() < 640;
-  const isInAllAboutView = isAllAboutView(location.pathname);
   const isInAllView = isAllView(location.pathname);
   const isInAuthorView = isAuthorView(location.pathname);
   const isInDomainView = isDomainView(location.pathname);
   const isInHomeView = isHomeView(location.pathname);
   const isInHomeAboutView = isHomeAboutView(location.pathname);
-  const isInInboxView = isInboxView(location.pathname);
   const isInModView = isModView(location.pathname);
   const isInPostPageView = isPostPageView(location.pathname, params);
   const isInPostPageAboutView = isPostPageAboutView(location.pathname, params);
@@ -423,7 +422,6 @@ const Header = () => {
   const isInSubmitView = isSubmitView(location.pathname);
   const isInSubplebbitSubmitView = isSubplebbitSubmitView(location.pathname, params);
   const isInSubplebbitSettingsView = isSubplebbitSettingsView(location.pathname, params);
-  const isInNotFoundView = useNotFoundStore((state) => state.isNotFound);
 
   const subplebbitAddress = params.subplebbitAddress;
 
@@ -447,27 +445,13 @@ const Header = () => {
     !isInPostPageAboutView &&
     !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity);
 
+  const showUserFeedHeader =
+    isInAuthorView ||
+    (isInProfileView && location.pathname !== '/profile/about' && !isPendingPostView(location.pathname, params));
+
   const hideShellSortTabs = isInPostPageView || isInPendingPostView || isInSettingsView;
   const showPostThreadBack = isInPostPageView || isInPendingPostView;
   const postThreadBackTo = isInPendingPostView ? '/profile' : subplebbitAddress ? `/s/${subplebbitAddress}` : '/';
-
-  const hasFewTabs =
-    isInPostPageView || isInSubmitView || isInSubplebbitSubmitView || isInSubplebbitSettingsView || isInSettingsView || isInInboxView || isInSettingsView;
-  const hasStickyHeader =
-    isInHomeView ||
-    isInNotFoundView ||
-    (isInSubplebbitView &&
-      !isInSubplebbitSubmitView &&
-      !isInSubplebbitSettingsView &&
-      !isInPostPageView &&
-      !isInHomeAboutView &&
-      !isInSubplebbitAboutView &&
-      !isInPostPageAboutView) ||
-    (isInProfileView && !isInHomeAboutView) ||
-    (isInAllView && !isInAllAboutView) ||
-    (isInModView && !isInHomeAboutView) ||
-    (isInDomainView && !isInHomeAboutView) ||
-    (isInAuthorView && !isInHomeAboutView);
 
   const logoIsAvatar =
     isInSubplebbitView &&
@@ -489,14 +473,18 @@ const Header = () => {
   return (
     <div className={styles.header}>
       <div
-        className={`${styles.container} ${hasFewTabs && styles.reducedHeight} ${
+        className={`${styles.container} ${
           isInSubmitView && isInSubplebbitSubmitView && !isInSubplebbitView && isMobile && styles.reduceSubmitPageHeight
-        } ${hasStickyHeader && styles.increasedHeight}`}
+        }`}
       >
-        <div className={`${styles.titleRow} ${showCommunityFeedHeader ? styles.titleRowSubplebbitFeed : ''}`}>
+        <div
+          className={`${styles.titleRow} ${showCommunityFeedHeader ? styles.titleRowSubplebbitFeed : ''} ${
+            showUserFeedHeader ? styles.titleRowUserFeed : ''
+          }`}
+        >
           {showPostThreadBack ? (
             <Link to={postThreadBackTo} className={styles.headerBackLink} aria-label={t('go_back')}>
-              <i className={`hn hn-arrow-left ${styles.headerBackIcon}`} aria-hidden />
+              <ArrowLeft className={styles.headerBackIcon} aria-hidden />
             </Link>
           ) : null}
           <div className={styles.logoContainer}>
@@ -509,7 +497,7 @@ const Header = () => {
               )}
             </Link>
           </div>
-          {!showCommunityFeedHeader && !isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
+          {!showCommunityFeedHeader && !showUserFeedHeader && !isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
             <span className={`${styles.pageName} ${!logoIsAvatar && styles.soloPageName}`}>
               <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
             </span>
@@ -523,10 +511,11 @@ const Header = () => {
         {showCommunityFeedHeader && subplebbitAddress ? (
           <CommunityFeedHeader subplebbit={subplebbit} subplebbitAddress={subplebbitAddress} placement='shell' />
         ) : null}
+        {showUserFeedHeader ? <UserFeedHeader placement='shell' /> : null}
         {!isMobile &&
           !hideShellSortTabs &&
           !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) &&
-          (showCommunityFeedHeader ? (
+          (showCommunityFeedHeader || showUserFeedHeader ? (
             <div className={styles.tabMenuRow}>
               <ul className={styles.tabMenu}>
                 <HeaderTabs />

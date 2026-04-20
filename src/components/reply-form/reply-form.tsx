@@ -199,8 +199,8 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
         )}
       </div>
       <div className={styles.bottomArea}>
-        <Button type='button' className={styles.save} onClick={onPublish}>
-          {t('save')}
+        <Button type='button' variant='neutral' className={styles.save} onClick={onPublish}>
+          {t('reply_form_comment')}
         </Button>
         {showFormattingHelp && (
           <Button type='button' variant='outline' className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!publishReplyOptions?.content}>

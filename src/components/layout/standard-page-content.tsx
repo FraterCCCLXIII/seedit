@@ -7,7 +7,7 @@ export type StandardPageContentProps = {
   /**
    * full — default page padding (top/sides/bottom).
    * narrow — centered form column max-width.
-   * feedColumn — feed lists: no top/side page inset (only shell `--feed-shell-main-pad-x` applies); keeps bottom padding.
+   * feedColumn — feed lists: `[data-feed-shell='main']` has no horizontal shell padding; keeps bottom padding.
    */
   variant?: 'full' | 'narrow' | 'feedColumn';
   /** Add vertical stack gap between direct children (flex flex-col gap-4) */

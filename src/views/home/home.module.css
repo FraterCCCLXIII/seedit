@@ -28,7 +28,7 @@
 
 @media (max-width: 639px) {
   .content {
-    padding: 7px 2px 0px 2px;
+    padding: 7px 0 0;
   }
 
   .sidebar {

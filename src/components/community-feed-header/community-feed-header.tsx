@@ -11,8 +11,8 @@ export type CommunityFeedHeaderProps = {
   subplebbit: Subplebbit | undefined;
   subplebbitAddress: string;
   /**
-   * `feed` — inside `[data-feed-shell='main']` (cancel shell horizontal pad for full-bleed divider).
-   * `shell` — inside sticky `Header` / `headerArea` (span feed column; inset matches main padding).
+   * `feed` — inside `[data-feed-shell='main']` (full-bleed divider; main has no horizontal shell padding).
+   * `shell` — inside `Header` / `headerArea` (span feed column; inset matches main padding).
    */
   placement?: 'feed' | 'shell';
 };
