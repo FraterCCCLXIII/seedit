@@ -102,31 +102,19 @@ export const Footer = () => {
         isInSubplebbitView ? styles.subplebbitFooterMargin : ''
       }`}
     >
-      <nav className={styles.footerNav}>
+      <nav className={styles.footerNav} aria-label='App links'>
         <span className={styles.footerItem}>
           <Version />
-        </span>
-        <span className={styles.footerSeparator} aria-hidden>
-          |
         </span>
         <a className={styles.footerItem} href='https://github.com/bitsocialhq/seedit' target='_blank' rel='noopener noreferrer'>
           github
         </a>
-        <span className={styles.footerSeparator} aria-hidden>
-          |
-        </span>
         <a className={styles.footerItem} href='https://t.me/bitsocialhq' target='_blank' rel='noopener noreferrer'>
           telegram
         </a>
-        <span className={styles.footerSeparator} aria-hidden>
-          |
-        </span>
         <a className={styles.footerItem} href='https://x.com/bitsocialhq' target='_blank' rel='noopener noreferrer'>
           x
         </a>
-        <span className={styles.footerSeparator} aria-hidden>
-          |
-        </span>
         <a className={styles.footerItem} href='https://bitsocial.net' target='_blank' rel='noopener noreferrer'>
           docs
         </a>
@@ -153,9 +141,10 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const isInSubplebbitView = isSubplebbitView(location.pathname, params);
 
   const { submitRoute } = useSubmitPostRoute(address || params?.subplebbitAddress);
-  /** Left feed rail (≥900px) hosts submit under Settings; keep CTA in sidebar when the rail is hidden. */
+  /** Left feed rail (≥900px) hosts submit under Settings; 640–899px use sidebar CTA. Below 640px the nav rail still has New Post — omit duplicate sidebar submit. */
   const windowWidth = useWindowWidth();
-  const showSubmitInSidebar = windowWidth < 900;
+  const isMobile = useIsMobile();
+  const showSubmitInSidebar = !isMobile && windowWidth < 900;
   /** Wide layout + subplebbit route: submit is in the rail and create-community is in ctaStackBottom — skip empty wrapper. */
   const showCtaStack = showSubmitInSidebar || isInSubplebbitsView || !isInSubplebbitView;
 
@@ -216,8 +205,6 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
     setCreateCommunityModalOpen(false);
     navigate('/communities/create');
   };
-
-  const isMobile = useIsMobile();
 
   return (
     <div className={cn(isMobile ? styles.mobileSidebar : styles.sidebar, styles.sidebarChrome, 'text-foreground')}>

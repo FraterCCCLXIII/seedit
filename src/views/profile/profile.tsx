@@ -4,7 +4,7 @@ import { HashLink } from 'react-router-hash-link';
 import { Outlet, useParams } from 'react-router-dom';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { useAccount, useAccountComments, useAccountVotes, useComment, type AccountPublicationsFilter } from '@bitsocialnet/bitsocial-react-hooks';
-import AuthorSidebar from '../../components/author-sidebar';
+import AuthorFeedSidebar from '../../components/author-feed-sidebar';
 import Post from '../../components/post';
 import Reply from '../../components/reply';
 import { StandardPageContent } from '@/components/layout';
@@ -363,7 +363,7 @@ const Profile = () => {
         </StandardPageContent>
       </div>
       <div className={styles.sidebarColumn} {...feedShellSidebarProps}>
-        <AuthorSidebar />
+        <AuthorFeedSidebar />
       </div>
     </div>
   );

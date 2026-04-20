@@ -11,6 +11,8 @@ import {
   isAuthorView,
   isAuthorCommentsView,
   isAuthorSubmittedView,
+  isAuthorAboutView,
+  isProfileAboutView,
   isCreateSubplebbitView,
   isHomeAboutView,
   isHomeView,
@@ -134,6 +136,8 @@ const AuthorHeaderTabs = () => {
   const isInAuthorView = isAuthorView(location.pathname);
   const isInAuthorCommentsView = isAuthorCommentsView(location.pathname, params);
   const isInAuthorSubmittedView = isAuthorSubmittedView(location.pathname, params);
+  const isInAuthorAboutView = isAuthorAboutView(location.pathname, params);
+  const isInProfileAboutView = isProfileAboutView(location.pathname);
   const isInProfileDownvotedView = isProfileDownvotedView(location.pathname);
   const isInProfileView = isProfileView(location.pathname);
   const isInProfileCommentsView = isProfileCommentsView(location.pathname);
@@ -150,7 +154,9 @@ const AuthorHeaderTabs = () => {
     !isInProfileSubmittedView &&
     !isInAuthorCommentsView &&
     !isInProfileHiddenView &&
-    !isInAuthorSubmittedView
+    !isInAuthorSubmittedView &&
+    !isInAuthorAboutView &&
+    !isInProfileAboutView
       ? styles.selected
       : styles.choice;
 
@@ -164,6 +170,9 @@ const AuthorHeaderTabs = () => {
       </li>
       <li className={isInProfileSubmittedView || isInAuthorSubmittedView ? styles.selected : styles.choice}>
         <Link to={isInAuthorView ? authorRoute + '/submitted' : '/profile/submitted'}>{t('submitted')}</Link>
+      </li>
+      <li className={isInAuthorAboutView || isInProfileAboutView ? styles.selected : styles.choice}>
+        <Link to={isInAuthorView ? `${authorRoute}/about` : '/profile/about'}>{t('about')}</Link>
       </li>
       {isInProfileView && (
         <>
@@ -408,7 +417,6 @@ const Header = () => {
   const isMobile = useWindowWidth() < 640;
   const isInAllView = isAllView(location.pathname);
   const isInAuthorView = isAuthorView(location.pathname);
-  const isInDomainView = isDomainView(location.pathname);
   const isInHomeView = isHomeView(location.pathname);
   const isInHomeAboutView = isHomeAboutView(location.pathname);
   const isInModView = isModView(location.pathname);
@@ -445,9 +453,7 @@ const Header = () => {
     !isInPostPageAboutView &&
     !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity);
 
-  const showUserFeedHeader =
-    isInAuthorView ||
-    (isInProfileView && location.pathname !== '/profile/about' && !isPendingPostView(location.pathname, params));
+  const showUserFeedHeader = isInAuthorView || (isInProfileView && !isPendingPostView(location.pathname, params));
 
   const hideShellSortTabs = isInPostPageView || isInPendingPostView || isInSettingsView;
   const showPostThreadBack = isInPostPageView || isInPendingPostView;
@@ -460,15 +466,6 @@ const Header = () => {
     !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity);
   const logoSrc = logoIsAvatar ? suggested?.avatarUrl : 'assets/sprout/sprout.png';
   const logoLink = '/';
-
-  const mobileSubmitButtonRoute =
-    isInHomeView || isInHomeAboutView || isInAllView || isInModView || isInDomainView
-      ? '/submit'
-      : isInPendingPostView
-        ? `/s/${accountComment?.subplebbitAddress}/submit`
-        : subplebbitAddress
-          ? `/s/${subplebbitAddress}/submit`
-          : '/submit';
 
   /* Home /home about: only logo+wordmark in this row (nav rail has brand on desktop); omit the strip entirely */
   const showTitleRow = !(isInHomeView || isInHomeAboutView) || showPostThreadBack;
@@ -541,13 +538,6 @@ const Header = () => {
           <ul className={`${styles.tabMenu} ${isInProfileView ? styles.horizontalScroll : ''}`}>
             <HeaderTabs />
             {(isInHomeView || isInHomeAboutView || isInSubplebbitView || isInHomeAboutView || isInPostPageView) && <AboutButton />}
-            {!isInSubmitView && !isInSettingsView && (
-              <li>
-                <Link to={mobileSubmitButtonRoute} className={styles.submitButton}>
-                  {t('submit')}
-                </Link>
-              </li>
-            )}
           </ul>
         )}
     </div>

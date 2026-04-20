@@ -51,6 +51,19 @@ export const isAuthorSubmittedView = (pathname: string, params: ParamsType): boo
   return pathname === `/u/${params.authorAddress}/c/${params.commentCid}/submitted`;
 };
 
+/** `/u/:authorAddress/c/:commentCid/about` — profile “About” for another user */
+export const isAuthorAboutView = (pathname: string, params: ParamsType): boolean => {
+  return Boolean(
+    params.authorAddress &&
+      params.commentCid &&
+      pathname === `/u/${params.authorAddress}/c/${params.commentCid}/about`,
+  );
+};
+
+export const isProfileAboutView = (pathname: string): boolean => {
+  return pathname === '/profile/about';
+};
+
 export const isCreateSubplebbitView = (pathname: string): boolean => {
   return pathname === '/communities/create';
 };
@@ -99,15 +112,14 @@ export const isPendingPostView = (pathname: string, params: ParamsType): boolean
   return pathname === `/profile/${params.accountCommentIndex}`;
 };
 
-/** Profile / author feed chrome: shell header + right sidebar (not pending post, not about, not /profile/about). */
+/** Profile / author feed chrome: shell header + right sidebar (pending post thread is an exception). User About tabs use the shell. */
 export const isUserFeedShellView = (pathname: string, params: ParamsType): boolean => {
   if (pathname.startsWith('/profile')) {
-    if (pathname === '/profile/about') return false;
     if (isPendingPostView(pathname, params)) return false;
     return true;
   }
   if (pathname.startsWith('/u/')) {
-    if (pathname.includes('/about')) return false;
+    if (pathname.includes('/about') && !isAuthorAboutView(pathname, params)) return false;
     return true;
   }
   return false;

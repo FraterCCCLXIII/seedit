@@ -8,7 +8,7 @@ import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
 import Reply from '../../components/reply/';
-import AuthorSidebar from '../../components/author-sidebar';
+import AuthorFeedSidebar from '../../components/author-feed-sidebar';
 import styles from './author.module.css';
 import ErrorDisplay from '../../components/error-display';
 
@@ -131,7 +131,7 @@ const Author = () => {
         )}
       </div>
       <div className={styles.sidebarColumn} {...feedShellSidebarProps}>
-        <AuthorSidebar />
+        <AuthorFeedSidebar />
       </div>
     </div>
   );

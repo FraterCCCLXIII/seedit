@@ -1,7 +1,8 @@
-import { marked } from 'marked';
+import { parse, setOptions } from 'marked';
 import TurndownService from 'turndown';
 
-marked.setOptions({
+/** Use top-level `setOptions` / `parse` — some bundlers do not attach `setOptions` to the `marked` function export. */
+setOptions({
   gfm: true,
   breaks: true,
 });
@@ -66,7 +67,7 @@ export function markdownToWysiwygHtml(markdown: string): string {
   const raw = (markdown || '').trim();
   if (!raw) return '';
   const withSpoilers = normalizeSpoilersForEditor(raw);
-  return marked.parse(withSpoilers, { async: false }) as string;
+  return parse(withSpoilers, { async: false }) as string;
 }
 
 export function wysiwygHtmlToMarkdown(html: string): string {

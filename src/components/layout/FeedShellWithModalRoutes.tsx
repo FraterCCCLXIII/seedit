@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import AboutView from '../../views/about';
+import UserAbout from '../../views/user-about/user-about';
 import All from '../../views/all';
 import Author from '../../views/author';
 import Domain from '../../views/domain';
@@ -49,9 +50,9 @@ const FeedShellWithModalRoutes = () => {
         <Route path='/communities/create' element={<SubplebbitSettings />} />
 
         <Route path='/about' element={<AboutView />} />
-        <Route path='/profile/about' element={<AboutView />} />
+        <Route path='/profile/about' element={<UserAbout />} />
         <Route path='/s/:subplebbitAddress/about' element={<AboutView />} />
-        <Route path='/u/:authorAddress/c/:commentCid/about' element={<AboutView />} />
+        <Route path='/u/:authorAddress/c/:commentCid/about' element={<UserAbout />} />
         <Route path='/s/:subplebbitAddress/c/:commentCid/about' element={<AboutView />} />
         <Route path='/s/:subplebbitAddress/c/:commentCid' element={<PostPage />} />
 

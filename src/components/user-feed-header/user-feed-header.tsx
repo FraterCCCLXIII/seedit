@@ -155,10 +155,7 @@ const UserFeedHeader = ({ placement = 'shell' }: UserFeedHeaderProps) => {
   const { accountComments: oldestAccountComment } = useAccountComments({ page: 0, pageSize: 1, order: 'asc' });
   const profileOldestAccountTimestamp = getOldestAccountHistoryTimestamp(oldestAccountComment as { timestamp?: number }[]);
 
-  const isProfile =
-    location.pathname.startsWith('/profile') &&
-    location.pathname !== '/profile/about' &&
-    !isPendingPostView(location.pathname, params);
+  const isProfile = location.pathname.startsWith('/profile') && !isPendingPostView(location.pathname, params);
 
   const authorAddress = params.authorAddress;
   const commentCid = params.commentCid;
