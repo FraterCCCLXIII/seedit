@@ -171,7 +171,14 @@ const PlebbitRPCSettings = ({ plebbitRpcRef }: SettingsProps) => {
           defaultValue={plebbitRpcClientsOptions}
           ref={plebbitRpcRef}
         />
-        <Button type='button' variant='outline' size='icon' onClick={() => setShowInfo(!showInfo)} aria-expanded={showInfo} aria-label={showInfo ? t('close') : t('help')}>
+        <Button
+          type='button'
+          variant='outline'
+          size='icon'
+          onClick={() => setShowInfo(!showInfo)}
+          aria-expanded={showInfo}
+          aria-label={showInfo ? t('close') : t('help')}
+        >
           {showInfo ? '×' : '?'}
         </Button>
       </div>
@@ -184,6 +191,7 @@ const PlebbitRPCSettings = ({ plebbitRpcRef }: SettingsProps) => {
             <li>{t('plebbit_rpc_help_step3')}</li>
             <li>{t('plebbit_rpc_help_step4')}</li>
           </ol>
+          <p className='mt-3 border-t border-border pt-3'>{t('plebbit_rpc_help_version_mismatch')}</p>
         </div>
       )}
     </div>
@@ -213,6 +221,9 @@ const PlebbitDataPathSettings = ({ plebbitDataPathRef }: SettingsProps) => {
 };
 
 const isElectron = window.electronApi?.isElectron === true;
+
+/** Chain RPC textareas sometimes pick up notes like "viem" — only http(s) URLs are valid for plebbit chain providers. */
+const isHttpOrHttpsUrl = (s: string): boolean => /^https?:\/\//i.test(s);
 
 const PlebbitOptions = () => {
   const { t } = useTranslation();
@@ -247,22 +258,22 @@ const PlebbitOptions = () => {
     const ethRpcUrls = ethRpcRef.current?.value
       .split('\n')
       .map((url) => url.trim())
-      .filter((url) => url !== '');
+      .filter((url) => url !== '' && isHttpOrHttpsUrl(url));
 
     const solRpcUrls = solRpcRef.current?.value
       .split('\n')
       .map((url) => url.trim())
-      .filter((url) => url !== '');
+      .filter((url) => url !== '' && isHttpOrHttpsUrl(url));
 
     const maticRpcUrls = maticRpcRef.current?.value
       .split('\n')
       .map((url) => url.trim())
-      .filter((url) => url !== '');
+      .filter((url) => url !== '' && isHttpOrHttpsUrl(url));
 
     const avaxRpcUrls = avaxRpcRef.current?.value
       .split('\n')
       .map((url) => url.trim())
-      .filter((url) => url !== '');
+      .filter((url) => url !== '' && isHttpOrHttpsUrl(url));
 
     const httpRoutersOptions = httpRoutersRef.current?.value
       .split('\n')
@@ -273,11 +284,18 @@ const PlebbitOptions = () => {
     const plebbitRpcClientsOptions = plebbitRpcValue ? [plebbitRpcValue] : undefined;
     const dataPath = plebbitDataPathRef.current?.value.trim() || undefined;
 
-    const chainProviders: any = {};
-    if (ethRpcUrls?.length) chainProviders.eth = { urls: ethRpcUrls, chainId: 1 };
-    if (solRpcUrls?.length) chainProviders.sol = { urls: solRpcUrls, chainId: 1 };
-    if (maticRpcUrls?.length) chainProviders.matic = { urls: maticRpcUrls, chainId: 137 };
-    if (avaxRpcUrls?.length) chainProviders.avax = { urls: avaxRpcUrls, chainId: 43114 };
+    const chainFromForm: Record<string, { urls: string[]; chainId: number }> = {};
+    if (ethRpcUrls?.length) chainFromForm.eth = { urls: ethRpcUrls, chainId: 1 };
+    if (solRpcUrls?.length) chainFromForm.sol = { urls: solRpcUrls, chainId: 1 };
+    if (maticRpcUrls?.length) chainFromForm.matic = { urls: maticRpcUrls, chainId: 137 };
+    if (avaxRpcUrls?.length) chainFromForm.avax = { urls: avaxRpcUrls, chainId: 43114 };
+
+    const prevChain = (plebbitOptions?.chainProviders || {}) as Record<string, { urls: string[]; chainId: number }>;
+    const mergedChainProviders = { ...prevChain, ...chainFromForm };
+    if (!ethRpcUrls?.length) delete mergedChainProviders.eth;
+    if (!solRpcUrls?.length) delete mergedChainProviders.sol;
+    if (!maticRpcUrls?.length) delete mergedChainProviders.matic;
+    if (!avaxRpcUrls?.length) delete mergedChainProviders.avax;
 
     const newPlebbitOptions: any = {};
     if (ipfsGatewayUrls?.length) newPlebbitOptions.ipfsGatewayUrls = ipfsGatewayUrls;
@@ -285,9 +303,13 @@ const PlebbitOptions = () => {
     if (httpRoutersOptions?.length) newPlebbitOptions.httpRoutersOptions = httpRoutersOptions;
     if (plebbitRpcClientsOptions) newPlebbitOptions.plebbitRpcClientsOptions = plebbitRpcClientsOptions;
     if (dataPath) newPlebbitOptions.dataPath = dataPath;
-    if (Object.keys(chainProviders)?.length) newPlebbitOptions.chainProviders = chainProviders;
 
-    const updatedPlebbitOptions = { ...plebbitOptions, ...newPlebbitOptions };
+    const updatedPlebbitOptions: any = { ...plebbitOptions, ...newPlebbitOptions };
+    if (Object.keys(mergedChainProviders).length > 0) {
+      updatedPlebbitOptions.chainProviders = mergedChainProviders;
+    } else {
+      delete updatedPlebbitOptions.chainProviders;
+    }
 
     const updatedAccount: any = { ...account };
     if (mediaIpfsGatewayUrl) {

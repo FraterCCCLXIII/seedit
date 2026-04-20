@@ -62,7 +62,7 @@
     "zustand": "4.4.3"
   },
   "scripts": {
-    "postinstall": "node scripts/patch-bitsocial-react-hooks-esm.cjs",
+    "postinstall": "node scripts/patch-bitsocial-react-hooks-esm.cjs && node scripts/electron-rebuild-better-sqlite3.mjs",
     "start": "node scripts/start-dev.js",
     "build": "cross-env NODE_ENV=production PUBLIC_URL=./ GENERATE_SOURCEMAP=false vite build",
     "build:preload": "cross-env NODE_ENV=production vite build --config electron/vite.preload.config.js",
@@ -84,12 +84,14 @@
     "electron:build:mac:x64": "yarn build && yarn build:preload && electron-forge make --platform=darwin --arch=x64",
     "electron:build:mac:arm64": "yarn build && yarn build:preload && electron-forge make --platform=darwin --arch=arm64",
     "electron:before": "yarn electron:before:delete-data",
-    "electron:before:delete-data": "rimraf .plebbit",
+    "electron:before:delete-data": "node -e \"require('node:fs').rmSync('.plebbit',{recursive:true,force:true})\"",
     "android:build:icons": "cordova-res android --skip-config --copy --resources /tmp/plebbit-react-android-icons --icon-source ./android/icons/icon.png --splash-source ./android/icons/splash.png --icon-foreground-source ./android/icons/icon-foreground.png --icon-background-source '#ffffee'",
     "prettier": "oxfmt src/**/*.{js,ts,tsx} electron/**/*.{js,mjs}",
     "lint": "oxlint src electron",
     "check:view-css-lowercase": "grep -rE 'text-transform:[[:space:]]*lowercase' --include='*.module.css' src/views >/dev/null && exit 1 || exit 0",
     "type-check": "tsgo --noEmit",
+    "verify:plebbit-js-lock": "node scripts/verify-plebbit-js-lock.mjs",
+    "electron:rebuild-native": "node scripts/electron-rebuild-better-sqlite3.mjs",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "android:build": "yarn build && npx cap sync android && npx cap run android"
   },

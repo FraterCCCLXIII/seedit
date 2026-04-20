@@ -28,6 +28,7 @@ import Markdown from '../markdown';
 import SearchBar from '../search-bar';
 import CreateCommunityModal from '../create-community-modal';
 import { Version } from '../version';
+import { canAccessPlebbitLocalCreateFlow } from '@/lib/utils/plebbit-rpc-ui';
 import styles from './sidebar.module.css';
 
 const RulesList = ({ rules }: { rules: string[] }) => {
@@ -149,13 +150,7 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const showCtaStack = showSubmitInSidebar || isInSubplebbitsView || !isInSubplebbitView;
 
   const showSidebarCommunityPanel =
-    !isInHomeView &&
-    !isInHomeAboutView &&
-    !isInAllView &&
-    !isInModView &&
-    !isInSubplebbitsView &&
-    !isInDomainView &&
-    !isInPostPageAboutView;
+    !isInHomeView && !isInHomeAboutView && !isInAllView && !isInModView && !isInSubplebbitsView && !isInDomainView && !isInPostPageAboutView;
 
   const subplebbitCreator = findSubplebbitCreator(roles);
   const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress({ address: subplebbitCreator })}`;
@@ -187,13 +182,11 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const isOwner = !!settings;
 
   const showReadOnlyCommunitySettings = !!(address && !(moderatorRole || isOwner));
-  const showCommunityChromeCard =
-    showSidebarCommunityPanel ||
-    !!(moderatorRole || isOwner) ||
-    (roles && Object.keys(roles).length > 0) ||
-    showReadOnlyCommunitySettings;
+  const showCommunityChromeCard = showSidebarCommunityPanel || !!(moderatorRole || isOwner) || (roles && Object.keys(roles).length > 0) || showReadOnlyCommunitySettings;
 
-  const isConnectedToRpc = usePlebbitRpcSettings()?.state === 'connected';
+  const plebbitRpcState = usePlebbitRpcSettings()?.state;
+  const isElectronApp = window.electronApi?.isElectron === true;
+  const isConnectedToRpc = canAccessPlebbitLocalCreateFlow(plebbitRpcState, isElectronApp);
   const navigate = useNavigate();
   const [createCommunityModalOpen, setCreateCommunityModalOpen] = useState(false);
 
@@ -211,25 +204,16 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
       <div className={styles.searchBarWrapper}>
         <SearchBar />
       </div>
-        <div>
+      <div>
         {showCtaStack ? (
           <div className={styles.ctaStack}>
             {showSubmitInSidebar && (
-              <button
-                type='button'
-                className={cn(styles.ctaBase, styles.ctaPrimary)}
-                onClick={() => navigate(submitRoute, { state: { backgroundLocation: location } })}
-              >
+              <button type='button' className={cn(styles.ctaBase, styles.ctaPrimary)} onClick={() => navigate(submitRoute, { state: { backgroundLocation: location } })}>
                 {t('submit_post')}
               </button>
             )}
             {isInSubplebbitsView && (
-              <a
-                href='https://github.com/bitsocialhq/lists'
-                target='_blank'
-                rel='noopener noreferrer'
-                className={cn(styles.ctaBase, styles.ctaSecondaryLink)}
-              >
+              <a href='https://github.com/bitsocialhq/lists' target='_blank' rel='noopener noreferrer' className={cn(styles.ctaBase, styles.ctaSecondaryLink)}>
                 {t('submit_community')}
               </a>
             )}
@@ -253,9 +237,7 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
                 ) : null}
                 {description && description.length > 0 ? (
                   <div className={styles.aboutBlock}>
-                    {title && title.length > 0 ? (
-                      <h2 className={styles.sidebarSectionHeading}>{title}</h2>
-                    ) : null}
+                    {title && title.length > 0 ? <h2 className={styles.sidebarSectionHeading}>{title}</h2> : null}
                     <div className={styles.description}>
                       <Markdown content={description} />
                     </div>

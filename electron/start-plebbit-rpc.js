@@ -2,6 +2,7 @@ import tcpPortUsed from 'tcp-port-used';
 import EnvPaths from 'env-paths';
 import { randomBytes } from 'crypto';
 import fs from 'fs-extra';
+// Uses @plebbit/plebbit-js from @bitsocialnet/bitsocial-react-hooks; keep the same git revision as the web bundle (see yarn.lock).
 import PlebbitRpc from '@plebbit/plebbit-js/rpc';
 import path from 'path';
 import { fileURLToPath } from 'url';

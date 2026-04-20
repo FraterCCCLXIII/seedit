@@ -112,8 +112,22 @@ const startIpfs = async () => {
     await spawnAsync(ipfsPath, ['repo', 'migrate'], { env, hideWindows: true });
   } catch {}
 
-  // dont use 8080 port because it's too common
-  await spawnAsync(ipfsPath, ['config', '--json', 'Addresses.Gateway', '"/ip4/127.0.0.1/tcp/6473"'], {
+  // Prefer 6473 (8080 is too common). If another Kubo/app already uses it, pick the next free port.
+  const pickGatewayPort = async (base = 6473, span = 64) => {
+    for (let p = base; p < base + span; p++) {
+      const inUse = await tcpPortUsed.check(p, '127.0.0.1');
+      if (!inUse) {
+        return p;
+      }
+    }
+    throw new Error(`No free local TCP port for IPFS gateway in range ${base}–${base + span - 1}`);
+  };
+  const gatewayPort = await pickGatewayPort();
+  if (isDev && gatewayPort !== 6473) {
+    console.log(`IPFS gateway port ${6473} busy; using ${gatewayPort} instead`);
+  }
+  const gatewayMultiaddr = `/ip4/127.0.0.1/tcp/${gatewayPort}`;
+  await spawnAsync(ipfsPath, ['config', '--json', 'Addresses.Gateway', JSON.stringify(gatewayMultiaddr)], {
     env,
     hideWindows: true,
   });

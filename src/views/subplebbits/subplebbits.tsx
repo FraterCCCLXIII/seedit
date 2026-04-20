@@ -11,6 +11,7 @@ import {
   isSubplebbitsAdminView,
   isSubplebbitsOwnerView,
   isSubplebbitsVoteView,
+  isCreateSubplebbitView,
 } from '../../lib/utils/view-utils';
 import useErrorStore from '../../stores/use-error-store';
 import { useDefaultSubplebbitAddresses, useDefaultSubplebbits } from '../../hooks/use-default-subplebbits';
@@ -26,6 +27,9 @@ import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import { nsfwTags } from '../../constants/nsfw-tags';
 import { PixelIcon } from '@/components/ui/pixel-icon';
+import { Button } from '@/components/ui/button';
+import AddCommunityModal from '@/components/add-community-modal/add-community-modal';
+import { formatErrorForConsole } from '@/lib/utils/error-log-utils';
 import _ from 'lodash';
 
 interface SubplebbitProps {
@@ -119,11 +123,7 @@ const Subplebbit = ({ subplebbit, tags, isUnsubscribed, onUnsubscribe }: Subpleb
   const isNsfw = tags?.some((tag) => nsfwTags.includes(tag));
   const communityPath = `/s/${address}`;
   const displayAddress = address?.includes('.') ? address : shortAddress;
-  const hasBadgeRow =
-    Boolean(userRole || isUserOwner) ||
-    isNsfw ||
-    (isOffline && !isOnlineStatusLoading) ||
-    Boolean(tags && tags.length > 0);
+  const hasBadgeRow = Boolean(userRole || isUserOwner) || isNsfw || (isOffline && !isOnlineStatusLoading) || Boolean(tags && tags.length > 0);
 
   const isMobile = useIsMobile();
   const descriptionText =
@@ -253,9 +253,7 @@ const AccountSubplebbits = ({ viewRole }: { viewRole: string }) => {
     })
     .map((subplebbitData) => {
       const tags = defaultSubplebbits.find((defaultSub) => defaultSub.address === (subplebbitData as any).address)?.tags;
-      return (
-        <Subplebbit key={(subplebbitData as any).address} subplebbit={subplebbitData} tags={tags} />
-      );
+      return <Subplebbit key={(subplebbitData as any).address} subplebbit={subplebbitData} tags={tags} />;
     });
 
   if (subplebbitElements.length === 0) {
@@ -357,9 +355,7 @@ const AllDefaultSubplebbits = () => {
     })
     .map((subplebbitData) => {
       const tags = defaultSubplebbitsList.find((defaultSub) => defaultSub.address === (subplebbitData as any).address)?.tags;
-      return (
-        <Subplebbit key={(subplebbitData as any).address} subplebbit={subplebbitData} tags={tags} />
-      );
+      return <Subplebbit key={(subplebbitData as any).address} subplebbit={subplebbitData} tags={tags} />;
     });
 
   if (subplebbitElements.length === 0) {
@@ -443,8 +439,12 @@ const Subplebbits = () => {
 
   useEffect(() => {
     Object.entries(errors).forEach(([source, errorObj]) => {
-      if (errorObj) {
-        console.error(`Error from ${source}:`, errorObj.message, errorObj.stack);
+      if (!errorObj) return;
+      const formatted = formatErrorForConsole(errorObj);
+      if (formatted.issues !== undefined) {
+        console.error(`Error from ${source}:`, formatted.message, formatted.issues, formatted.stack);
+      } else {
+        console.error(`Error from ${source}:`, formatted.message, formatted.stack);
       }
     });
   }, [errors]);
@@ -454,6 +454,7 @@ const Subplebbits = () => {
   const isInSubplebbitsAdminView = isSubplebbitsAdminView(location.pathname);
   const isInSubplebbitsOwnerView = isSubplebbitsOwnerView(location.pathname);
   const isInSubplebbitsVoteView = isSubplebbitsVoteView(location.pathname);
+  const isInCreateSubplebbitView = isCreateSubplebbitView(location.pathname);
   const isInSubplebbitsView =
     isSubplebbitsView(location.pathname) &&
     !isInSubplebbitsSubscriberView &&
@@ -461,6 +462,10 @@ const Subplebbits = () => {
     !isInSubplebbitsAdminView &&
     !isInSubplebbitsOwnerView &&
     !isInSubplebbitsVoteView;
+
+  const showAddCommunityToolbar = isSubplebbitsView(location.pathname) && !isInSubplebbitsVoteView && !isInCreateSubplebbitView;
+
+  const [addCommunityOpen, setAddCommunityOpen] = useState(false);
 
   let viewRole = 'subscriber';
   if (isInSubplebbitsModeratorView) {
@@ -531,6 +536,16 @@ const Subplebbits = () => {
         ) : null}
         <StandardPageContent variant='feedColumn'>
           <Infobar />
+          {showAddCommunityToolbar ? (
+            <>
+              <div className={styles.addCommunityToolbar}>
+                <Button type='button' variant='outline' size='sm' onClick={() => setAddCommunityOpen(true)}>
+                  {t('add_community')}
+                </Button>
+              </div>
+              <AddCommunityModal open={addCommunityOpen} onClose={() => setAddCommunityOpen(false)} />
+            </>
+          ) : null}
           {isInSubplebbitsVoteView && <AllDefaultSubplebbits />}
           {(isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView) && <AccountSubplebbits viewRole={viewRole} />}
           {isInSubplebbitsSubscriberView && <SubscriberSubplebbits />}

@@ -2,6 +2,7 @@ import './polyfills.js';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './app';
+import { RootErrorBoundary } from './components/root-error-boundary';
 import { HashRouter as Router } from 'react-router-dom';
 import './lib/init-translations';
 import './styles/shadcn.css';
@@ -43,10 +44,12 @@ registerSW({
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <Router>
-      <App />
-      {isVercelDeployment && <Analytics />}
-    </Router>
+    <RootErrorBoundary>
+      <Router>
+        <App />
+        {isVercelDeployment && <Analytics />}
+      </Router>
+    </RootErrorBoundary>
   </React.StrictMode>,
 );
 

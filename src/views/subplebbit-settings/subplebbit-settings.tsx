@@ -18,6 +18,7 @@ import {
   useSubscribe,
 } from '@bitsocialnet/bitsocial-react-hooks';
 import { isUserOwnerOrAdmin, Roles } from '../../lib/utils/user-utils';
+import { canAccessPlebbitLocalCreateFlow } from '@/lib/utils/plebbit-rpc-ui';
 import { isValidURL } from '../../lib/utils/url-utils';
 import { isCreateSubplebbitView, isSubplebbitSettingsView } from '../../lib/utils/view-utils';
 import useSubplebbitSettingsStore from '../../stores/use-subplebbit-settings-store';
@@ -242,13 +243,7 @@ const Rules = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
           <div className={`${styles.rule} ${index === 0 && styles.firstRule}`} key={index}>
             Rule #{index + 1}
             {!isReadOnly ? (
-              <button
-                type='button'
-                className={styles.deleteIconBtn}
-                title={t('delete')}
-                aria-label={t('delete')}
-                onClick={() => deleteRule(index)}
-              >
+              <button type='button' className={styles.deleteIconBtn} title={t('delete')} aria-label={t('delete')} onClick={() => deleteRule(index)}>
                 <PixelIcon glyph='trash' className={styles.deleteIcon} aria-hidden />
               </button>
             ) : null}
@@ -326,13 +321,7 @@ const Moderators = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
             <div className={`${styles.moderator} ${index === 0 && styles.firstModerator}`} key={index}>
               {t('moderator')} #{index + 1}
               {!isReadOnly ? (
-                <button
-                  type='button'
-                  className={styles.deleteIconBtn}
-                  title={t('delete')}
-                  aria-label={t('delete')}
-                  onClick={() => handleDeleteModerator(address)}
-                >
+                <button type='button' className={styles.deleteIconBtn} title={t('delete')} aria-label={t('delete')} onClick={() => handleDeleteModerator(address)}>
                   <PixelIcon glyph='trash' className={styles.deleteIcon} aria-hidden />
                 </button>
               ) : null}
@@ -400,7 +389,8 @@ const SubplebbitSettings = () => {
   const { address, challenges, createdAt, description, error, rules, shortAddress, settings, suggested, roles, title } = subplebbit || {};
   const hasLoaded = !!createdAt;
 
-  const { challenges: rpcChallenges } = usePlebbitRpcSettings().plebbitRpcSettings || {};
+  const plebbitRpcHook = usePlebbitRpcSettings();
+  const { challenges: rpcChallenges } = plebbitRpcHook.plebbitRpcSettings || {};
   const challengeNames = Object.keys(rpcChallenges || {});
 
   const account = useAccount();
@@ -409,9 +399,12 @@ const SubplebbitSettings = () => {
   const params = useParams();
   const isInCreateSubplebbitView = isCreateSubplebbitView(location.pathname);
   const isInSubplebbitSettingsView = isSubplebbitSettingsView(location.pathname, params);
-  const isConnectedToRpc = usePlebbitRpcSettings()?.state === 'connected';
+  const rpcState = plebbitRpcHook?.state;
+  const isElectronApp = window.electronApi?.isElectron === true;
+  const isConnectedToRpc = rpcState === 'connected';
+  const canAccessCreateCommunityFlow = canAccessPlebbitLocalCreateFlow(rpcState, isElectronApp);
 
-  if (isInCreateSubplebbitView && !isConnectedToRpc) {
+  if (isInCreateSubplebbitView && !canAccessCreateCommunityFlow) {
     navigate('/', { replace: true });
   }
 
@@ -421,7 +414,8 @@ const SubplebbitSettings = () => {
   const { isOffline, offlineTitle } = useIsSubplebbitOffline(subplebbit || {});
 
   // General fields can be edited by owners/admins even without RPC connection
-  const isReadOnly = (!settings && isInSubplebbitSettingsView && !userIsOwnerOrAdmin) || (!isConnectedToRpc && isInCreateSubplebbitView && !userIsOwnerOrAdmin);
+  const isReadOnly =
+    (!settings && isInSubplebbitSettingsView && !userIsOwnerOrAdmin) || (!canAccessCreateCommunityFlow && isInCreateSubplebbitView && !userIsOwnerOrAdmin);
 
   // Challenges are always read-only when not connected to RPC
   const isChallengesReadOnly = (!isConnectedToRpc || !settings) && !isInCreateSubplebbitView;
@@ -637,14 +631,10 @@ const SubplebbitSettings = () => {
       )}
       <div {...feedShellMainProps}>
         <StandardPageContent variant='full' stack>
-          {!isInCreateSubplebbitView && subplebbitAddress ? (
-            <CommunityFeedHeader subplebbit={subplebbit} subplebbitAddress={subplebbitAddress} />
-          ) : null}
+          {!isInCreateSubplebbitView && subplebbitAddress ? <CommunityFeedHeader subplebbit={subplebbit} subplebbitAddress={subplebbitAddress} /> : null}
           {isReadOnly && !userIsOwnerOrAdmin ? <div className={styles.infobar}>{t('owner_settings_notice')}</div> : null}
           {isOffline ? <div className={styles.infobar}>{offlineTitle}</div> : null}
-          {isChallengesReadOnly ? (
-            <div className={styles.infobar}>cannot read or write challenges, community node isn&apos;t reachable.</div>
-          ) : null}
+          {isChallengesReadOnly ? <div className={styles.infobar}>cannot read or write challenges, community node isn&apos;t reachable.</div> : null}
           <div className={styles.formColumn}>
             <Title isReadOnly={isReadOnly} />
             <Description isReadOnly={isReadOnly} />
@@ -652,7 +642,12 @@ const SubplebbitSettings = () => {
             <Logo isReadOnly={isReadOnly} />
             <Rules isReadOnly={isReadOnly} />
             <Moderators isReadOnly={isReadOnly} />
-            <Challenges isReadOnly={isChallengesReadOnly} readOnlyChallenges={subplebbit?.challenges} challengeNames={challengeNames} challengesSettings={rpcChallenges} />
+            <Challenges
+              isReadOnly={isChallengesReadOnly}
+              readOnlyChallenges={subplebbit?.challenges}
+              challengeNames={challengeNames}
+              challengesSettings={rpcChallenges}
+            />
             {!isInCreateSubplebbitView ? <JSONSettings isReadOnly={isReadOnly} /> : null}
             <div className={styles.saveOptions}>
               {!isInCreateSubplebbitView && !isReadOnly ? (

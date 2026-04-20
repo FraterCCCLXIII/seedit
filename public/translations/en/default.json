@@ -464,5 +464,16 @@
   "create_community_open_downloads": "Open download page",
   "permalink": "permalink",
   "engagement_tooltip_comments": "Open discussion",
-  "engagement_tooltip_share": "Copy link to clipboard"
+  "engagement_tooltip_share": "Copy link to clipboard",
+  "add_community": "Add community",
+  "add_community_modal_title": "Add community by address",
+  "add_community_hint": "Paste a community address (subplebbit address). It will be added to your subscriptions and appear under My Communities.",
+  "add_community_placeholder": "e.g. 12D3KooWRPCnExr13FgsD4xihoDc6P8nXjuWNbGXBcD8swDmJvja",
+  "add_community_submit": "Add",
+  "add_community_error_empty": "Enter a community address.",
+  "add_community_error_invalid": "That does not look like a valid address.",
+  "add_community_error_duplicate": "You are already subscribed to this community.",
+  "add_community_error_save": "Could not save. Try again.",
+  "add_community_error_no_account": "You need an account to add subscriptions.",
+  "plebbit_rpc_help_version_mismatch": "If the console shows ZodError on subplebbitUpdateSubscribe (expected string, received object), your RPC server and this app use different plebbit-js RPC shapes. Clear the Plebbit RPC field, save, and use IPFS gateways only, or upgrade the desktop node to match this client."
 }

@@ -17,10 +17,19 @@ const getErrorDetails = (error: unknown): ErrorDetails | null => {
     return { message: error };
   }
   if (error instanceof Error) {
+    const zodIssues = (error as Error & { issues?: { path: (string | number)[]; message: string }[] }).issues;
+    if (Array.isArray(zodIssues) && zodIssues.length > 0) {
+      const hint = zodIssues
+        .slice(0, 4)
+        .map((i) => `${i.path?.length ? i.path.join('.') : 'value'}: ${i.message}`)
+        .join('; ');
+      const base = error.message?.trim() ? error.message : 'Validation error';
+      return { message: `${base} — ${hint}`, stack: error.stack };
+    }
     return { message: error.message, stack: error.stack };
   }
   if (typeof error === 'object') {
-    const maybeError = error as { message?: unknown; stack?: unknown; details?: unknown };
+    const maybeError = error as { message?: unknown; stack?: unknown; details?: unknown; issues?: unknown };
     return {
       message: typeof maybeError.message === 'string' ? maybeError.message : undefined,
       stack: typeof maybeError.stack === 'string' ? maybeError.stack : undefined,
@@ -99,11 +108,7 @@ const ErrorDisplay = ({ error, variant = 'inline', fullBleed = false }: ErrorDis
 
   return (
     shouldRender && (
-      <div
-        className={rootClass}
-        role={variant === 'bar' ? 'alert' : undefined}
-        aria-live={variant === 'bar' ? 'polite' : undefined}
-      >
+      <div className={rootClass} role={variant === 'bar' ? 'alert' : undefined} aria-live={variant === 'bar' ? 'polite' : undefined}>
         {currentDisplayMessage && (
           <span
             className={classNames.join(' ')}

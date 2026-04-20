@@ -1,0 +1,118 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  min-height: 100vh;
+  min-height: 100dvh;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background-color: hsl(0 0% 0% / 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+:global(.dark) .overlay {
+  background-color: hsl(0 0% 0% / 0.72);
+}
+
+.dialog {
+  position: relative;
+  width: min(100%, 440px);
+  margin-top: min(8vh, 56px);
+  border-radius: calc(var(--shadcn-radius) + 4px);
+  border: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-popover));
+  color: hsl(var(--shadcn-popover-foreground));
+  box-shadow:
+    0 24px 48px -12px hsl(0 0% 0% / 0.35),
+    0 0 0 1px hsl(0 0% 100% / 0.06);
+  box-sizing: border-box;
+}
+
+:global(.dark) .dialog {
+  box-shadow:
+    0 24px 48px -12px hsl(0 0% 0% / 0.55),
+    0 0 0 1px hsl(0 0% 100% / 0.1);
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: var(--shadcn-radius-control);
+  background: hsl(var(--shadcn-muted));
+  color: hsl(var(--shadcn-foreground));
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.closeButton:hover {
+  background: hsl(var(--shadcn-accent));
+}
+
+.closeButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--shadcn-background)), 0 0 0 4px hsl(var(--shadcn-ring));
+}
+
+.closeIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  font-size: 1.125rem;
+}
+
+.inner {
+  padding: 1.5rem 1.25rem 1.25rem;
+  padding-right: 3rem;
+}
+
+.title {
+  margin: 0 0 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.hint {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.field {
+  margin-bottom: 0.75rem;
+}
+
+.input {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+.error {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: hsl(var(--shadcn-destructive));
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}

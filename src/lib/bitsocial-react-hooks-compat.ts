@@ -260,17 +260,8 @@ export const setAccount = async (account: Account): Promise<void> => {
 };
 
 export const useAccountComment = (options?: UseAccountCommentOptions): UseAccountCommentResult => {
-  if (options?.commentIndex === undefined && options?.commentCid === undefined) {
-    return {
-      accountId: '',
-      index: -1,
-      state: 'initializing',
-      error: undefined,
-      errors: [],
-      refresh: async () => {},
-    };
-  }
-
+  // Always call the base hook (it handles missing commentIndex/commentCid). An early return here
+  // skipped hooks and broke Rules of Hooks when routes changed (e.g. after create community → /s/...).
   const result = useAccountCommentBase(options);
 
   return useMemo(
