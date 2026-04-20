@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Pin } from 'lucide-react';
 import {
   Comment,
   useAuthorAddress,
@@ -15,7 +16,7 @@ import Plebbit from '@plebbit/plebbit-js';
 import { getPostScore, formatScore } from '../../lib/utils/post-utils';
 import { getFormattedTimeAgo, formatLocalizedUTCTimestamp } from '../../lib/utils/time-utils';
 import { getHostname } from '../../lib/utils/url-utils';
-import { isAllView, isAuthorView, isPendingPostView, isPostPageView, isProfileHiddenView, isProfileView, isSubplebbitView } from '../../lib/utils/view-utils';
+import { isAllView, isPostPageView, isProfileHiddenView, isSubplebbitView } from '../../lib/utils/view-utils';
 import { highlightMatchedText } from '../../lib/utils/pattern-utils';
 import { useCommentMediaInfo } from '../../hooks/use-comment-media-info';
 import useDownvote from '../../hooks/use-downvote';
@@ -158,10 +159,7 @@ const Post = ({ index, post = {} }: PostProps) => {
   const authorRole = subplebbit?.roles?.[post.author?.address]?.role;
 
   const isInAllView = isAllView(location.pathname);
-  const isInPendingPostView = isPendingPostView(location.pathname, params);
   const isInPostPageView = isPostPageView(location.pathname, params);
-  const isInProfileView = isProfileView(location.pathname);
-  const isInAuthorView = isAuthorView(location.pathname);
   const isInProfileHiddenView = isProfileHiddenView(location.pathname);
   const isInSubplebbitView = isSubplebbitView(location.pathname, params);
 
@@ -195,18 +193,6 @@ const Post = ({ index, post = {} }: PostProps) => {
   const [hasClickedSubscribe, setHasClickedSubscribe] = useState(false);
   const { subscribed } = useSubscribe({ subplebbitAddress });
 
-  // show gray dotted border around last clicked post
-  const isLastClicked = sessionStorage.getItem('lastClickedPost') === cid && !isInPostPageView;
-  const handlePostClick = () => {
-    if (cid) {
-      if (sessionStorage.getItem('lastClickedPost') === cid) {
-        sessionStorage.removeItem('lastClickedPost');
-      } else {
-        sessionStorage.setItem('lastClickedPost', cid);
-      }
-    }
-  };
-
   const postPermalink =
     cid && subplebbitAddress
       ? `/s/${subplebbitAddress}/c/${cid}`
@@ -230,14 +216,11 @@ const Post = ({ index, post = {} }: PostProps) => {
       return;
     }
     navigate(postPermalink);
-    handlePostClick();
   };
 
   const hideAvatars = useContentOptionsStore((s) => s.hideAvatars);
   const { imageUrl: authorAvatarUrl } = useAuthorAvatar({ author });
   const [authorAvatarFailed, setAuthorAvatarFailed] = useState(false);
-
-  const communityShort = subplebbit?.shortAddress || (subplebbitAddress ? Plebbit.getShortAddress({ address: subplebbitAddress }) : '');
 
   useEffect(() => {
     setAuthorAvatarFailed(false);
@@ -252,7 +235,12 @@ const Post = ({ index, post = {} }: PostProps) => {
 
   return (
     <div className={cn(styles.content, showFeedRowHover && styles.contentInFeed, isInPostPageView && styles.contentPostPage)} key={index}>
-      <div className={isLastClicked ? styles.lastClicked : ''}>
+      <div className={cn(pinned && !isInPostPageView && styles.pinnedFeedCard)}>
+        {pinned && !isInPostPageView && (
+          <span className={styles.pinnedCornerPin} aria-hidden>
+            <Pin className={styles.pinnedCornerPinIcon} strokeWidth={2} />
+          </span>
+        )}
         <div className={`${styles.hiddenPost} ${blocked && !isInProfileHiddenView ? styles.visible : styles.hidden}`}>
           <div className={styles.hiddenPostText}>{t('post_hidden').charAt(0).toUpperCase() + t('post_hidden').slice(1)}</div>
           <div className={styles.undoHiddenPost} onClick={unblock}>
@@ -324,11 +312,11 @@ const Post = ({ index, post = {} }: PostProps) => {
                 <div className={styles.titleStack}>
                   <p className={styles.title}>
                     {isInPostPageView && link ? (
-                      <a href={link} className={linkClass} target='_blank' rel='noopener noreferrer' onClick={handlePostClick}>
+                      <a href={link} className={linkClass} target='_blank' rel='noopener noreferrer'>
                         {displayedTitle}
                       </a>
                     ) : (
-                      <Link className={linkClass} to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${post?.index}`} onClick={handlePostClick}>
+                      <Link className={linkClass} to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${post?.index}`}>
                         {displayedTitle}
                       </Link>
                     )}

@@ -4,8 +4,8 @@ import FeedNavRail from './FeedNavRail';
 import styles from './FeedShellLayout.module.css';
 
 export type FeedShellLayoutProps = {
-  /** TopBar + AccountBar — hidden on desktop so the fixed left rail can span full height (Primal-style). */
-  stickyHeader: ReactNode;
+  /** Optional strip above `header` (e.g. legacy top chrome); omit when unused. */
+  stickyHeader?: ReactNode;
   header: ReactNode;
   children: ReactNode;
 };
@@ -24,7 +24,7 @@ const FeedShellLayout = ({ stickyHeader, header, children }: FeedShellLayoutProp
       </div>
       <div className={styles.center}>
         <div className={cn(styles.centerInner, 'bg-background text-foreground')}>
-          <div className={styles.stickyHeaderSlot}>{stickyHeader}</div>
+          {stickyHeader ? <div className={styles.stickyHeaderSlot}>{stickyHeader}</div> : null}
           <div className={styles.mainGrid}>
             <div className={styles.headerArea}>{header}</div>
             {children}

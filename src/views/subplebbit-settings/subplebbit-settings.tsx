@@ -25,13 +25,12 @@ import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import useStateString from '../../hooks/use-state-string';
 import ErrorDisplay from '../../components/error-display';
 import LoadingEllipsis from '../../components/loading-ellipsis';
-import Markdown from '../../components/markdown';
 import CommunityFeedHeader from '../../components/community-feed-header/community-feed-header';
 import Sidebar from '../../components/sidebar';
 import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import Challenges from './challenge-settings';
-import { MarkdownRichTextToolbar } from '../../components/markdown-rich-text-toolbar';
+import { MarkdownRichTextToolbar, MarkdownWysiwygField } from '../../components/markdown-rich-text-toolbar';
 import toolbarStyles from '../../components/markdown-rich-text-toolbar/markdown-rich-text-toolbar.module.css';
 import styles from './subplebbit-settings.module.css';
 import _ from 'lodash';
@@ -57,6 +56,7 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
   const [showRichText, setShowRichText] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const descriptionTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const descriptionWysiwygRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className={`${styles.box} ${isReadOnly && !description ? styles.hidden : styles.visible}`}>
@@ -70,6 +70,8 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
             {showRichText && (
               <MarkdownRichTextToolbar
                 textareaRef={descriptionTextareaRef}
+                wysiwygRef={descriptionWysiwygRef}
+                editorSurface={showPreview ? 'wysiwyg' : 'markdown'}
                 value={description ?? ''}
                 onChange={(next) => setSubplebbitSettingsStore({ description: next })}
                 showMarkdownPreview={showPreview}
@@ -77,25 +79,21 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
               />
             )}
             {showRichText ? (
-              <>
+              showPreview ? (
+                <MarkdownWysiwygField
+                  wysiwygRef={descriptionWysiwygRef}
+                  value={description ?? ''}
+                  onChange={(next) => setSubplebbitSettingsStore({ description: next })}
+                  className={cn('min-h-[6.25rem]', toolbarStyles.attachedFieldBelowToolbar)}
+                />
+              ) : (
                 <Textarea
                   ref={descriptionTextareaRef}
-                  className={cn(
-                    'min-h-[6.25rem]',
-                    toolbarStyles.attachedFieldBelowToolbar,
-                    showPreview && toolbarStyles.attachedEditorWhenPreviewBelow,
-                  )}
+                  className={cn('min-h-[6.25rem]', toolbarStyles.attachedFieldBelowToolbar)}
                   value={description ?? ''}
                   onChange={(e) => setSubplebbitSettingsStore({ description: e.target.value })}
                 />
-                {showPreview && (
-                  <div className={toolbarStyles.attachedLivePreviewBelow}>
-                    <div className={styles.descriptionLivePreview}>
-                      <Markdown content={description ?? ''} />
-                    </div>
-                  </div>
-                )}
-              </>
+              )
             ) : (
               <Textarea
                 ref={descriptionTextareaRef}

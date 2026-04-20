@@ -5,13 +5,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PublishCommentEditOptions, useComment, useEditedComment, usePublishCommentEdit } from '@bitsocialnet/bitsocial-react-hooks';
-import { MarkdownRichTextToolbar } from '../markdown-rich-text-toolbar';
+import { MarkdownRichTextToolbar, MarkdownWysiwygField } from '../markdown-rich-text-toolbar';
 import toolbarStyles from '../markdown-rich-text-toolbar/markdown-rich-text-toolbar.module.css';
 import styles from '../reply-form/reply-form.module.css';
 import { cn } from '@/lib/utils';
 import { alertChallengeVerificationFailed } from '../../lib/utils/challenge-utils';
 import challengesStore from '../../stores/use-challenges-store';
-import Markdown from '../markdown';
 
 const { addChallenge } = challengesStore.getState();
 
@@ -26,6 +25,7 @@ const CommentEditForm = ({ commentCid, hideCommentEditForm }: CommentEditFormPro
   const [showRichText, setShowRichText] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const textRef = useRef<HTMLTextAreaElement>(null);
+  const wysiwygRef = useRef<HTMLDivElement>(null);
 
   let post: any;
   const comment = useComment({ commentCid });
@@ -96,6 +96,8 @@ const CommentEditForm = ({ commentCid, hideCommentEditForm }: CommentEditFormPro
         {showRichText && (
           <MarkdownRichTextToolbar
             textareaRef={textRef}
+            wysiwygRef={wysiwygRef}
+            editorSurface={showPreview ? 'wysiwyg' : 'markdown'}
             value={publishCommentEditOptions.content}
             onChange={(next) => setPublishCommentEditOptions((state) => ({ ...state, content: next }))}
             showMarkdownPreview={showPreview}
@@ -103,25 +105,21 @@ const CommentEditForm = ({ commentCid, hideCommentEditForm }: CommentEditFormPro
           />
         )}
         {showRichText ? (
-          <>
+          showPreview ? (
+            <MarkdownWysiwygField
+              wysiwygRef={wysiwygRef}
+              value={publishCommentEditOptions.content}
+              onChange={(next) => setPublishCommentEditOptions((state) => ({ ...state, content: next }))}
+              className={cn(styles.textarea, toolbarStyles.attachedFieldBelowToolbar)}
+            />
+          ) : (
             <Textarea
-              className={cn(
-                styles.textarea,
-                toolbarStyles.attachedFieldBelowToolbar,
-                showPreview && toolbarStyles.attachedEditorWhenPreviewBelow,
-              )}
+              className={cn(styles.textarea, toolbarStyles.attachedFieldBelowToolbar)}
               value={publishCommentEditOptions.content}
               ref={textRef}
               onChange={(e) => setPublishCommentEditOptions((state) => ({ ...state, content: e.target.value }))}
             />
-            {showPreview && (
-              <div className={toolbarStyles.attachedLivePreviewBelow}>
-                <div className={styles.preview}>
-                  <Markdown content={publishCommentEditOptions.content} />
-                </div>
-              </div>
-            )}
-          </>
+          )
         ) : (
           <Textarea
             className={styles.textarea}

@@ -68,6 +68,37 @@
   color: hsl(var(--shadcn-muted-foreground));
 }
 
+/* Panel + moderators + settings in one surface (docs/DESIGN.md card radius token) */
+.communityChromeCard {
+  box-sizing: border-box;
+  margin-top: 1.25rem;
+  padding: 1rem 1rem 1.125rem;
+  border: 1px solid hsl(var(--shadcn-border) / 0.85);
+  border-radius: var(--shadcn-radius);
+  background: hsl(var(--shadcn-card));
+  color: hsl(var(--shadcn-card-foreground));
+}
+
+.communityChromeCard .communityPanel {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.communityChromeCard > .list:first-child {
+  margin-top: 0;
+}
+
+.communityChromeCard > .readOnlySettingsLink:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.communityChromeCard .readOnlySettingsLink:last-child {
+  margin-bottom: 0;
+}
+
 /* Scope link defaults to the sidebar shell only — a bare `a {}` in CSS modules is global in Vite and was flattening shadcn-styled <Link> CTAs. */
 .sidebar a,
 .mobileSidebar a {
@@ -247,7 +278,8 @@
   margin: 0;
   padding: 0.5rem 0.625rem;
   border: 1px solid hsl(var(--shadcn-border));
-  border-radius: calc(var(--shadcn-radius) - 2px);
+  /* Same as buttons / controls — `rounded-control` / `--shadcn-radius-control` */
+  border-radius: var(--shadcn-radius-control);
   list-style: none;
   background: hsl(var(--shadcn-muted) / 0.2);
 }

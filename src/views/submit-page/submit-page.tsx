@@ -12,14 +12,13 @@ import usePublishPostStore from '../../stores/use-publish-post-store';
 import { useDefaultSubplebbitAddresses } from '../../hooks/use-default-subplebbits';
 import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import LoadingEllipsis from '../../components/loading-ellipsis';
-import Markdown from '../../components/markdown';
 import Embed from '../../components/post/embed';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { MarkdownRichTextToolbar } from '../../components/markdown-rich-text-toolbar';
+import { MarkdownRichTextToolbar, MarkdownWysiwygField } from '../../components/markdown-rich-text-toolbar';
 import toolbarStyles from '../../components/markdown-rich-text-toolbar/markdown-rich-text-toolbar.module.css';
 import styles from './submit-page.module.css';
 import InfoTooltip from '../../components/info-tooltip';
@@ -269,6 +268,7 @@ const ContentField = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [showRichText, setShowRichText] = useState(false);
   const contentTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const contentWysiwygRef = useRef<HTMLDivElement>(null);
 
   const { content, setPublishPostStore } = usePublishPostStore();
 
@@ -280,6 +280,8 @@ const ContentField = () => {
         {showRichText && (
           <MarkdownRichTextToolbar
             textareaRef={contentTextareaRef}
+            wysiwygRef={contentWysiwygRef}
+            editorSurface={showPreview ? 'wysiwyg' : 'markdown'}
             value={content || ''}
             onChange={(next) => setPublishPostStore({ content: next })}
             showMarkdownPreview={showPreview}
@@ -287,28 +289,23 @@ const ContentField = () => {
           />
         )}
         {showRichText ? (
-          <>
+          showPreview ? (
+            <MarkdownWysiwygField
+              wysiwygRef={contentWysiwygRef}
+              value={content || ''}
+              onChange={(next) => setPublishPostStore({ content: next })}
+              className={cn(styles.input, styles.inputText, toolbarStyles.attachedFieldBelowToolbar)}
+            />
+          ) : (
             <Textarea
               ref={contentTextareaRef}
-              className={cn(
-                styles.input,
-                styles.inputText,
-                toolbarStyles.attachedFieldBelowToolbar,
-                showPreview && toolbarStyles.attachedEditorWhenPreviewBelow,
-              )}
+              className={cn(styles.input, styles.inputText, toolbarStyles.attachedFieldBelowToolbar)}
               value={content || ''}
               onChange={(e) => {
                 setPublishPostStore({ content: e.target.value });
               }}
             />
-            {showPreview && (
-              <div className={toolbarStyles.attachedLivePreviewBelow}>
-                <div className={styles.contentPreviewMarkdown}>
-                  <Markdown content={content || ''} />
-                </div>
-              </div>
-            )}
-          </>
+          )
         ) : (
           <Textarea
             ref={contentTextareaRef}

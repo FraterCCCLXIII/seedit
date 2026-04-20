@@ -15,14 +15,20 @@ import {
   Superscript,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { wysiwygHtmlToMarkdown } from '@/lib/markdown-wysiwyg-bridge';
 import { prefixLinesInRange, wrapSelection } from '@/lib/markdown-textarea-format';
+import { wysiwygExec, wysiwygFocus, wysiwygWrapSelectionInSpoiler } from '@/lib/wysiwyg-exec';
 import styles from './markdown-rich-text-toolbar.module.css';
+
+export type EditorSurface = 'markdown' | 'wysiwyg';
 
 export type MarkdownRichTextToolbarProps = {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
+  wysiwygRef: RefObject<HTMLDivElement | null>;
+  editorSurface: EditorSurface;
   value: string;
   onChange: (next: string) => void;
-  /** When true, a rendered markdown panel is shown under the source editor */
+  /** When true, the rich / preview surface is active (contenteditable); false = raw markdown textarea */
   showMarkdownPreview: boolean;
   onToggleMarkdownPreview: () => void;
 };
@@ -32,12 +38,21 @@ export type MarkdownRichTextToolbarProps = {
  */
 export function MarkdownRichTextToolbar({
   textareaRef,
+  wysiwygRef,
+  editorSurface,
   value,
   onChange,
   showMarkdownPreview,
   onToggleMarkdownPreview,
 }: MarkdownRichTextToolbarProps) {
   const { t } = useTranslation();
+  const isWysiwyg = editorSurface === 'wysiwyg';
+
+  const afterWysiwygEdit = () => {
+    const el = wysiwygRef.current;
+    if (!el) return;
+    onChange(wysiwygHtmlToMarkdown(el.innerHTML));
+  };
 
   const restoreSelection = (start: number, end: number) => {
     requestAnimationFrame(() => {
@@ -59,22 +74,69 @@ export function MarkdownRichTextToolbar({
     restoreSelection(r.selectionStart, r.selectionEnd);
   };
 
-  const onItalic = () =>
+  const onItalic = () => {
+    if (isWysiwyg) {
+      wysiwygExec('italic', undefined, wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
     act((v, s, e) => wrapSelection(v, s, e, '*', '*', t('italics')));
+  };
 
-  const onBold = () =>
+  const onBold = () => {
+    if (isWysiwyg) {
+      wysiwygExec('bold', undefined, wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
     act((v, s, e) => wrapSelection(v, s, e, '**', '**', t('bold')));
+  };
 
-  const onStrike = () => act((v, s, e) => wrapSelection(v, s, e, '~~', '~~', t('strikethrough')));
+  const onStrike = () => {
+    if (isWysiwyg) {
+      wysiwygExec('strikeThrough', undefined, wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
+    act((v, s, e) => wrapSelection(v, s, e, '~~', '~~', t('strikethrough')));
+  };
 
-  const onSup = () => act((v, s, e) => wrapSelection(v, s, e, '^', '^', t('superscript')));
+  const onSup = () => {
+    if (isWysiwyg) {
+      wysiwygExec('superscript', undefined, wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
+    act((v, s, e) => wrapSelection(v, s, e, '^', '^', t('superscript')));
+  };
 
-  const onSub = () => act((v, s, e) => wrapSelection(v, s, e, '~', '~', t('subscript')));
+  const onSub = () => {
+    if (isWysiwyg) {
+      wysiwygExec('subscript', undefined, wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
+    act((v, s, e) => wrapSelection(v, s, e, '~', '~', t('subscript')));
+  };
 
-  const onSpoiler = () =>
+  const onSpoiler = () => {
+    if (isWysiwyg) {
+      wysiwygWrapSelectionInSpoiler(wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
     act((v, s, e) => wrapSelection(v, s, e, '<spoiler>', '</spoiler>', t('spoiler_text')));
+  };
 
   const onLink = () => {
+    if (isWysiwyg) {
+      const url = window.prompt(t('rte_link_prompt'), 'https://');
+      if (url === null || url === '') return;
+      wysiwygFocus(wysiwygRef.current);
+      wysiwygExec('createLink', url, wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
     const el = textareaRef.current;
     if (!el) return;
     const s = el.selectionStart;
@@ -86,11 +148,32 @@ export function MarkdownRichTextToolbar({
     restoreSelection(r.selectionStart, r.selectionEnd);
   };
 
-  const onList = () => act((v, s, e) => prefixLinesInRange(v, s, e, '* '));
+  const onList = () => {
+    if (isWysiwyg) {
+      wysiwygExec('insertUnorderedList', undefined, wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
+    act((v, s, e) => prefixLinesInRange(v, s, e, '* '));
+  };
 
-  const onQuote = () => act((v, s, e) => prefixLinesInRange(v, s, e, '> '));
+  const onQuote = () => {
+    if (isWysiwyg) {
+      wysiwygExec('formatBlock', 'blockquote', wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
+    act((v, s, e) => prefixLinesInRange(v, s, e, '> '));
+  };
 
-  const onCodeIndent = () => act((v, s, e) => prefixLinesInRange(v, s, e, '    '));
+  const onCodeIndent = () => {
+    if (isWysiwyg) {
+      wysiwygExec('insertText', '    ', wysiwygRef.current);
+      afterWysiwygEdit();
+      return;
+    }
+    act((v, s, e) => prefixLinesInRange(v, s, e, '    '));
+  };
 
   return (
     <div className={styles.toolbar} role='toolbar' aria-label={t('rich_text')}>

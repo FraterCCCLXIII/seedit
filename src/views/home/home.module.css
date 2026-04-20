@@ -19,10 +19,31 @@
   min-width: 0;
 }
 
+/* Feed end / loading captions — align with `feed-footer.module.css` (centered caption text). */
 .footer {
+  display: flex;
+  flex-direction: column;
+  /* Subplebbit / inline footers use `<br />` for vertical rhythm; avoid double spacing vs `feed-footer`. */
+  gap: 0;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   padding: 12px 0 36px;
   font-size: 13px;
   line-height: 1.45;
+  text-align: center;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.stateString {
+  min-width: 0;
+  width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.morePostsSuggestion {
   color: hsl(var(--shadcn-muted-foreground));
 }
 

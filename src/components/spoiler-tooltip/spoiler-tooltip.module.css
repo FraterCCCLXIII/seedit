@@ -10,7 +10,8 @@
   pointer-events: none;
   padding: 3px 6px;
   z-index: 100000;
-  font: normal x-small verdana, arial, helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 400;
 }
 
 .tooltip::before {

@@ -7,10 +7,15 @@ import { createAccount, setActiveAccount, useAccount, useAccounts } from '@bitso
 import { cn } from '@/lib/utils';
 import styles from './FeedNavRail.module.css';
 
+type FeedNavAccountMenuProps = {
+  /** Icon-only rail: native `title` + `aria-label` (avoid second Floating UI root on the trigger). */
+  isCompact?: boolean;
+};
+
 /**
  * Account switcher docked to the bottom of the left rail (scroll is above in FeedNavRail).
  */
-const FeedNavAccountMenu = () => {
+const FeedNavAccountMenu = ({ isCompact = false }: FeedNavAccountMenuProps) => {
   const { t } = useTranslation();
   const account = useAccount();
   const { accounts } = useAccounts();
@@ -44,6 +49,8 @@ const FeedNavAccountMenu = () => {
         {...getReferenceProps()}
         aria-expanded={open}
         aria-haspopup='menu'
+        title={isCompact ? triggerLabel : undefined}
+        aria-label={isCompact ? triggerLabel : undefined}
       >
         <span className={styles.accountTriggerLabel}>
           <PixelIcon glyph='user' className={styles.accountTriggerIcon} aria-hidden />

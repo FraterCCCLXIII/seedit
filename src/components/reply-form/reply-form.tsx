@@ -10,7 +10,7 @@ import { isValidURL } from '../../lib/utils/url-utils';
 import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
 import usePublishReply from '../../hooks/use-publish-reply';
 import Markdown from '../markdown';
-import { MarkdownRichTextToolbar } from '../markdown-rich-text-toolbar';
+import { MarkdownRichTextToolbar, MarkdownWysiwygField } from '../markdown-rich-text-toolbar';
 import toolbarStyles from '../markdown-rich-text-toolbar/markdown-rich-text-toolbar.module.css';
 import styles from './reply-form.module.css';
 
@@ -131,11 +131,15 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
 
   // focus on the textarea when replying to a reply
   const textRef = useRef<HTMLTextAreaElement>(null);
+  const wysiwygRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (isReplyingToReply && textRef.current) {
-      textRef.current.focus();
+    if (!isReplyingToReply) return;
+    if (showRichText && showPreview) {
+      wysiwygRef.current?.focus();
+    } else {
+      textRef.current?.focus();
     }
-  }, [isReplyingToReply, textRef]);
+  }, [isReplyingToReply, showRichText, showPreview]);
 
   const onPublish = () => {
     const currentContent = publishReplyOptions?.content || '';
@@ -170,6 +174,8 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
         {showRichText && (
           <MarkdownRichTextToolbar
             textareaRef={textRef}
+            wysiwygRef={wysiwygRef}
+            editorSurface={showPreview ? 'wysiwyg' : 'markdown'}
             value={publishReplyOptions?.content || ''}
             onChange={(next) => setPublishReplyOptions.content(next)}
             showMarkdownPreview={showPreview}
@@ -177,27 +183,25 @@ const ReplyForm = ({ cid, isReplyingToReply, hideReplyForm, subplebbitAddress, p
           />
         )}
         {showRichText ? (
-          <>
+          showPreview ? (
+            <MarkdownWysiwygField
+              wysiwygRef={wysiwygRef}
+              value={publishReplyOptions?.content || ''}
+              onChange={(next) => setPublishReplyOptions.content(next)}
+              className={cn(styles.textarea, toolbarStyles.attachedFieldBelowToolbar)}
+              onFocus={() => setIsTextareaFocused(true)}
+              onBlur={() => setIsTextareaFocused(false)}
+            />
+          ) : (
             <Textarea
               ref={textRef}
-              className={cn(
-                styles.textarea,
-                toolbarStyles.attachedFieldBelowToolbar,
-                showPreview && toolbarStyles.attachedEditorWhenPreviewBelow,
-              )}
+              className={cn(styles.textarea, toolbarStyles.attachedFieldBelowToolbar)}
               value={publishReplyOptions?.content || ''}
               onChange={(e) => setPublishReplyOptions.content(e.target.value)}
               onFocus={() => setIsTextareaFocused(true)}
               onBlur={() => setIsTextareaFocused(false)}
             />
-            {showPreview && (
-              <div className={toolbarStyles.attachedLivePreviewBelow}>
-                <div className={styles.preview}>
-                  <Markdown content={publishReplyOptions?.content || ''} />
-                </div>
-              </div>
-            )}
-          </>
+          )
         ) : (
           <Textarea
             ref={textRef}

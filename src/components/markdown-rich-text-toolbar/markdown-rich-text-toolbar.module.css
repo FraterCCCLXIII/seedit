@@ -24,27 +24,6 @@
   border-top-width: 0 !important;
 }
 
-/**
- * Live rendered markdown panel directly under the source editor (rich text mode).
- */
-.attachedLivePreviewBelow {
-  margin-top: 0;
-  border: 1px solid hsl(var(--shadcn-border));
-  border-top: none;
-  border-radius: 0 0 var(--shadcn-radius-control) var(--shadcn-radius-control);
-  background-color: hsl(var(--shadcn-muted) / 0.2);
-  box-sizing: border-box;
-}
-
-/**
- * Source editor when a live preview panel is shown beneath it (shared outer chrome).
- */
-.attachedEditorWhenPreviewBelow {
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  border-bottom-width: 0 !important;
-}
-
 .formatGroup {
   display: flex;
   flex-wrap: wrap;

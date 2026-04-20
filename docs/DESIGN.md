@@ -128,15 +128,18 @@ Background Layers (Light Mode):
 ### Font Stack
 
 ```css
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 ```
 
+**Implementation:** `Inter` is loaded from Google Fonts in `index.html`; `--font-sans` in `src/styles/shadcn.css` matches this stack (Tailwind `font-sans` extends the same list in `tailwind.config.js`).
+
 ### Fallback Hierarchy
-1. **-apple-system** (iOS/macOS San Francisco)
-2. **BlinkMacSystemFont** (macOS Chrome San Francisco)
-3. **Segoe UI** (Windows)
-4. **Roboto** (Android/Chrome OS)
-5. **Helvetica, Arial** (Universal fallbacks)
+1. **Inter** (primary web font)
+2. **-apple-system** (iOS/macOS San Francisco)
+3. **BlinkMacSystemFont** (macOS Chrome San Francisco)
+4. **Segoe UI** (Windows)
+5. **Roboto** (Android/Chrome OS)
+6. **Helvetica, Arial** (Universal fallbacks)
 
 ### Type Scale
 
@@ -722,7 +725,7 @@ Toast/Alerts:   700
 - Use semantic colors consistently (green for repost, pink for like)
 
 #### Typography
-- Stick to the system font stack for performance and native feel
+- Use **Inter** as the primary typeface, with the system stack as fallback (`--font-sans`)
 - Use 15px as the base font size for body text
 - Apply bold weight (700) for display names and emphasis
 - Keep line height at 20px for comfortable reading
@@ -754,7 +757,7 @@ Toast/Alerts:   700
 - Don't deviate from the monochromatic + blue palette
 
 #### Typography
-- Don't use decorative or custom fonts
+- Don't add extra display or novelty fonts outside Inter and the defined fallback stack
 - Don't go below 11px for any text
 - Don't use all-caps except for specific labels
 - Don't center-align body text
@@ -935,7 +938,7 @@ VISUAL FOUNDATION:
 - Border gray (#2F3336) for all dividers
 
 TYPOGRAPHY:
-- System font stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto
+- Font stack: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
 - Base size: 15px
 - Line height: 20px
 - Bold (700) for names and emphasis
@@ -1075,7 +1078,7 @@ Success States:
 | Accent Blue | `#1D9BF0` |
 | Secondary Text | `#71767B` |
 | Borders | `#2F3336` |
-| Font Family | System fonts |
+| Font Family | Inter + system fallbacks |
 | Base Font Size | 15px |
 | Button Radius | 9999px |
 | Card Radius | 16px |

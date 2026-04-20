@@ -125,17 +125,6 @@
   margin-top: 0.5rem;
 }
 
-.descriptionLivePreview {
-  min-height: 5rem;
-  padding: 0.625rem 0.75rem;
-  font-size: 0.9375rem;
-  color: hsl(var(--shadcn-foreground));
-  line-height: 1.45;
-  font-family: var(--font-sans);
-  word-wrap: break-word;
-  box-sizing: border-box;
-}
-
 .readOnlyAddress {
   word-wrap: break-word;
   font-size: 0.9375rem;

@@ -107,17 +107,6 @@ const PostTools = ({
   const commentCountDisplay = String(validReplyCount);
   const commentsAriaLabel = `${validReplyCount} ${validReplyCount === 1 ? t('post_comment') : t('post_comments')}`;
 
-  // show gray dotted border around last clicked post
-  const handlePostClick = () => {
-    if (cid) {
-      if (sessionStorage.getItem('lastClickedPost') === cid) {
-        sessionStorage.removeItem('lastClickedPost');
-      } else {
-        sessionStorage.setItem('lastClickedPost', cid);
-      }
-    }
-  };
-
   const commentIconCount = (
     <>
       <PixelIcon glyph='comment-dots' className={styles.engagementIcon} aria-hidden />
@@ -135,7 +124,6 @@ const PostTools = ({
         to={cid ? `/s/${subplebbitAddress}/c/${cid}` : `/profile/${index}`}
         className={styles.engagementAction}
         aria-label={commentsAriaLabel}
-        onClick={() => cid && handlePostClick?.()}
       >
         {commentIconCount}
       </Link>

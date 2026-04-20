@@ -18,3 +18,13 @@ declare module '*.svg' {
   const value: string;
   export default value;
 }
+
+declare module 'turndown' {
+  type TurndownFilter = string | string[] | ((node: Node, options: unknown) => boolean);
+  type TurndownReplacement = (content: string, node: Node) => string;
+  export default class TurndownService {
+    constructor(options?: Record<string, unknown>);
+    addRule(name: string, rule: { filter: TurndownFilter; replacement: TurndownReplacement }): this;
+    turndown(html: string | HTMLElement): string;
+  }
+}

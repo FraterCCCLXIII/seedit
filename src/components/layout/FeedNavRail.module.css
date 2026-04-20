@@ -119,6 +119,10 @@
   background-color: hsl(var(--shadcn-accent));
 }
 
+.navLabel {
+  min-width: 0;
+}
+
 /* New Post — monochrome CTA (not X blue primary); light = dark fill, dark = white fill */
 .submitPostButton {
   display: inline-flex;
@@ -251,4 +255,94 @@
 
 .accountChevronOpen {
   transform: rotate(180deg);
+}
+
+/* Narrow viewports: icon-only rail + tooltips (see FeedNavRailTooltip). */
+@media (max-width: 899px) {
+  .navScroll {
+    gap: 6px;
+    align-items: center;
+  }
+
+  .logoContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  .logoLink {
+    position: relative;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .navItem {
+    position: relative;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .navLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .submitPostButton {
+    position: relative;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 9999px;
+    gap: 0;
+  }
+
+  .submitPostIcon {
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 1.125rem;
+  }
+
+  .accountDock {
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+  }
+
+  .accountTrigger {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .accountTriggerLabel {
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+
+  .accountTriggerText,
+  .accountChevron {
+    display: none;
+  }
 }

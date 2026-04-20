@@ -52,7 +52,9 @@
 
 .tooltipContent {
   white-space: pre-wrap;
-  font: 10px verdana, arial, helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 400;
   color: var(--info-tooltip-text);
   margin: .5em;
 }

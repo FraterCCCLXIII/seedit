@@ -6,7 +6,6 @@ import { useAutoSubscribe } from './hooks/use-auto-subscribe';
 import ChallengeModal from './components/challenge-modal';
 import Header from './components/header';
 import NotificationHandler from './components/notification-handler';
-import StickyHeader from './components/sticky-header';
 import { FeedShellLayout, FeedShellWithModalRoutes } from './components/layout';
 import styles from './app.module.css';
 
@@ -24,7 +23,7 @@ const App = () => {
   );
 
   const feedLayout = (
-    <FeedShellLayout stickyHeader={<StickyHeader />} header={<Header />}>
+    <FeedShellLayout header={<Header />}>
       <Outlet />
     </FeedShellLayout>
   );

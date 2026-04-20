@@ -156,6 +156,17 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   /** Left feed rail (≥900px) hosts submit under Settings; keep CTA in sidebar when the rail is hidden. */
   const windowWidth = useWindowWidth();
   const showSubmitInSidebar = windowWidth < 900;
+  /** Wide layout + subplebbit route: submit is in the rail and create-community is in ctaStackBottom — skip empty wrapper. */
+  const showCtaStack = showSubmitInSidebar || isInSubplebbitsView || !isInSubplebbitView;
+
+  const showSidebarCommunityPanel =
+    !isInHomeView &&
+    !isInHomeAboutView &&
+    !isInAllView &&
+    !isInModView &&
+    !isInSubplebbitsView &&
+    !isInDomainView &&
+    !isInPostPageAboutView;
 
   const subplebbitCreator = findSubplebbitCreator(roles);
   const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress({ address: subplebbitCreator })}`;
@@ -186,6 +197,13 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const moderatorRole = roles?.[account.author?.address]?.role;
   const isOwner = !!settings;
 
+  const showReadOnlyCommunitySettings = !!(address && !(moderatorRole || isOwner));
+  const showCommunityChromeCard =
+    showSidebarCommunityPanel ||
+    !!(moderatorRole || isOwner) ||
+    (roles && Object.keys(roles).length > 0) ||
+    showReadOnlyCommunitySettings;
+
   const isConnectedToRpc = usePlebbitRpcSettings()?.state === 'connected';
   const navigate = useNavigate();
   const [createCommunityModalOpen, setCreateCommunityModalOpen] = useState(false);
@@ -207,97 +225,96 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
         <SearchBar />
       </div>
         <div>
-        <div className={styles.ctaStack}>
-          {showSubmitInSidebar && (
-            <button
-              type='button'
-              className={cn(styles.ctaBase, styles.ctaPrimary)}
-              onClick={() => navigate(submitRoute, { state: { backgroundLocation: location } })}
-            >
-              {t('submit_post')}
-            </button>
-          )}
-          {isInSubplebbitsView && (
-            <a
-              href='https://github.com/bitsocialhq/lists'
-              target='_blank'
-              rel='noopener noreferrer'
-              className={cn(styles.ctaBase, styles.ctaSecondaryLink)}
-            >
-              {t('submit_community')}
-            </a>
-          )}
-          {!isInSubplebbitView ? (
-            <button type='button' className={cn(styles.ctaBase, styles.ctaOutline)} onClick={handleCreateCommunityClick}>
-              {t('create_your_community')}
-            </button>
-          ) : null}
-        </div>
-        {!isInHomeView &&
-          !isInHomeAboutView &&
-          !isInAllView &&
-          !isInModView &&
-          !isInSubplebbitsView &&
-          !isInHomeAboutView &&
-          !isInDomainView &&
-          !isInPostPageAboutView && (
-            <section className={styles.communityPanel} aria-label={subplebbit?.address}>
-              {moderatorRole ? (
-                <div className={styles.moderatorLine}>
-                  <div className={styles.moderatorStatus}>
-                    {moderatorRole === 'moderator' ? t('you_are_moderator') : moderatorRole === 'admin' ? t('you_are_admin') : t('you_are_owner')}
-                  </div>
-                </div>
-              ) : null}
-              {description && description.length > 0 ? (
-                <div className={styles.aboutBlock}>
-                  {title && title.length > 0 ? (
-                    <h2 className={styles.sidebarSectionHeading}>{title}</h2>
-                  ) : null}
-                  <div className={styles.description}>
-                    <Markdown content={description} />
-                  </div>
-                </div>
-              ) : null}
-              {rules && rules.length > 0 ? <RulesList rules={rules} /> : null}
-              <div className={styles.bottom}>
-                <div className={styles.bottomMeta}>
-                  <span className={styles.bottomMetaPrimary}>
-                    {t('created_by', {
-                      creatorAddress: creatorAddress === 'anonymous' ? 'anonymous' : `u/${creatorAddress}`,
-                    })}
-                  </span>
-                  {createdAt ? <span className={styles.bottomMetaSecondary}>{t('community_for', { date: getFormattedTimeDuration(createdAt) })}</span> : null}
-                </div>
-                <div className={styles.bottomButtons}>
-                  {showBlockConfirm ? (
-                    <span className={styles.blockConfirm}>
-                      {t('are_you_sure')}{' '}
-                      <button type='button' className={styles.confirmButton} onClick={handleBlock}>
-                        {t('yes')}
-                      </button>
-                      {' / '}
-                      <button type='button' className={styles.cancelButton} onClick={cancelBlock}>
-                        {t('no')}
-                      </button>
-                    </span>
-                  ) : (
-                    <button type='button' className={styles.blockSub} onClick={blockConfirm}>
-                      {blocked ? t('unblock_community') : t('block_community')}
-                    </button>
-                  )}
-                </div>
-              </div>
-            </section>
-          )}
-        {(moderatorRole || isOwner) && <ModerationTools address={address} />}
-        {roles && Object.keys(roles).length > 0 && <ModeratorsList roles={roles} />}
-        {(!(isMobile && isInHomeAboutView) || isInSubplebbitAboutView || isInPostPageAboutView) && <Footer />}
-        {address && !(moderatorRole || isOwner) && (
-          <div className={styles.readOnlySettingsLink}>
-            <Link to={`/s/${address}/settings`}>{t('community_settings')}</Link>
+        {showCtaStack ? (
+          <div className={styles.ctaStack}>
+            {showSubmitInSidebar && (
+              <button
+                type='button'
+                className={cn(styles.ctaBase, styles.ctaPrimary)}
+                onClick={() => navigate(submitRoute, { state: { backgroundLocation: location } })}
+              >
+                {t('submit_post')}
+              </button>
+            )}
+            {isInSubplebbitsView && (
+              <a
+                href='https://github.com/bitsocialhq/lists'
+                target='_blank'
+                rel='noopener noreferrer'
+                className={cn(styles.ctaBase, styles.ctaSecondaryLink)}
+              >
+                {t('submit_community')}
+              </a>
+            )}
+            {!isInSubplebbitView ? (
+              <button type='button' className={cn(styles.ctaBase, styles.ctaOutline)} onClick={handleCreateCommunityClick}>
+                {t('create_your_community')}
+              </button>
+            ) : null}
           </div>
-        )}
+        ) : null}
+        {showCommunityChromeCard ? (
+          <div className={styles.communityChromeCard}>
+            {showSidebarCommunityPanel ? (
+              <section className={styles.communityPanel} aria-label={subplebbit?.address}>
+                {moderatorRole ? (
+                  <div className={styles.moderatorLine}>
+                    <div className={styles.moderatorStatus}>
+                      {moderatorRole === 'moderator' ? t('you_are_moderator') : moderatorRole === 'admin' ? t('you_are_admin') : t('you_are_owner')}
+                    </div>
+                  </div>
+                ) : null}
+                {description && description.length > 0 ? (
+                  <div className={styles.aboutBlock}>
+                    {title && title.length > 0 ? (
+                      <h2 className={styles.sidebarSectionHeading}>{title}</h2>
+                    ) : null}
+                    <div className={styles.description}>
+                      <Markdown content={description} />
+                    </div>
+                  </div>
+                ) : null}
+                {rules && rules.length > 0 ? <RulesList rules={rules} /> : null}
+                <div className={styles.bottom}>
+                  <div className={styles.bottomMeta}>
+                    <span className={styles.bottomMetaPrimary}>
+                      {t('created_by', {
+                        creatorAddress: creatorAddress === 'anonymous' ? 'anonymous' : `u/${creatorAddress}`,
+                      })}
+                    </span>
+                    {createdAt ? <span className={styles.bottomMetaSecondary}>{t('community_for', { date: getFormattedTimeDuration(createdAt) })}</span> : null}
+                  </div>
+                  <div className={styles.bottomButtons}>
+                    {showBlockConfirm ? (
+                      <span className={styles.blockConfirm}>
+                        {t('are_you_sure')}{' '}
+                        <button type='button' className={styles.confirmButton} onClick={handleBlock}>
+                          {t('yes')}
+                        </button>
+                        {' / '}
+                        <button type='button' className={styles.cancelButton} onClick={cancelBlock}>
+                          {t('no')}
+                        </button>
+                      </span>
+                    ) : (
+                      <button type='button' className={styles.blockSub} onClick={blockConfirm}>
+                        {blocked ? t('unblock_community') : t('block_community')}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </section>
+            ) : null}
+            {(moderatorRole || isOwner) && <ModerationTools address={address} />}
+            {roles && Object.keys(roles).length > 0 && <ModeratorsList roles={roles} />}
+            {showReadOnlyCommunitySettings ? (
+              <div className={styles.readOnlySettingsLink}>
+                <Link to={`/s/${address}/settings`}>{t('community_settings')}</Link>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+        {(!(isMobile && isInHomeAboutView) || isInSubplebbitAboutView || isInPostPageAboutView) && <Footer />}
         {isInSubplebbitView ? (
           <div className={styles.ctaStackBottom}>
             <button type='button' className={cn(styles.ctaBase, styles.ctaOutline)} onClick={handleCreateCommunityClick}>

@@ -404,9 +404,27 @@
   cursor: pointer;
 }
 
-.lastClicked {
-  border: 1px dashed hsl(var(--shadcn-border));
-  border-radius: calc(var(--shadcn-radius) - 2px);
+/* Pinned announcement — feed only: muted surface + corner pin (no dashed “last viewed” outline) */
+.pinnedFeedCard {
+  position: relative;
+  margin: -0.25rem -0.35rem 0;
+  padding: 0.35rem 1.5rem 0.15rem 0.35rem;
+  border-radius: calc(var(--shadcn-radius));
+  background-color: hsl(var(--shadcn-muted) / 0.55);
+}
+
+.pinnedCornerPin {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.45rem;
+  display: inline-flex;
+  pointer-events: none;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.pinnedCornerPinIcon {
+  width: 1rem;
+  height: 1rem;
 }
 
 /* All-feed join/leave — shared SubscribeButton; keep community link tint after joining */
