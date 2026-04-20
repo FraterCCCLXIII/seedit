@@ -111,10 +111,10 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
         <Trans i18nKey='wallet_number' values={{ index: index + 1 }} />
       </div>
       <div key={index} className={styles.walletBox}>
-        <Button type='button' className={styles.toggleWallet} onClick={() => toggleShowWallet(index)}>
+        <Button type='button' variant='outline' className={styles.toggleWallet} onClick={() => toggleShowWallet(index)}>
           {showWallet[index] ? t('hide') : t('show')}
         </Button>
-        <Button type='button' onClick={() => handleRemove(index)}>
+        <Button type='button' variant='outline' onClick={() => handleRemove(index)}>
           {t('remove')}
         </Button>
         <div className={`${showWallet[index] ? styles.show : styles.hide}`}>
@@ -173,7 +173,7 @@ const CryptoWalletsForm = ({ account }: { account: Account | undefined }) => {
               value={wallet.signature}
               placeholder='0x...'
             />
-            <Button type='button' className={styles.save} onClick={handleSave}>
+            <Button type='button' variant='neutral' className={styles.save} onClick={handleSave}>
               {t('save')}
             </Button>
           </div>

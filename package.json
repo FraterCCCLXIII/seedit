@@ -19,7 +19,6 @@
     "@radix-ui/react-slot": "1.2.4",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "lucide-react": "0.468.0",
     "@types/node": "20.8.2",
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
@@ -86,6 +85,7 @@
     "android:build:icons": "cordova-res android --skip-config --copy --resources /tmp/plebbit-react-android-icons --icon-source ./android/icons/icon.png --splash-source ./android/icons/splash.png --icon-foreground-source ./android/icons/icon-foreground.png --icon-background-source '#ffffee'",
     "prettier": "oxfmt src/**/*.{js,ts,tsx} electron/**/*.{js,mjs}",
     "lint": "oxlint src electron",
+    "check:view-css-lowercase": "grep -rE 'text-transform:[[:space:]]*lowercase' --include='*.module.css' src/views >/dev/null && exit 1 || exit 0",
     "type-check": "tsgo --noEmit",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "android:build": "yarn build && npx cap sync android && npx cap run android"

@@ -4,10 +4,11 @@ import { HashLink } from 'react-router-hash-link';
 import { Outlet, useParams } from 'react-router-dom';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { useAccount, useAccountComments, useAccountVotes, useComment, type AccountPublicationsFilter } from '@bitsocialnet/bitsocial-react-hooks';
-import useWindowWidth from '../../hooks/use-window-width';
 import AuthorSidebar from '../../components/author-sidebar';
 import Post from '../../components/post';
 import Reply from '../../components/reply';
+import { StandardPageContent } from '@/components/layout';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import styles from './profile.module.css';
 import ErrorDisplay from '../../components/error-display';
 import { getAccountHistoryOrder, getAccountHistoryPage } from '../../lib/utils/account-history-utils';
@@ -311,7 +312,6 @@ const HiddenComments = () => {
 const Profile = () => {
   const { t } = useTranslation();
   const account = useAccount();
-  const isMobile = useWindowWidth() < 640;
   // Show infobar for first 3 visits if account wasn't imported
   const [showInfobar, setShowInfobar] = useState(() => {
     const profileVisits = parseInt(localStorage.getItem('profileVisits') || '0');
@@ -356,12 +356,15 @@ const Profile = () => {
 
   return (
     <div className={styles.content}>
-      {isMobile && infobar}
-      <div className={isMobile ? styles.sidebarMobile : styles.sidebarDesktop}>
-        <AuthorSidebar />
-        {!isMobile && infobar}
+      <div {...feedShellMainProps} className={styles.mainColumn}>
+        {infobar}
+        <StandardPageContent variant='full'>
+          <Outlet />
+        </StandardPageContent>
       </div>
-      <Outlet />
+      <div className={styles.sidebarColumn} {...feedShellSidebarProps}>
+        <AuthorSidebar />
+      </div>
     </div>
   );
 };

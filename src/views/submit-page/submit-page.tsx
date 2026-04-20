@@ -18,9 +18,15 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { FormattingHelpTable } from '../../components/reply-form/reply-form';
 import styles from './submit-page.module.css';
 import InfoTooltip from '../../components/info-tooltip';
+
+export type SubmitPageProps = {
+  /** Modal: fixed title row + scrollable form, flat fields (no grey boxes). */
+  variant?: 'page' | 'modal';
+};
 
 const isAndroid = Capacitor.getPlatform() === 'android';
 const isElectron = window.electronApi?.isElectron === true;
@@ -52,10 +58,10 @@ const UrlField = () => {
   return (
     <div className={styles.box}>
       {url && isValidURL(url) ? (
-        <span className={styles.boxTitleOptional}>{mediaType}</span>
+        <span className={cn(styles.boxTitleOptional, styles.fieldLabelCapitalize)}>{mediaType}</span>
       ) : (
         <>
-          <span className={styles.boxTitleOptional}>url</span>
+          <span className={styles.boxTitleOptional}>{t('submit_url_label')}</span>
           <span className={styles.optional}> ({t('optional')})</span>
         </>
       )}
@@ -66,7 +72,7 @@ const UrlField = () => {
           </span>
         )}
         <Input
-          className={`${styles.input} ${styles.inputUrl}`}
+          className={cn(styles.input)}
           type='text'
           value={url ?? ''}
           autoCorrect='off'
@@ -215,7 +221,7 @@ const UploadMediaForm = () => {
 
   return (
     <div className={styles.box}>
-      <span className={styles.boxTitleOptional}>image/video/audio/pdf</span>
+      <span className={styles.boxTitleOptional}>{t('submit_media_types_label')}</span>
       <div className={styles.boxContent}>
         {isUploading ? (
           <div className={styles.uploading}>
@@ -380,7 +386,7 @@ const SubplebbitAddressField = () => {
       <div className={styles.boxContent}>
         <span className={styles.boxSubtitle}>{t('community_address')}:</span>
         <Input
-          className={`${styles.input} ${styles.inputCommunity}`}
+          className={cn(styles.input)}
           type='text'
           value={inputAddress ?? ''}
           onChange={(e) => {
@@ -466,8 +472,9 @@ const SubmitOptions = () => {
   );
 };
 
-const SubmitPage = () => {
+const SubmitPage = ({ variant = 'page' }: SubmitPageProps) => {
   const { t } = useTranslation();
+  const isModal = variant === 'modal';
   const params = useParams();
   const navigate = useNavigate();
 
@@ -509,52 +516,71 @@ const SubmitPage = () => {
     }
   }, [index, resetPublishPostStore, navigate]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  const documentTitle = t('submit_to_string', {
-    string: subplebbitTitle || shortAddress || 'Seedit',
-    interpolation: { escapeValue: false },
-  });
+  const documentTitle = isModal
+    ? `${t('submit_modal_title')} - Seedit`
+    : t('submit_to_string', {
+        string: subplebbitTitle || shortAddress || 'Seedit',
+        interpolation: { escapeValue: false },
+      });
 
   useEffect(() => {
     document.title = documentTitle;
   }, [documentTitle]);
 
-  return (
-    <div className={styles.content}>
-      <h1>
-        <Trans
-          i18nKey='submit_to'
-          shouldUnescape={true}
-          values={{
-            link: subplebbitTitle || shortAddress || 'seedit',
-          }}
-          components={{
-            1: shortAddress ? <Link key='submit_to_link' to={`/s/${subplebbitAddress}`} className={styles.location} /> : <span key='submit_to_span' />,
-          }}
-        />
-      </h1>
-      <div className={styles.form}>
-        <div className={styles.formContent}>
-          {isOffline && subplebbitAddress && <div className={styles.infobar}>{offlineTitle}</div>}
-          <UrlField />
-          {!link && <UploadMediaForm />}
-          <TitleField />
-          <ContentField />
-          <SubplebbitAddressField />
-          {rules?.length > 0 && <RulesInfo shortAddress={shortAddress || ''} rules={rules} />}
-          <SubmitOptions />
-          <div className={`${styles.box} ${styles.notice}`}>{t('submit_notice')}</div>
-          <div>*{t('required')}</div>
-          <div className={styles.submit}>
-            <Button type='button' className={styles.submitButton} onClick={onPublish}>
-              {t('submit')}
-            </Button>
-          </div>
-        </div>
+  const heading = isModal ? (
+    <h1 className={cn(styles.modalTitle)}>{t('submit_modal_title')}</h1>
+  ) : (
+    <h1>
+      <Trans
+        i18nKey='submit_to'
+        shouldUnescape={true}
+        values={{
+          link: subplebbitTitle || shortAddress || 'Seedit',
+        }}
+        components={{
+          1: shortAddress ? <Link key='submit_to_link' to={`/s/${subplebbitAddress}`} className={styles.location} /> : <span key='submit_to_span' />,
+        }}
+      />
+    </h1>
+  );
+
+  const formInner = (
+    <div className={styles.formContent}>
+      {isOffline && subplebbitAddress && <div className={styles.infobar}>{offlineTitle}</div>}
+      <UrlField />
+      {!link && <UploadMediaForm />}
+      <TitleField />
+      <ContentField />
+      <SubplebbitAddressField />
+      {rules?.length > 0 && <RulesInfo shortAddress={shortAddress || ''} rules={rules} />}
+      <SubmitOptions />
+      <div className={`${styles.box} ${styles.notice}`}>{t('submit_notice')}</div>
+      <p className={styles.requiredNote}>
+        <span className={styles.requiredMark}>*</span> {t('required')}
+      </p>
+      <div className={styles.submit}>
+        <Button type='button' variant='neutral' onClick={onPublish}>
+          {t('submit')}
+        </Button>
       </div>
+    </div>
+  );
+
+  return (
+    <div className={cn(styles.content, isModal && styles.contentModal)} data-variant={isModal ? 'modal' : undefined}>
+      {isModal ? (
+        <>
+          <header className={styles.modalHeader} id='submit-modal-heading'>
+            {heading}
+          </header>
+          <div className={styles.formScroll}>{formInner}</div>
+        </>
+      ) : (
+        <>
+          {heading}
+          <div className={styles.form}>{formInner}</div>
+        </>
+      )}
     </div>
   );
 };

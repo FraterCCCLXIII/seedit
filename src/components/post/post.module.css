@@ -1,96 +1,139 @@
 .content {
   display: flex;
   flex-direction: column;
-  padding: 0.75rem 0.5rem 1rem;
-  margin-bottom: 0.25rem;
+  padding: 0.75rem 0.75rem 0.5rem;
+  margin-bottom: 0;
   border-bottom: 1px solid hsl(var(--shadcn-border) / 0.55);
   border-radius: 0;
   transition: background-color 0.12s ease;
 }
 
 .content:hover {
-  background-color: hsl(var(--shadcn-muted) / 0.25);
+  background-color: hsl(var(--shadcn-muted) / 0.2);
+}
+
+.container {
+  width: 100%;
+  min-width: 0;
 }
 
 .row {
   display: flex;
   align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
-.leftcol {
+/* Community avatar — Twitter-style column */
+.avatarColumn {
   flex-shrink: 0;
-}
-
-.rank {
-  padding-right: 3px;
-  padding-left: 3px;
-  min-width: 2.2ex;
-  margin-top: 15px;
-  color: hsl(var(--shadcn-muted-foreground));
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.midcol {
-  width: 37px;
-  font-weight: bold;
-  font-size: small;
-  float: left;
-  padding-right: 7px;
-  background: transparent;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
   overflow: hidden;
+  background: hsl(var(--shadcn-muted) / 0.6);
+  border: 1px solid hsl(var(--shadcn-border) / 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: hsl(var(--shadcn-foreground));
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
 }
 
-.arrowWrapper {
-  padding-left: 11px;
-  padding-top: 2px;
+.avatarColumn:hover {
+  opacity: 0.92;
 }
 
-.arrowCommon {
-  width: 15px;
-  height: 14px;
-  display: block;
-  cursor: pointer;
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.arrowUp {
-  background-image: url("/assets/buttons/arrow-up.png");
-}
-
-.upvoted {
-  background-image: url("/assets/buttons/arrow-upvoted.png") !important;
-}
-
-.arrowDown {
-  background-image: url("/assets/buttons/arrow-down.png");
-}
-
-.downvoted {
-  background-image: url("/assets/buttons/arrow-downvoted.png") !important;
-}
-
-.score {
-  text-align: center;
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 1.125rem;
+  font-weight: 700;
   color: hsl(var(--shadcn-muted-foreground));
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
 }
 
 .entry {
-  flex-grow: 1;
+  flex: 1;
+  min-width: 0;
   overflow: visible;
   padding: 0;
-  overflow: hidden;
+}
+
+/* Author · time · community — single line, wraps */
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.35rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: hsl(var(--shadcn-muted-foreground));
+  margin-bottom: 0.2rem;
+}
+
+.author {
+  text-decoration: none;
+  color: hsl(var(--shadcn-foreground));
+}
+
+.metaAuthor {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.metaAuthor .displayName {
+  font-weight: 700;
+}
+
+.metaAuthor .authorAddressWrapper {
+  font-weight: 400;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.metaSep {
+  color: hsl(var(--shadcn-muted-foreground));
+  user-select: none;
+}
+
+.metaTime {
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.pinnedBadge {
+  color: hsl(var(--shadcn-muted-foreground));
+  font-weight: 500;
 }
 
 .title {
+  margin: 0.15rem 0 0;
   font-size: 1.0625rem;
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: -0.01em;
+  /* Preflight: `a { text-decoration: inherit }` — keep headline row free of inherited underlines */
+  text-decoration: none;
+}
+
+/* Post headline + domain — beat globals / hover:underline on nested links */
+.title :is(a, a:any-link),
+.title :is(a, a:any-link):hover,
+.title :is(a, a:any-link):visited,
+.title :is(a, a:any-link):active,
+.title :is(a, a:any-link):focus,
+.title :is(a, a:any-link):focus-visible {
+  text-decoration: none !important;
 }
 
 .link {
@@ -125,11 +168,6 @@
   font-weight: 600 !important;
 }
 
-.announcement {
-  color: hsl(var(--shadcn-muted-foreground)) !important;
-  font-weight: 500;
-}
-
 .domain {
   color: hsl(var(--shadcn-muted-foreground));
   font-size: 0.75rem;
@@ -149,18 +187,8 @@
 }
 
 .domain a:hover {
-  text-decoration: underline;
-}
-
-.tagline {
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  color: hsl(var(--shadcn-muted-foreground));
-}
-
-.tagline a {
-  color: hsl(var(--shadcn-foreground));
   text-decoration: none;
+  color: hsl(var(--shadcn-primary));
 }
 
 .timeEdit {
@@ -168,8 +196,14 @@
   font-style: italic;
 }
 
-.subplebbit:hover, .author:hover span {
-  text-decoration: underline;
+.subplebbit:hover {
+  text-decoration: none;
+  color: hsl(var(--shadcn-primary));
+}
+
+.author:hover span {
+  text-decoration: none;
+  color: hsl(var(--shadcn-primary));
 }
 
 .authorAddressWrapper {
@@ -177,7 +211,6 @@
   overflow-x: clip;
 }
 
-/* use the crypto name as the width of the html element, but hide it and display the verified author address instead */
 .authorAddressHidden {
   visibility: hidden;
   user-select: none;
@@ -186,7 +219,6 @@
 .authorAddressVisible {
   float: left;
   width: 0;
-  /* sometimes the text wraps with float left */
   white-space: nowrap;
 }
 
@@ -207,12 +239,117 @@
   animation-iteration-count: 1;
 }
 
-.moderator, .admin, .owner {
+.moderator,
+.admin,
+.owner {
   color: var(--green) !important;
 }
 
 .displayName {
   color: var(--text-primary);
+}
+
+/* Bottom row: votes + comment tools */
+.engagementRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.65rem;
+  padding-top: 0.35rem;
+  max-width: 100%;
+}
+
+.voteCluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.voteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background-color: transparent;
+  cursor: pointer;
+  color: hsl(var(--shadcn-muted-foreground));
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.voteBtn:hover:not(:disabled) {
+  background-color: hsl(var(--shadcn-accent) / 0.45);
+  color: hsl(var(--shadcn-foreground));
+}
+
+.voteBtn:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.voteBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--shadcn-background)), 0 0 0 4px hsl(var(--shadcn-ring));
+}
+
+.voteIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.votedUp {
+  color: hsl(var(--shadcn-primary));
+}
+
+.votedUp:hover:not(:disabled) {
+  background-color: hsl(var(--shadcn-primary) / 0.12);
+  color: hsl(var(--shadcn-primary));
+}
+
+.votedDown {
+  color: hsl(var(--shadcn-destructive));
+}
+
+.votedDown:hover:not(:disabled) {
+  background-color: hsl(var(--shadcn-destructive) / 0.12);
+  color: hsl(var(--shadcn-destructive));
+}
+
+.score {
+  min-width: 1.5rem;
+  text-align: center;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 0.8125rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.engagementRow ul {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.125rem 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  min-width: 0;
+  text-transform: capitalize;
+}
+
+.engagementRow ul li {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.5;
 }
 
 .hidden {
@@ -231,7 +368,7 @@
 
 .hiddenPostText {
   font-size: 14px;
-  color: var(--text)
+  color: var(--text);
 }
 
 .undoHiddenPost {
@@ -247,33 +384,13 @@
   border-radius: calc(var(--shadcn-radius) - 2px);
 }
 
-.subscribeButton {
-  position: absolute;
-  border: none;
-  background: none;
-  background-repeat: no-repeat;
-  height: 12px;
-  width: 12px;
-  background-size: 12px;
-}
-
+/* All-feed join/leave — shared SubscribeButton; keep community link tint after joining */
 .subscribeHoverGroup {
-  padding: 0 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 2px;
   white-space: nowrap;
-}
-
-.buttonSubscribe {
-  background-image: url("/assets/buttons/all_feed_subscribe.png");
-  cursor: pointer;
-}
-
-.buttonSubscribe:hover {
-  background-image: url("/assets/buttons/all_feed_subscribe_hover.png");
-  cursor: pointer;
-}
-
-.buttonSubscribed {
-  background-image: url("/assets/buttons/all_feed_subscribed.png");
 }
 
 .greenSubplebbitAddress {
@@ -285,5 +402,7 @@
 }
 
 .subscribeButtonWrapper {
-  padding-right: 14px;
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-right: 0.1rem;
 }

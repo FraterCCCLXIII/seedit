@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 interface FeedResetState {
   reset: (() => void) | null;
-  setResetFunction: (resetFunction: () => void) => void;
+  setResetFunction: (resetFunction: (() => void) | null) => void;
 }
 
 const useFeedResetStore = create<FeedResetState>((set) => ({

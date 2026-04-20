@@ -8,7 +8,7 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          'h-9 rounded-md border border-input bg-background px-3 py-1 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+          'h-9 rounded-control border border-input bg-background px-3 py-1 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
         /** Single segment inside a bordered group (search + button) — avoids stacking conflicting utilities */
         grouped:
           'h-9 min-h-9 flex-1 rounded-none border-0 bg-transparent px-3 py-2 text-sm text-foreground shadow-none ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0',

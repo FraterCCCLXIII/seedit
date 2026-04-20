@@ -1,0 +1,60 @@
+/**
+ * Native <select> — `--shadcn-radius-control`, 15px/500; focus uses `--shadcn-ring` (monochrome)
+ */
+
+.select {
+  display: block;
+  width: 100%;
+  min-height: 36px;
+  height: 36px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 2.25rem 0 12px;
+  appearance: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  color: hsl(var(--shadcn-foreground));
+  background-color: hsl(var(--shadcn-background));
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px 16px;
+  border: 1px solid hsl(var(--shadcn-border));
+  border-radius: var(--shadcn-radius-control);
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Chevron — muted secondary (DESIGN.md secondary text); theme-specific stroke */
+:global(.light) .select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23536471' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+:global(.dark) .select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371767B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.select:hover:not(:disabled) {
+  background-color: hsl(var(--shadcn-accent) / 0.35);
+  border-color: hsl(var(--shadcn-border));
+}
+
+.select:focus {
+  outline: none;
+}
+
+.select:focus-visible {
+  border-color: hsl(var(--shadcn-ring));
+  box-shadow: 0 0 0 1px hsl(var(--shadcn-ring));
+}
+
+.select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  background-color: hsl(var(--shadcn-muted) / 0.35);
+}

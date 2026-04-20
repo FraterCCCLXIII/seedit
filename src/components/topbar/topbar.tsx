@@ -3,7 +3,8 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useAccountSubplebbits } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
-import { isAllView, isDomainView, isHomeView, isModView, isSubplebbitView } from '../../lib/utils/view-utils';
+import { mergeFeedShellRouteParams } from '../../lib/utils/feed-shell-route-params';
+import { isAllView, isDomainView, isHomeView, isModView, isSubplebbitView, type ParamsType } from '../../lib/utils/view-utils';
 import useContentOptionsStore from '../../stores/use-content-options-store';
 import { useDefaultSubplebbitAddresses, useDefaultSubplebbits } from '../../hooks/use-default-subplebbits';
 import useTimeFilter, { setSessionTimeFilterPreference } from '../../hooks/use-time-filter';
@@ -166,8 +167,9 @@ const TagFilterDropdown = () => {
 
 const SortTypesDropdown = () => {
   const { t } = useTranslation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
   const location = useLocation();
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInSubplebbitView = isSubplebbitView(location.pathname, params);
   const isinAllView = isAllView(location.pathname);
   const { timeFilterName } = useTimeFilter();
@@ -219,8 +221,9 @@ const SortTypesDropdown = () => {
 };
 
 const TimeFilterDropdown = () => {
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
   const location = useLocation();
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInSubplebbitView = isSubplebbitView(location.pathname, params);
   const isInDomainView = isDomainView(location.pathname);
   const isinAllView = isAllView(location.pathname);
@@ -240,7 +243,7 @@ const TimeFilterDropdown = () => {
     return isInSubplebbitView
       ? `/s/${params.subplebbitAddress}/${selectedSortType}/${timeFilterName}`
       : isinAllView
-        ? `s/all/${selectedSortType}/${timeFilterName}`
+        ? `/s/all/${selectedSortType}/${timeFilterName}`
         : isInModView
           ? `/s/mod/${selectedSortType}/${timeFilterName}`
           : isInDomainView
@@ -283,7 +286,8 @@ const TimeFilterDropdown = () => {
 const TopBar = memo(() => {
   const { t } = useTranslation();
   const location = useLocation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
 
   const isinAllView = isAllView(location.pathname);
   const isInHomeView = isHomeView(location.pathname);

@@ -27,7 +27,8 @@ seedit is a serverless, adminless, decentralized Reddit-style client built on th
 | Situation | Required action |
 |---|---|
 | React UI logic changed (`src/components`, `src/views`, `src/hooks`, UI stores) | Follow React architecture rules below; run `yarn build`, `yarn lint`, and `yarn type-check` |
-| Visible UI or interaction changed | Verify in browser with `playwright-cli` across Chrome/Blink, Firefox/Gecko, and WebKit/Safari; test desktop and mobile viewport |
+| Visible UI or interaction changed | Follow `docs/DESIGN.md` for design decisions; verify in browser with `playwright-cli` across Chrome/Blink, Firefox/Gecko, and WebKit/Safari; test desktop and mobile viewport |
+| Styling, new UI components, tokens, themes, or visual polish | **Read `docs/DESIGN.md` first**; map to Tailwind/shadcn tokens; extend tokens instead of ad-hoc values when possible |
 | `package.json` changed | Run `corepack yarn install` to keep `yarn.lock` in sync |
 | Translation key/value changed | Use `docs/agent-playbooks/translations.md` |
 | Bug report in a specific file/line | Start with git history scan from `docs/agent-playbooks/bug-investigation.md` before editing |
@@ -82,6 +83,12 @@ src/
 - Avoid copy-paste logic across components. Extract custom hooks in `src/hooks/`.
 - Avoid boolean flag soup for complex flows; model state clearly in Zustand.
 - Use React Router for navigation; no manual history manipulation.
+
+### Design system rules
+
+- **`docs/DESIGN.md` is the canonical design reference** for colors, typography, spacing, radii, elevation, motion, component patterns, and accessibility-oriented UI choices.
+- Agents and contributors **MUST** consult it when implementing or changing visible UI, global styles, or design tokens.
+- **SHOULD** express new styling through existing or extended design tokens (CSS variables / Tailwind theme) rather than scattered hard-coded values.
 
 ### Code Organization Rules
 
@@ -188,6 +195,7 @@ yarn changelog
 
 Use these only when relevant to the active task:
 
+- **Design specification (UI work — consult as needed):** `docs/DESIGN.md`
 - Hooks setup and scripts: `docs/agent-playbooks/hooks-setup.md`
 - Long-running agent workflow: `docs/agent-playbooks/long-running-agent-workflow.md`
 - Translations workflow: `docs/agent-playbooks/translations.md`

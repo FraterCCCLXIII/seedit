@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CommentMediaInfo } from '../../../lib/utils/media-utils';
 import useContentOptionsStore from '../../../stores/use-content-options-store';
@@ -23,7 +23,6 @@ interface ExpandoProps {
   removed?: boolean;
   showContent: boolean;
   spoiler?: boolean;
-  toggleExpanded?: () => void;
 }
 
 const Expando = ({
@@ -39,7 +38,6 @@ const Expando = ({
   removed,
   showContent,
   spoiler = false,
-  toggleExpanded,
 }: ExpandoProps) => {
   const { t } = useTranslation();
   const { blurNsfwThumbnails, setBlurNsfwThumbnails, autoplayVideosOnComments, muteVideosOnComments } = useContentOptionsStore();
@@ -98,17 +96,9 @@ const Expando = ({
               )}
             </>
           )}
-          <Link
-            to={link}
-            onClick={(e) => {
-              if (e.button === 0) {
-                e.preventDefault();
-                if (toggleExpanded) toggleExpanded();
-              }
-            }}
-          >
+          <a href={link} target='_blank' rel='noopener noreferrer'>
             {mediaComponent}
-          </Link>
+          </a>
         </div>
       )}
       {alwaysShowNsfw && (

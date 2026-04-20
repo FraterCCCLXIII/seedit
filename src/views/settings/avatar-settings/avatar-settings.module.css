@@ -39,7 +39,7 @@
 }
 
 .avatarSettingInput a {
-  color: var(--link-primary);
+  color: hsl(var(--shadcn-primary));
 }
 
 .avatarSettingInput a:hover {
@@ -48,7 +48,7 @@
 
 .settingTitle {
   font-style: italic;
-  text-transform: lowercase;
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .copyMessage {
@@ -69,7 +69,7 @@
 }
 
 .copyMessage a {
-  color: var(--link-primary);
+  color: hsl(var(--shadcn-primary));
 }
 
 .copyMessage a:hover {
@@ -79,7 +79,6 @@
 .hideAvatarsCheckbox {
   padding-top: 10px;
   display: inline-block;
-  text-transform: lowercase;
 }
 
 .hideAvatarsCheckbox input {

@@ -2,32 +2,62 @@
   list-style: none;
   padding: 1px 0;
   display: block;
+  text-transform: capitalize;
 }
 
 .buttonsLabel {
   padding-top: 5px;
 }
 
-.buttons li {
-  display: inline-block;
+/* One hit target per action: padding + hover on the <li> (links/spans fill, no double padding). */
+.buttons > li {
+  display: inline-flex;
+  align-items: center;
   border: none;
-  padding-right: 4px;
-  line-height: 1.6em;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  line-height: 1.5;
   white-space: nowrap;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-weight: 400;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.buttons li a {
-  color: var(--text-info);
-  font-weight: bold;
-  text-decoration: none;
-  padding: 0 1px;
+.buttons > li:hover {
+  background-color: hsl(var(--shadcn-accent) / 0.45);
+  color: hsl(var(--shadcn-foreground));
 }
 
-.buttons .button {
-  color: var(--text-info);
-  font-weight: bold;
+.buttons > li > a {
+  color: inherit;
+  font-weight: inherit;
   text-decoration: none;
-  padding: 0 4px 0 4px;
+  padding: 0;
+  border-radius: inherit;
+}
+
+.buttons > li > a:hover {
+  background-color: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+
+.buttons > li > span {
+  color: inherit;
+}
+
+/* Copied-state share row: no hover chrome */
+.buttons > li.text {
+  cursor: default;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.buttons > li.text:hover {
+  background-color: transparent;
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 .button {
@@ -36,24 +66,10 @@
 
 .text {
   cursor: default !important;
-  color: var(--text-default) !important;
-  text-decoration: none !important;
-}
-
-.buttons li:hover {
-  text-decoration: underline;
-}
-
-.buttons .button span {
-  cursor: pointer;
 }
 
 .buttonsReply {
   margin-left: 29px;
-}
-
-.firstButton {
-  padding-left: 0 !important;
 }
 
 .hideReply {
@@ -61,13 +77,17 @@
 }
 
 @media (min-width: 640px) {
-  .reportButton, .crosspostButton, .embedButton {
+  .reportButton,
+  .crosspostButton,
+  .embedButton {
     display: block;
   }
 }
 
 @media (max-width: 640px) {
-  .reportButton, .crosspostButton, .embedButton {
+  .reportButton,
+  .crosspostButton,
+  .embedButton {
     display: none !important;
   }
 }

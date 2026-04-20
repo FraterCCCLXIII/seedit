@@ -96,8 +96,6 @@ const YoutubeEmbed = ({ parsedUrl }: EmbedComponentProps) => {
     return (
       <iframe
         className={styles.videoEmbed}
-        height='100%'
-        width='100%'
         referrerPolicy='origin'
         allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
         allowFullScreen
@@ -171,8 +169,6 @@ const TwitchEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   return (
     <iframe
       className={styles.videoEmbed}
-      height='100%'
-      width='100%'
       referrerPolicy='no-referrer'
       allow='accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share'
       allowFullScreen
@@ -234,8 +230,6 @@ const OdyseeEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   return (
     <iframe
       className={styles.videoEmbed}
-      height='100%'
-      width='100%'
       referrerPolicy='no-referrer'
       allow='accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share'
       allowFullScreen
@@ -252,8 +246,6 @@ const BitchuteEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   return (
     <iframe
       className={styles.videoEmbed}
-      height='100%'
-      width='100%'
       referrerPolicy='no-referrer'
       allow='accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share'
       allowFullScreen
@@ -270,8 +262,6 @@ const StreamableEmbed = ({ parsedUrl }: EmbedComponentProps) => {
   return (
     <iframe
       className={styles.videoEmbed}
-      height='100%'
-      width='100%'
       referrerPolicy='no-referrer'
       allow='accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share'
       allowFullScreen

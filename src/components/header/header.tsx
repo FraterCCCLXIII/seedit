@@ -41,19 +41,22 @@ import {
   isDomainView,
   isPostPageAboutView,
   isSettingsAccountDataView,
+  type ParamsType,
 } from '../../lib/utils/view-utils';
+import { mergeFeedShellRouteParams } from '../../lib/utils/feed-shell-route-params';
 import useContentOptionsStore from '../../stores/use-content-options-store';
 import useNotFoundStore from '../../stores/use-not-found-store';
-import { useAppLogo } from '../../hooks/use-app-logo';
 import { useIsBroadlyNsfwSubplebbit } from '../../hooks/use-is-broadly-nsfw-subplebbit';
 import useTheme from '../../hooks/use-theme';
 import useWindowWidth from '../../hooks/use-window-width';
+import CommunityFeedHeader from '../community-feed-header/community-feed-header';
 import styles from './header.module.css';
 
 const AboutButton = () => {
   const { t } = useTranslation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
   const location = useLocation();
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const aboutLink = getAboutLink(location.pathname, params);
   const isInHomeAboutView = isHomeAboutView(location.pathname);
   const isInPostPageAboutView = isPostPageAboutView(location.pathname, params);
@@ -68,8 +71,9 @@ const AboutButton = () => {
 
 const CommentsButton = () => {
   const { t } = useTranslation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
   const location = useLocation();
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInPostPageView = isPostPageView(location.pathname, params);
   const isInPendingPostView = isPendingPostView(location.pathname, params);
   const isInHomeAboutView = isHomeAboutView(location.pathname);
@@ -86,8 +90,9 @@ const CommentsButton = () => {
 
 const SortItems = () => {
   const { t } = useTranslation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
   const location = useLocation();
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInHomeAboutView = isHomeAboutView(location.pathname);
   const isInPostPageAboutView = isPostPageAboutView(location.pathname, params);
   const isInSubplebbitAboutView = isSubplebbitAboutView(location.pathname, params);
@@ -123,7 +128,8 @@ const SortItems = () => {
 const AuthorHeaderTabs = () => {
   const { t } = useTranslation();
   const location = useLocation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInAuthorView = isAuthorView(location.pathname);
   const isInAuthorCommentsView = isAuthorCommentsView(location.pathname, params);
   const isInAuthorSubmittedView = isAuthorSubmittedView(location.pathname, params);
@@ -251,8 +257,9 @@ const SettingsHeaderTabs = () => {
 };
 
 const HeaderTabs = () => {
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
   const location = useLocation();
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInAllView = isAllView(location.pathname);
   const isInAuthorView = isAuthorView(location.pathname);
   const isInDomainView = isDomainView(location.pathname);
@@ -300,8 +307,9 @@ const HeaderTabs = () => {
 const HeaderTitle = ({ title, pendingPostSubplebbitAddress }: { title: string; pendingPostSubplebbitAddress?: string }) => {
   const account = useAccount();
   const { t } = useTranslation();
-  const params = useParams();
+  const rawParams = useParams() as ParamsType;
   const location = useLocation();
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
   const isInAllView = isAllView(location.pathname);
   const isInAuthorView = isAuthorView(location.pathname);
   const isInDomainView = isDomainView(location.pathname);
@@ -387,8 +395,10 @@ const Header = () => {
   const { t } = useTranslation();
   const [theme] = useTheme();
   const location = useLocation();
-  const params = useParams();
-  const subplebbit = useSubplebbit({ subplebbitAddress: params?.subplebbitAddress, onlyIfCached: true });
+  const rawParams = useParams() as ParamsType;
+  const params = mergeFeedShellRouteParams(rawParams, location.pathname);
+  const subplebbitAddressForHooks = params?.subplebbitAddress || undefined;
+  const subplebbit = useSubplebbit({ subplebbitAddress: subplebbitAddressForHooks });
   const { suggested, title } = subplebbit || {};
 
   const commentIndex = params?.accountCommentIndex ? parseInt(params?.accountCommentIndex) : undefined;
@@ -415,6 +425,32 @@ const Header = () => {
   const isInSubplebbitSettingsView = isSubplebbitSettingsView(location.pathname, params);
   const isInNotFoundView = useNotFoundStore((state) => state.isNotFound);
 
+  const subplebbitAddress = params.subplebbitAddress;
+
+  const contentOptionsStore = useContentOptionsStore();
+  const hasUnhiddenAnyNsfwCommunity =
+    !contentOptionsStore.hideAdultCommunities ||
+    !contentOptionsStore.hideGoreCommunities ||
+    !contentOptionsStore.hideAntiCommunities ||
+    !contentOptionsStore.hideVulgarCommunities;
+  const isBroadlyNsfwSubplebbit = useIsBroadlyNsfwSubplebbit(subplebbitAddress || '');
+
+  const showCommunityFeedHeader =
+    Boolean(subplebbitAddress) &&
+    isInSubplebbitView &&
+    !isInSubplebbitSubmitView &&
+    !isInSubplebbitSettingsView &&
+    !isInPostPageView &&
+    !isInPendingPostView &&
+    !isInHomeAboutView &&
+    !isInSubplebbitAboutView &&
+    !isInPostPageAboutView &&
+    !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity);
+
+  const hideShellSortTabs = isInPostPageView || isInPendingPostView || isInSettingsView;
+  const showPostThreadBack = isInPostPageView || isInPendingPostView;
+  const postThreadBackTo = isInPendingPostView ? '/profile' : subplebbitAddress ? `/s/${subplebbitAddress}` : '/';
+
   const hasFewTabs =
     isInPostPageView || isInSubmitView || isInSubplebbitSubmitView || isInSubplebbitSettingsView || isInSettingsView || isInInboxView || isInSettingsView;
   const hasStickyHeader =
@@ -433,17 +469,11 @@ const Header = () => {
     (isInDomainView && !isInHomeAboutView) ||
     (isInAuthorView && !isInHomeAboutView);
 
-  const subplebbitAddress = params.subplebbitAddress;
-
-  const contentOptionsStore = useContentOptionsStore();
-  const hasUnhiddenAnyNsfwCommunity =
-    !contentOptionsStore.hideAdultCommunities ||
-    !contentOptionsStore.hideGoreCommunities ||
-    !contentOptionsStore.hideAntiCommunities ||
-    !contentOptionsStore.hideVulgarCommunities;
-  const isBroadlyNsfwSubplebbit = useIsBroadlyNsfwSubplebbit(subplebbitAddress || '');
-
-  const logoIsAvatar = isInSubplebbitView && suggested?.avatarUrl && !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity);
+  const logoIsAvatar =
+    isInSubplebbitView &&
+    !showCommunityFeedHeader &&
+    Boolean(suggested?.avatarUrl) &&
+    !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity);
   const logoSrc = logoIsAvatar ? suggested?.avatarUrl : 'assets/sprout/sprout.png';
   const logoLink = '/';
 
@@ -463,46 +493,69 @@ const Header = () => {
           isInSubmitView && isInSubplebbitSubmitView && !isInSubplebbitView && isMobile && styles.reduceSubmitPageHeight
         } ${hasStickyHeader && styles.increasedHeight}`}
       >
-        <div className={styles.logoContainer}>
-          <Link to={logoLink} className={styles.logoLink}>
-            {(logoIsAvatar || (!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-              <img className={`${logoIsAvatar ? styles.avatar : styles.logo}`} src={logoSrc} alt='' />
-            )}
-            {((!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
-              <img src={`assets/sprout/seedit-text-${theme === 'dark' ? 'dark' : 'light'}.svg`} className={styles.logoText} alt='' />
-            )}
-          </Link>
-        </div>
-        {!isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
-          <span className={`${styles.pageName} ${!logoIsAvatar && styles.soloPageName}`}>
-            <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
-          </span>
-        )}
-        {(isInModView || isInAllView) && (
-          <div className={`${styles.pageName} ${styles.allOrModPageName}`}>
-            <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
+        <div className={`${styles.titleRow} ${showCommunityFeedHeader ? styles.titleRowSubplebbitFeed : ''}`}>
+          {showPostThreadBack ? (
+            <Link to={postThreadBackTo} className={styles.headerBackLink} aria-label={t('go_back')}>
+              <i className={`hn hn-arrow-left ${styles.headerBackIcon}`} aria-hidden />
+            </Link>
+          ) : null}
+          <div className={styles.logoContainer}>
+            <Link to={logoLink} className={styles.logoLink}>
+              {(logoIsAvatar || (!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
+                <img className={`${logoIsAvatar ? styles.avatar : styles.logo}`} src={logoSrc} alt='' />
+              )}
+              {((!isInSubplebbitView && !isInProfileView && !isInAuthorView) || !logoIsAvatar) && (
+                <img src={`assets/sprout/seedit-text-${theme === 'dark' ? 'dark' : 'light'}.svg`} className={styles.logoText} alt='' />
+              )}
+            </Link>
           </div>
-        )}
-        {!isMobile && !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) && (
-          <ul className={styles.tabMenu}>
+          {!showCommunityFeedHeader && !isInHomeView && !isInHomeAboutView && !isInModView && !isInAllView && (
+            <span className={`${styles.pageName} ${!logoIsAvatar && styles.soloPageName}`}>
+              <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
+            </span>
+          )}
+          {(isInModView || isInAllView) && (
+            <div className={`${styles.pageName} ${styles.allOrModPageName}`}>
+              <HeaderTitle title={title} pendingPostSubplebbitAddress={accountComment?.subplebbitAddress} />
+            </div>
+          )}
+        </div>
+        {showCommunityFeedHeader && subplebbitAddress ? (
+          <CommunityFeedHeader subplebbit={subplebbit} subplebbitAddress={subplebbitAddress} placement='shell' />
+        ) : null}
+        {!isMobile &&
+          !hideShellSortTabs &&
+          !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) &&
+          (showCommunityFeedHeader ? (
+            <div className={styles.tabMenuRow}>
+              <ul className={styles.tabMenu}>
+                <HeaderTabs />
+                {(isInHomeView || isInHomeAboutView) && <AboutButton />}
+              </ul>
+            </div>
+          ) : (
+            <ul className={styles.tabMenu}>
+              <HeaderTabs />
+              {(isInHomeView || isInHomeAboutView) && <AboutButton />}
+            </ul>
+          ))}
+      </div>
+      {isMobile &&
+        !hideShellSortTabs &&
+        !isInSubplebbitSubmitView &&
+        !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) && (
+          <ul className={`${styles.tabMenu} ${isInProfileView ? styles.horizontalScroll : ''}`}>
             <HeaderTabs />
-            {(isInHomeView || isInHomeAboutView) && <AboutButton />}
+            {(isInHomeView || isInHomeAboutView || isInSubplebbitView || isInHomeAboutView || isInPostPageView) && <AboutButton />}
+            {!isInSubmitView && !isInSettingsView && (
+              <li>
+                <Link to={mobileSubmitButtonRoute} className={styles.submitButton}>
+                  {t('submit')}
+                </Link>
+              </li>
+            )}
           </ul>
         )}
-      </div>
-      {isMobile && !isInSubplebbitSubmitView && !(isBroadlyNsfwSubplebbit && !hasUnhiddenAnyNsfwCommunity) && (
-        <ul className={`${styles.tabMenu} ${isInProfileView ? styles.horizontalScroll : ''}`}>
-          <HeaderTabs />
-          {(isInHomeView || isInHomeAboutView || isInSubplebbitView || isInHomeAboutView || isInPostPageView) && <AboutButton />}
-          {!isInSubmitView && !isInSettingsView && (
-            <li>
-              <Link to={mobileSubmitButtonRoute} className={styles.submitButton}>
-                {t('submit')}
-              </Link>
-            </li>
-          )}
-        </ul>
-      )}
     </div>
   );
 };

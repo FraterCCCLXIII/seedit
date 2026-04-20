@@ -3,9 +3,15 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { setAccount, useAccount } from '@bitsocialnet/bitsocial-react-hooks';
 import useTheme from '../../../stores/use-theme-store';
 import stringify from 'json-stringify-pretty-compact';
+import { StandardPageContent } from '@/components/layout';
+import { SettingsNav } from '../settings-nav';
+import { SettingsPage } from '../settings-section';
+import settingsShellStyles from '../settings.module.css';
+import { feedShellMainProps } from '../../../lib/feed-shell-data';
 import styles from './account-data-editor.module.css';
 import useIsMobile from '../../../hooks/use-is-mobile';
 import LoadingEllipsis from '../../../components/loading-ellipsis';
@@ -91,27 +97,42 @@ const AccountDataEditor = () => {
 
   if (!showEditor) {
     return (
-      <div className={styles.securityWarning}>
-        <img src='assets/privacy_icon.png' alt='' />
-        <div className={styles.warning}>
-          <h3>{t('private_key_warning_title')}</h3>
-          <p>{t('private_key_warning_description')}</p>
-        </div>
-        <div className={styles.warningButtons}>
-          <Button type='button' onClick={() => navigate('/settings')}>
-            {t('go_back')}
-          </Button>
-          <Button type='button' onClick={() => setShowEditor(true)}>
-            {t('continue')}
-          </Button>
-        </div>
+      <div {...feedShellMainProps} className={settingsShellStyles.settingsShellMain} data-settings-shell>
+        <StandardPageContent variant='full'>
+          <div className={settingsShellStyles.settingsLayout}>
+            <SettingsNav />
+            <div className={settingsShellStyles.settingsMain}>
+              <SettingsPage>
+                <div className={styles.securityWarning}>
+                  <img src='assets/privacy_icon.png' alt='' />
+                  <div className={styles.warning}>
+                    <h3>{t('private_key_warning_title')}</h3>
+                    <p>{t('private_key_warning_description')}</p>
+                  </div>
+                  <div className={styles.warningButtons}>
+                    <Button type='button' variant='outline' onClick={() => navigate('/settings')}>
+                      {t('go_back')}
+                    </Button>
+                    <Button type='button' variant='neutral' onClick={() => setShowEditor(true)}>
+                      {t('continue')}
+                    </Button>
+                  </div>
+                </div>
+              </SettingsPage>
+            </div>
+          </div>
+        </StandardPageContent>
       </div>
     );
   }
 
   return (
-    <div className={styles.content}>
-      <EditorErrorBoundary
+    <div {...feedShellMainProps} className={settingsShellStyles.settingsShellMain} data-settings-shell>
+      <StandardPageContent variant='full'>
+        <div className={settingsShellStyles.settingsLayout}>
+          <SettingsNav />
+          <div className={cn(settingsShellStyles.settingsMain, styles.content)}>
+          <EditorErrorBoundary
         fallback={
           <FallbackEditor
             value={text}
@@ -161,27 +182,30 @@ const AccountDataEditor = () => {
             fontSize={14}
           />
         </Suspense>
-      </EditorErrorBoundary>
-      {currentError && (
-        <div className={styles.error}>
-          <ErrorDisplay error={currentError} />
+          </EditorErrorBoundary>
+          {currentError && (
+            <div className={styles.error}>
+              <ErrorDisplay error={currentError} />
+            </div>
+          )}
+          <div className={styles.buttons}>
+            <Trans
+              i18nKey='save_reset_changes'
+              components={{
+                1: <Button type='button' variant='neutral' key='saveAccountButton' onClick={saveAccount} />,
+                2: <Button type='button' variant='outline' key='resetAccountButton' onClick={() => setText(accountJson)} />,
+              }}
+            />
+            <div>
+              <br />
+              <Button type='button' variant='outline' onClick={() => navigate('/settings')}>
+                {t('return_to_settings')}
+              </Button>
+            </div>
+          </div>
+          </div>
         </div>
-      )}
-      <div className={styles.buttons}>
-        <Trans
-          i18nKey='save_reset_changes'
-          components={{
-            1: <Button type='button' key='saveAccountButton' onClick={saveAccount} />,
-            2: <Button type='button' key='resetAccountButton' onClick={() => setText(accountJson)} />,
-          }}
-        />
-        <div>
-          <br />
-          <Button type='button' onClick={() => navigate('/settings')}>
-            return to settings
-          </Button>
-        </div>
-      </div>
+      </StandardPageContent>
     </div>
   );
 };

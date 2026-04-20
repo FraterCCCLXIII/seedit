@@ -1,5 +1,16 @@
 .content {
-  padding: 7px 5px 32px 5px;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-width: 0;
+  align-items: start;
+}
+
+.mainColumn {
+  min-width: 0;
+}
+
+.sidebarColumn {
+  min-width: 0;
 }
 
 .infobar {
@@ -13,7 +24,7 @@
   border-width: 1px;
   margin: 0px 5px 5px 0px;
   padding: 6px 10px;
-  color: var(--text);
+  color: hsl(var(--shadcn-foreground));
   font-size: 14px;
 }
 
@@ -31,19 +42,23 @@ div[data-viewport-type="window"] {
   position: relative !important;
 }
 
-@media (max-width: 640px) {
-  .sidebarDesktop {
-    display: none;
+@media (max-width: 639px) {
+  .content {
+    padding: 7px 2px 32px;
   }
-  
-  .sidebarMobile {
-    width: 300px;
-    display: inline-block;
-    padding: 10px 0 0px 5px;
+
+  .sidebarColumn {
+    display: none;
   }
 
   .infobar {
     max-width: 100%;
+  }
+}
+
+@media (min-width: 640px) {
+  .content {
+    display: contents;
   }
 }
 
@@ -57,7 +72,7 @@ div[data-viewport-type="window"] {
 }
 
 .dropdownTitle {
-  color: var(--text) !important;
+  color: hsl(var(--shadcn-foreground)) !important;
 }
 
 .dropdown {
@@ -119,7 +134,6 @@ div[data-viewport-type="window"] {
   border-radius: 3px;
   font-weight: bold;
   cursor: pointer;
-  text-transform: lowercase;
   color: var(--link-primary);
 }
 
@@ -135,10 +149,9 @@ div[data-viewport-type="window"] {
 }
 
 .nothingFound {
-  color: var(--red);
+  color: hsl(var(--shadcn-muted-foreground));
   font-size: 13px;
   font-family: var(--font-sans);
-  text-transform: lowercase;
 }
 
 .closeButton {

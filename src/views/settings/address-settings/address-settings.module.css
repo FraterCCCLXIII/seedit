@@ -1,5 +1,8 @@
-.addressSettings button {
-  margin-left: 5px;
+.usernameInput {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .green {

@@ -3,9 +3,18 @@
  * Uses --shadcn-* HSL triplets so legacy themes.css hex vars (--background, etc.) stay unchanged.
  */
 :root {
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --app-font-size: 16px;
-  --shadcn-radius: 0.5rem;
+  /* docs/DESIGN.md — X system stack + body scale */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --app-font-size: 15px;
+  --shadcn-radius: 1rem;
+  /* Buttons, text fields, selects, tabs, menu rows — Tailwind `rounded-control` */
+  --shadcn-radius-control: 0.5rem;
+  /* Pill / “100%” capsule — reserved for patterns that must stay fully rounded */
+  --shadcn-radius-pill: 9999px;
+  /* Text selection — defaults until body.theme sets .light / .dark (see docs/DESIGN.md) */
+  --shadcn-selection: 0 0% 0%;
+  --shadcn-selection-foreground: 0 0% 100%;
 }
 
 @tailwind base;
@@ -31,48 +40,70 @@
     @apply bg-background text-foreground;
   }
 
-  /* Monochrome neutral palette (shadcn defaults, neutral base) */
+  /* docs/DESIGN.md — light (#FFFFFF base, #F7F9F9 surface, X blue primary) */
   .light {
     --shadcn-background: 0 0% 100%;
-    --shadcn-foreground: 0 0% 9%;
-    --shadcn-card: 0 0% 100%;
-    --shadcn-card-foreground: 0 0% 9%;
+    --shadcn-foreground: 210 24% 10%;
+    --shadcn-card: 192 20% 97%;
+    --shadcn-card-foreground: 210 24% 10%;
     --shadcn-popover: 0 0% 100%;
-    --shadcn-popover-foreground: 0 0% 9%;
-    --shadcn-primary: 0 0% 15%;
-    --shadcn-primary-foreground: 0 0% 98%;
-    --shadcn-secondary: 0 0% 96%;
-    --shadcn-secondary-foreground: 0 0% 9%;
-    --shadcn-muted: 0 0% 96%;
-    --shadcn-muted-foreground: 0 0% 40%;
-    --shadcn-accent: 0 0% 96%;
-    --shadcn-accent-foreground: 0 0% 9%;
-    --shadcn-destructive: 0 0% 28%;
-    --shadcn-destructive-foreground: 0 0% 98%;
-    --shadcn-border: 0 0% 90%;
-    --shadcn-input: 0 0% 90%;
-    --shadcn-ring: 0 0% 45%;
+    --shadcn-popover-foreground: 210 24% 10%;
+    --shadcn-primary: 203 89% 53%;
+    --shadcn-primary-foreground: 0 0% 100%;
+    --shadcn-secondary: 200 12% 93%;
+    --shadcn-secondary-foreground: 210 24% 10%;
+    --shadcn-muted: 200 12% 93%;
+    --shadcn-muted-foreground: 207 15% 38%;
+    --shadcn-accent: 200 12% 93%;
+    --shadcn-accent-foreground: 210 24% 10%;
+    --shadcn-destructive: 355 91% 55%;
+    --shadcn-destructive-foreground: 0 0% 100%;
+    --shadcn-border: 200 12% 93%;
+    --shadcn-input: 200 12% 93%;
+    /* Focus ring: high-contrast monochrome (not X Blue — matches ::selection pairing) */
+    --shadcn-ring: 0 0% 0%;
+    /* ::selection — black highlight on light (see docs/DESIGN.md; do not use X Blue here) */
+    --shadcn-selection: 0 0% 0%;
+    --shadcn-selection-foreground: 0 0% 100%;
   }
 
+  /* docs/DESIGN.md — dark (#000 base, #16181C surface, #2F3336 borders, #E7E9EA text) */
   .dark {
-    --shadcn-background: 0 0% 6%;
-    --shadcn-foreground: 0 0% 90%;
-    --shadcn-card: 0 0% 8%;
-    --shadcn-card-foreground: 0 0% 90%;
-    --shadcn-popover: 0 0% 8%;
-    --shadcn-popover-foreground: 0 0% 90%;
-    --shadcn-primary: 0 0% 92%;
-    --shadcn-primary-foreground: 0 0% 9%;
-    --shadcn-secondary: 0 0% 14%;
-    --shadcn-secondary-foreground: 0 0% 90%;
-    --shadcn-muted: 0 0% 14%;
-    --shadcn-muted-foreground: 0 0% 55%;
-    --shadcn-accent: 0 0% 14%;
-    --shadcn-accent-foreground: 0 0% 90%;
-    --shadcn-destructive: 0 0% 45%;
-    --shadcn-destructive-foreground: 0 0% 98%;
-    --shadcn-border: 0 0% 18%;
-    --shadcn-input: 0 0% 18%;
-    --shadcn-ring: 0 0% 55%;
+    --shadcn-background: 0 0% 0%;
+    --shadcn-foreground: 210 7% 91%;
+    --shadcn-card: 218 15% 10%;
+    --shadcn-card-foreground: 210 7% 91%;
+    --shadcn-popover: 0 0% 0%;
+    --shadcn-popover-foreground: 210 7% 91%;
+    --shadcn-primary: 203 89% 53%;
+    --shadcn-primary-foreground: 0 0% 100%;
+    --shadcn-secondary: 220 9% 13%;
+    --shadcn-secondary-foreground: 210 7% 91%;
+    --shadcn-muted: 220 9% 13%;
+    --shadcn-muted-foreground: 210 5% 46%;
+    --shadcn-accent: 220 9% 13%;
+    --shadcn-accent-foreground: 210 7% 91%;
+    --shadcn-destructive: 355 91% 55%;
+    --shadcn-destructive-foreground: 0 0% 100%;
+    --shadcn-border: 204 7% 20%;
+    --shadcn-input: 204 7% 20%;
+    --shadcn-ring: 0 0% 100%;
+    /* ::selection — white highlight on dark */
+    --shadcn-selection: 0 0% 100%;
+    --shadcn-selection-foreground: 0 0% 0%;
+  }
+
+  /**
+   * Text selection — monochrome, not OS/browser blue or X Blue.
+   * Tokens: --shadcn-selection, --shadcn-selection-foreground (HSL triplets).
+   */
+  ::selection {
+    background-color: hsl(var(--shadcn-selection) / 1);
+    color: hsl(var(--shadcn-selection-foreground) / 1);
+  }
+
+  ::-moz-selection {
+    background-color: hsl(var(--shadcn-selection) / 1);
+    color: hsl(var(--shadcn-selection-foreground) / 1);
   }
 }

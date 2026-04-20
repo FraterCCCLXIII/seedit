@@ -1,14 +1,15 @@
+/* Bleed past feed main column shell padding only (StandardPageContent feedColumn has no horizontal page pad) */
 .infobar {
-  background-color: var(--background-orange);
-  border-color: var(--border-orange);
-  border-style: solid;
-  border-width: 1px;
-  margin: 0px 5px 5px 0px;
-  padding: 6px 10px 6px 10px;
-  color: var(--text);
+  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-bottom: 0;
+  padding: var(--page-content-padding-x);
+  border: none;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-muted) / 0.22);
+  color: hsl(var(--shadcn-foreground));
   word-wrap: break-word;
   font-size: 14px;
-  text-transform: lowercase;
 }
 
 .infobar code {
@@ -18,129 +19,137 @@
   border: 1px solid var(--code-border);
 }
 
+/* List rows: dividers only, full bleed to feed column edges */
 .subplebbit {
-  padding-bottom: 1px;
+  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
   height: auto;
   overflow: hidden;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  background-color: transparent;
+  /* docs/DESIGN.md post-row hover — obvious surface shift in light and dark */
+  transition: background-color 0.18s ease;
+}
+
+.subplebbit:hover {
+  background-color: hsl(var(--shadcn-accent) / 0.55);
+}
+
+:global(body.light) .subplebbit:hover {
+  background-color: hsl(var(--shadcn-muted) / 0.65);
+}
+
+.subplebbit:last-child {
+  border-bottom: none;
 }
 
 .row {
+  position: relative;
   display: flex;
   align-items: flex-start;
+  gap: 0.75rem;
+  padding: var(--page-content-padding-x);
+  box-sizing: border-box;
+}
+
+/* Full-row navigation to community; nested links/buttons sit above via z-index + pointer-events */
+.rowHitArea {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  cursor: pointer;
+  border-radius: 0;
+  background: transparent;
+  text-decoration: none;
+  color: transparent;
+}
+
+.rowHitArea:focus-visible {
+  outline: 2px solid hsl(var(--shadcn-ring));
+  outline-offset: -2px;
+}
+
+.rowMainBody {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.rowMainBody :is(a, button) {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Join/leave — same control radius as community header, aligned to the row’s right edge */
+.joinSlot {
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding-top: 1px;
+  position: relative;
+  z-index: 2;
 }
 
 .leftcol {
   flex-shrink: 0;
-}
-
-
-.rank {
-  padding-right: 3px;
-  padding-left: 3px;
-  min-width: 2.2ex;
-  margin-top: 15px;
-  color: #c6c6c6;
-  font-family: var(--font-sans);
-  font-size: medium;
-  text-align: right;
-}
-
-.midcol {
-  width: 37px;
-  font-weight: bold;
-  font-size: small;
-  float: left;
-  padding-top: 2px;
-  padding-right: 7px;
-  background: transparent;
-  overflow: hidden;
-}
-
-.rank {
-  padding-right: 3px;
-  padding-left: 3px;
-  min-width: 2.2ex;
-  margin-top: 15px;
-  color: #c6c6c6;
-  font-family: var(--font-sans);
-  font-size: medium;
-  text-align: right;
-}
-
-.midcol {
-  width: 37px;
-  font-weight: bold;
-  font-size: small;
-  float: left;
-  padding-right: 7px;
-  background: transparent;
-  overflow: hidden;
-}
-
-.arrowWrapper {
-  padding-left: 11px;
-  padding-top: 2px;
-}
-
-.arrowCommon {
-  width: 15px;
-  height: 14px;
-  display: block;
-  cursor: pointer;
-}
-
-.arrowUp {
-  background-image: url("/assets/buttons/arrow-up.png");
-}
-
-.upvoted {
-  background-image: url("/assets/buttons/arrow-upvoted.png") !important;
-}
-
-.arrowDown {
-  background-image: url("/assets/buttons/arrow-down.png");
-}
-
-.downvoted {
-  background-image: url("/assets/buttons/arrow-downvoted.png") !important;
-}
-
-.score {
-  text-align: center;
-  color: var(--icon);
+  display: flex;
+  align-items: center;
 }
 
 .avatar {
-  float: left;
-  margin-right: 5px;
-  margin-top: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  display: block;
 }
 
-.defaultAvatar {
-  width: 70px;
+.avatarLink {
   display: flex;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
   align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.avatarFallback {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--shadcn-muted));
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.avatarFallbackIcon {
+  width: 1.375rem;
+  height: 1.375rem;
+  font-size: 1.375rem;
 }
 
 .customAvatarImg {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  width: 70px;
-  max-height: 70px;
-}
-
-.sproutImg {
-  object-fit: contain;
-  height: 50px;
+  display: block;
 }
 
 .entry {
   overflow: hidden;
   opacity: 1;
-  padding-top: 5px;
+  padding-top: 0;
+  min-width: 0;
+  flex: 1;
 }
 
 .onlineIndicator {
@@ -166,14 +175,18 @@
   margin-bottom: -2px;
 }
 
-.title a {
+.titlePrimary {
   margin-right: 5px;
   flex-grow: 1;
-  color: var(--link);
+  color: hsl(var(--shadcn-foreground));
+  font-weight: 600;
+}
+
+.subplebbit:hover .titlePrimary {
+  color: hsl(var(--shadcn-primary));
 }
 
 .tagline {
-  text-transform: lowercase;
   margin-top: 2px;
 }
 
@@ -221,35 +234,21 @@
 .description {
   max-width: 60em;
   unicode-bidi: isolate;
-  background-color: var(--background-markdown);
-  border: 1px solid var(--gray-light);
-  color: var(--text-markdown);
-  padding: 2px 5px;
-  border-radius: 7px;
-  margin: 5px 0px;
+  margin: 6px 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: hsl(var(--shadcn-muted-foreground));
   word-wrap: break-word;
   font-size: 14px;
+  line-height: 1.45;
 }
 
 .taglineSecondLine {
   padding-left: 1px;
   line-height: 1.6em;
   margin-top: 2px;
-}
-
-/* shadcn Tabs (MyCommunitiesTabs / VoteTabs) — layout only; triggers styled by ui/tabs */
-.subplebbitsTabs {
-  padding: 5px 10px;
-  margin-left: 5px;
-  margin-bottom: 5px;
-  margin-right: 15px;
-  overflow: hidden;
-  font-size: larger;
-  text-transform: lowercase;
-}
-
-.subscribeButton {
-  margin-right: 4px;
 }
 
 .tags {
@@ -260,7 +259,6 @@
   color: inherit;
   cursor: pointer;
   margin-right: 4px;
-  cursor: pointer;
   font-size: 10px;
   background: var(--flair-blank-background);
   color: var(--flair-blank-color);
@@ -270,6 +268,19 @@
   unicode-bidi: isolate;
   white-space: nowrap;
   text-overflow: ellipsis;
+  text-decoration: none;
+  outline: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.tags a:hover {
+  background: hsl(var(--shadcn-accent) / 0.55);
+  border-color: hsl(var(--shadcn-border));
+}
+
+.tags a:focus-visible {
+  outline: 2px solid hsl(var(--shadcn-ring));
+  outline-offset: 2px;
 }
 
 @media (max-width: 640px) {
@@ -280,18 +291,6 @@
   .sidebar {
     display: none;
   }
-
-  .subplebbit {
-    padding-right: 5px;
-  }
-
-  .infobar {
-    margin-left: 5px;
-  }
-
-  .subplebbitsTabs {
-    margin-right: 5px;
-  }
 }
 
 @media (min-width: 640px) {
@@ -299,14 +298,10 @@
     display: contents;
     padding: 0;
   }
-
-  .infobar {
-    max-width: calc(100% - 327px);
-  }
 }
 
 .undoLink {
-  color: var(--text-primary);
+  color: hsl(var(--shadcn-primary));
   text-decoration: underline;
 }
 
@@ -321,15 +316,17 @@
   margin: 0 2px;
 }
 
-.error {
-  font-size: 12px;
-  margin-bottom: 10px;
-  margin-left: 10px;
+/* Stack bar errors; each ErrorDisplay full-bleeds via `errorBarFullBleed`. */
+.feedErrorBarBleed {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  align-items: stretch;
 }
 
 .noSubsMessage {
-  color: var(--red);
+  color: hsl(var(--shadcn-muted-foreground));
   font-size: 13px;
-  text-transform: lowercase;
-  padding-bottom: 10px;
+  padding: 0 var(--page-content-padding-x) 10px;
 }

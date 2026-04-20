@@ -2,6 +2,8 @@ export type ParamsType = {
   accountCommentIndex?: string;
   authorAddress?: string;
   commentCid?: string;
+  domain?: string;
+  sortType?: string;
   subplebbitAddress?: string;
   timeFilterName?: string;
 };
@@ -95,6 +97,20 @@ export const isModView = (pathname: string): boolean => {
 
 export const isPendingPostView = (pathname: string, params: ParamsType): boolean => {
   return pathname === `/profile/${params.accountCommentIndex}`;
+};
+
+/** Profile / author feed chrome: shell header + right sidebar (not pending post, not about, not /profile/about). */
+export const isUserFeedShellView = (pathname: string, params: ParamsType): boolean => {
+  if (pathname.startsWith('/profile')) {
+    if (pathname === '/profile/about') return false;
+    if (isPendingPostView(pathname, params)) return false;
+    return true;
+  }
+  if (pathname.startsWith('/u/')) {
+    if (pathname.includes('/about')) return false;
+    return true;
+  }
+  return false;
 };
 
 export const isPostPageView = (pathname: string, params: ParamsType): boolean => {

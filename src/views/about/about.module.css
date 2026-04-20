@@ -12,8 +12,8 @@
 .about {
   unicode-bidi: isolate;
   font-size: 14px;
-  margin: 15px;
-  color: var(--text);
+  margin: 0;
+  color: hsl(var(--shadcn-foreground));
   font-weight: 400;
   word-wrap: break-word;
 }

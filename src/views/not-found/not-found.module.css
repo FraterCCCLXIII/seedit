@@ -4,8 +4,7 @@
 
 .notFound {
   text-align: center;
-  text-transform: lowercase;
-  color: var(--text);
+  color: hsl(var(--shadcn-foreground));
 }
 
 .notFound h1 {

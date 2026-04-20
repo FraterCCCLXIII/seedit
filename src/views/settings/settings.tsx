@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { Capacitor } from '@capacitor/core';
@@ -7,7 +7,6 @@ import { isSettingsPlebbitOptionsView, isSettingsContentOptionsView } from '../.
 import useTheme from '../../hooks/use-theme';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { VersionWithCommit } from '../../components/version';
@@ -19,6 +18,9 @@ import ContentOptions from './content-options';
 import WalletSettings from './wallet-settings';
 import NotificationsSettings from './notifications-settings';
 import { feedShellMainProps } from '../../lib/feed-shell-data';
+import { StandardPageContent } from '@/components/layout';
+import { SettingsPage, SettingsSection } from './settings-section';
+import { SettingsNav } from './settings-nav';
 import styles from './settings.module.css';
 import packageJson from '../../../package.json';
 import _ from 'lodash';
@@ -172,7 +174,7 @@ const DisplayNameSetting = () => {
         aria-label={t('display_name')}
       />
       <div className='flex items-center gap-2'>
-        <Button type='button' size='sm' onClick={saveUsername}>
+        <Button type='button' variant='neutral' onClick={saveUsername}>
           {t('save')}
         </Button>
         {savedDisplayName && <span className='text-xs italic text-muted-foreground'>{t('saved')}</span>}
@@ -181,30 +183,12 @@ const DisplayNameSetting = () => {
   );
 };
 
-type SettingsSectionProps = {
-  title: string;
-  id?: string;
-  highlighted?: boolean;
-  children: ReactNode;
-};
-
-const SettingsSection = ({ title, id, highlighted, children }: SettingsSectionProps) => (
-  <Card id={id} className={cn('overflow-hidden shadow-sm', highlighted && 'ring-2 ring-ring ring-offset-2 ring-offset-background')}>
-    <CardContent className='flex flex-col gap-4 px-4 py-5 sm:flex-row sm:items-start sm:gap-8 sm:px-6'>
-      <div className='shrink-0 sm:w-40 sm:pt-0.5 sm:text-right'>
-        <p className='text-sm font-medium lowercase leading-none text-muted-foreground'>{title}</p>
-      </div>
-      <div className='min-w-0 flex-1 space-y-2'>{children}</div>
-    </CardContent>
-  </Card>
-);
-
 const GeneralSettings = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
   return (
-    <div className='mx-auto flex w-full max-w-3xl flex-col gap-4'>
+    <SettingsPage>
       <SettingsSection title={t('version')}>
         <div className='space-y-2'>
           <div className={cn(styles.version, 'text-sm')}>
@@ -242,7 +226,7 @@ const GeneralSettings = () => {
       <SettingsSection title={t('account')} id='exportBackup' highlighted={location.hash === '#exportAccount'}>
         <AccountSettings />
       </SettingsSection>
-    </div>
+    </SettingsPage>
   );
 };
 
@@ -257,15 +241,27 @@ const Settings = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const documentTitle = `${_.startCase(t('preferences'))} - Seedit`;
+  const settingsPageLabel = isInSettingsPlebbitOptionsView
+    ? t('plebbit_options')
+    : isInSettingsContentOptionsView
+      ? t('content_options')
+      : _.startCase(t('preferences'));
+  const documentTitle = `${settingsPageLabel} - Seedit`;
   useEffect(() => {
     document.title = documentTitle;
   }, [documentTitle]);
 
   return (
     <div className={styles.content}>
-      <div className={cn(styles.mainColumn, 'text-foreground')} {...feedShellMainProps}>
-        {isInSettingsPlebbitOptionsView ? <PlebbitOptions /> : isInSettingsContentOptionsView ? <ContentOptions /> : <GeneralSettings key={account?.id} />}
+      <div {...feedShellMainProps} className={styles.settingsShellMain} data-settings-shell>
+        <StandardPageContent variant='full'>
+          <div className={styles.settingsLayout}>
+            <SettingsNav />
+            <div className={styles.settingsMain}>
+              {isInSettingsPlebbitOptionsView ? <PlebbitOptions /> : isInSettingsContentOptionsView ? <ContentOptions /> : <GeneralSettings key={account?.id} />}
+            </div>
+          </div>
+        </StandardPageContent>
       </div>
     </div>
   );

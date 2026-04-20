@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PixelIcon } from '@/components/ui/pixel-icon';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,7 +26,9 @@ import useStateString from '../../hooks/use-state-string';
 import ErrorDisplay from '../../components/error-display';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Markdown from '../../components/markdown';
+import CommunityFeedHeader from '../../components/community-feed-header/community-feed-header';
 import Sidebar from '../../components/sidebar';
+import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import Challenges from './challenge-settings';
 import { FormattingHelpTable } from '../../components/reply-form';
@@ -60,21 +64,28 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
         {isReadOnly ? (
           <pre className={styles.readOnlyDescription}>{description}</pre>
         ) : (
-          <>
+          <div className={styles.descriptionEditor}>
             {!showPreview ? (
-              <Textarea value={description ?? ''} onChange={(e) => setSubplebbitSettingsStore({ description: e.target.value })} />
+              <Textarea
+                className='min-h-[6.25rem]'
+                value={description ?? ''}
+                onChange={(e) => setSubplebbitSettingsStore({ description: e.target.value })}
+              />
             ) : (
               <div className={styles.preview}>
                 <Markdown content={description ?? ''} />
               </div>
             )}
             <div className={styles.bottomArea}>
-              {showFormattingHelp && (
-                <Button type='button' className={styles.previewButton} onClick={() => setShowPreview(!showPreview)} disabled={!description}>
-                  {showPreview ? t('edit') : t('preview')}
-                </Button>
-              )}
-              <span
+              <div className={styles.bottomAreaStart}>
+                {showFormattingHelp ? (
+                  <Button type='button' variant='outline' onClick={() => setShowPreview(!showPreview)} disabled={!description}>
+                    {showPreview ? t('edit') : t('preview')}
+                  </Button>
+                ) : null}
+              </div>
+              <button
+                type='button'
                 className={styles.formattingHelpButton}
                 onClick={() => {
                   const nextShowHelp = !showFormattingHelp;
@@ -85,14 +96,14 @@ const Description = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
                 }}
               >
                 {showFormattingHelp ? t('hide_help') : t('formatting_help')}
-              </span>
+              </button>
             </div>
-            {showFormattingHelp && (
+            {showFormattingHelp ? (
               <div className={styles.formattingHelpTable}>
                 <FormattingHelpTable />
               </div>
-            )}
-          </>
+            ) : null}
+          </div>
         )}
       </div>
     </div>
@@ -112,8 +123,10 @@ const Address = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
     <div className={styles.box}>
       <div className={styles.boxTitle}>{t('address')}</div>
       <div className={styles.boxSubtitle}>
-        {t('address_setting_info')}
-        <span onClick={alertCryptoAddressInfo}>[?]</span>
+        <span>{t('address_setting_info')}</span>
+        <button type='button' className={styles.inlineHelp} onClick={alertCryptoAddressInfo} aria-label={t('help')}>
+          [?]
+        </button>
       </div>
       <div className={styles.boxInput}>
         {isReadOnly ? (
@@ -206,14 +219,24 @@ const Rules = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
       <div className={styles.boxSubtitle}>{t('shown_in_sidebar')}</div>
       <div className={styles.boxInput}>
         {!isReadOnly && (
-          <Button type='button' className={styles.addButton} onClick={addRule} disabled={isReadOnly}>
+          <Button type='button' variant='outline' className={styles.addButton} onClick={addRule} disabled={isReadOnly}>
             {t('add_rule')}
           </Button>
         )}
         {rules?.map((rule, index) => (
           <div className={`${styles.rule} ${index === 0 && styles.firstRule}`} key={index}>
             Rule #{index + 1}
-            {!isReadOnly && <span className={styles.deleteButton} title='Delete Rule' onClick={() => (isReadOnly ? {} : deleteRule(index))} />}
+            {!isReadOnly ? (
+              <button
+                type='button'
+                className={styles.deleteIconBtn}
+                title={t('delete')}
+                aria-label={t('delete')}
+                onClick={() => deleteRule(index)}
+              >
+                <PixelIcon glyph='trash' className={styles.deleteIcon} aria-hidden />
+              </button>
+            ) : null}
             <br />
             {isReadOnly ? (
               <span className={styles.readOnlyRule}>{rule}</span>
@@ -279,7 +302,7 @@ const Moderators = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
       <div className={styles.boxSubtitle}>{t('moderators_setting_info')}</div>
       <div className={styles.boxInput}>
         {!isReadOnly && (
-          <Button type='button' className={styles.addButton} onClick={handleAddModerator} disabled={isReadOnly}>
+          <Button type='button' variant='outline' className={styles.addButton} onClick={handleAddModerator} disabled={isReadOnly}>
             {t('add_moderator')}
           </Button>
         )}
@@ -287,7 +310,17 @@ const Moderators = ({ isReadOnly = false }: { isReadOnly?: boolean }) => {
           Object.entries(roles)?.map(([address, role], index) => (
             <div className={`${styles.moderator} ${index === 0 && styles.firstModerator}`} key={index}>
               {t('moderator')} #{index + 1}
-              {!isReadOnly && <span className={styles.deleteButton} title='delete moderator' onClick={() => (isReadOnly ? {} : handleDeleteModerator(address))} />}
+              {!isReadOnly ? (
+                <button
+                  type='button'
+                  className={styles.deleteIconBtn}
+                  title={t('delete')}
+                  aria-label={t('delete')}
+                  onClick={() => handleDeleteModerator(address)}
+                >
+                  <PixelIcon glyph='trash' className={styles.deleteIcon} aria-hidden />
+                </button>
+              ) : null}
               <br />
               <span className={styles.moderatorAddress}>
                 User address:
@@ -337,7 +370,7 @@ const JSONSettings = ({ isReadOnly: _isReadOnly = false }: { isReadOnly?: boolea
       <div className={`${styles.boxTitle} ${styles.JSONSettingsTitle}`}>{t('json_settings')}</div>
       <div className={styles.boxSubtitle}>{t('json_settings_info')}</div>
       <div className={`${styles.boxInput} ${styles.JSONSettings}`}>
-        <Button type='button' onClick={() => navigate(`/s/${subplebbitAddress}/settings/editor`)}>
+        <Button type='button' variant='neutral' onClick={() => navigate(`/s/${subplebbitAddress}/settings/editor`)}>
           {t('edit')}
         </Button>
       </div>
@@ -568,11 +601,11 @@ const SubplebbitSettings = () => {
   if (!hasLoaded && !isInCreateSubplebbitView) {
     return (
       <>
-        {error?.message && (
-          <div className={styles.error}>
+        {error?.message ? (
+          <div className={styles.loadingError}>
             <ErrorDisplay error={error} />
           </div>
-        )}
+        ) : null}
         <div className={styles.loading}>
           <LoadingEllipsis string={loadingStateString || t('loading')} />
         </div>
@@ -588,44 +621,58 @@ const SubplebbitSettings = () => {
         </div>
       )}
       <div {...feedShellMainProps}>
-        {isReadOnly && !userIsOwnerOrAdmin && <div className={styles.infobar}>{t('owner_settings_notice')}</div>}
-        {isOffline && <div className={styles.infobar}>{offlineTitle}</div>}
-        {isChallengesReadOnly && <div className={styles.infobar}>cannot read or write challenges, community node isn't reachable.</div>}
-        <Title isReadOnly={isReadOnly} />
-        <Description isReadOnly={isReadOnly} />
-        {!isInCreateSubplebbitView && <Address isReadOnly={isReadOnly} />}
-        <Logo isReadOnly={isReadOnly} />
-        <Rules isReadOnly={isReadOnly} />
-        <Moderators isReadOnly={isReadOnly} />
-        <Challenges isReadOnly={isChallengesReadOnly} readOnlyChallenges={subplebbit?.challenges} challengeNames={challengeNames} challengesSettings={rpcChallenges} />
-        {!isInCreateSubplebbitView && <JSONSettings isReadOnly={isReadOnly} />}
-        <div className={styles.saveOptions}>
-          {!isInCreateSubplebbitView && !isReadOnly && (
-            <div className={`${styles.box} ${styles.deleteCommunity}`}>
-              <div className={styles.boxTitle}>{t('delete_community')}</div>
-              <div className={styles.boxSubtitle}>{t('delete_community_description')}</div>
-              <div className={styles.boxInput}>
-                <div className={styles.deleteSubplebbit}>
-                  <Button type='button' onClick={_deleteSubplebbit} disabled={showDeleting || showSaving}>
-                    {t('delete')}
-                  </Button>
-                  <span className={styles.deletingString}>{showDeleting && <LoadingEllipsis string={t('deleting')} />}</span>
+        <StandardPageContent variant='full' stack>
+          {!isInCreateSubplebbitView && subplebbitAddress ? (
+            <CommunityFeedHeader subplebbit={subplebbit} subplebbitAddress={subplebbitAddress} />
+          ) : null}
+          {isReadOnly && !userIsOwnerOrAdmin ? <div className={styles.infobar}>{t('owner_settings_notice')}</div> : null}
+          {isOffline ? <div className={styles.infobar}>{offlineTitle}</div> : null}
+          {isChallengesReadOnly ? (
+            <div className={styles.infobar}>cannot read or write challenges, community node isn&apos;t reachable.</div>
+          ) : null}
+          <div className={styles.formColumn}>
+            <Title isReadOnly={isReadOnly} />
+            <Description isReadOnly={isReadOnly} />
+            {!isInCreateSubplebbitView ? <Address isReadOnly={isReadOnly} /> : null}
+            <Logo isReadOnly={isReadOnly} />
+            <Rules isReadOnly={isReadOnly} />
+            <Moderators isReadOnly={isReadOnly} />
+            <Challenges isReadOnly={isChallengesReadOnly} readOnlyChallenges={subplebbit?.challenges} challengeNames={challengeNames} challengesSettings={rpcChallenges} />
+            {!isInCreateSubplebbitView ? <JSONSettings isReadOnly={isReadOnly} /> : null}
+            <div className={styles.saveOptions}>
+              {!isInCreateSubplebbitView && !isReadOnly ? (
+                <div className={cn(styles.box, styles.deleteCommunity)}>
+                  <div className={styles.boxTitle}>{t('delete_community')}</div>
+                  <div className={styles.boxSubtitle}>{t('delete_community_description')}</div>
+                  <div className={styles.boxInput}>
+                    <div className={styles.deleteSubplebbit}>
+                      <Button type='button' variant='destructive' onClick={_deleteSubplebbit} disabled={showDeleting || showSaving}>
+                        {t('delete')}
+                      </Button>
+                      <span className={styles.deletingString}>{showDeleting ? <LoadingEllipsis string={t('deleting')} /> : null}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : null}
+              {!isReadOnly ? (
+                <Button
+                  type='button'
+                  variant='neutral'
+                  onClick={() => (isInCreateSubplebbitView ? _createSubplebbit() : saveSubplebbit())}
+                  disabled={showSaving || showDeleting}
+                >
+                  {isInCreateSubplebbitView ? t('create_community') : t('save_options')}
+                </Button>
+              ) : null}
+              {showSaving ? <LoadingEllipsis string={t('saving')} /> : null}
+              {currentError ? (
+                <div className={styles.formError}>
+                  <ErrorDisplay error={currentError} />
+                </div>
+              ) : null}
             </div>
-          )}
-          {!isReadOnly && (
-            <Button type='button' onClick={() => (isInCreateSubplebbitView ? _createSubplebbit() : saveSubplebbit())} disabled={showSaving || showDeleting}>
-              {isInCreateSubplebbitView ? t('create_community') : t('save_options')}
-            </Button>
-          )}
-          {showSaving && <LoadingEllipsis string={t('saving')} />}
-          {currentError && (
-            <div className={styles.error}>
-              <ErrorDisplay error={currentError} />
-            </div>
-          )}
-        </div>
+          </div>
+        </StandardPageContent>
       </div>
     </div>
   );

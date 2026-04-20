@@ -1,3 +1,46 @@
+/* Outer wrapper — inline (default) */
+.error {
+  display: block;
+}
+
+/**
+ * Full-width alert strip (feed column, below header tabs).
+ * docs/DESIGN.md: semantic destructive tint, border, readable body size.
+ */
+.errorBar {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px var(--page-content-padding-x, 1rem);
+  border: none;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  border-radius: 0;
+  background-color: transparent;
+}
+
+/*
+ * Span the feed main column edge-to-edge: shell applies `--feed-shell-main-pad-x` on
+ * `[data-feed-shell='main']`; expand width explicitly so the bar (and border) are not
+ * clipped to the padded content box.
+ */
+.errorBarFullBleed {
+  width: calc(100% + 2 * var(--feed-shell-main-pad-x));
+  max-width: none;
+  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
+}
+
+.errorBar .errorMessage {
+  color: hsl(var(--shadcn-destructive));
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.errorBar .feedbackSuccessMessage {
+  color: hsl(var(--shadcn-foreground));
+}
+
 .errorMessage {
   color: var(--red);
 }

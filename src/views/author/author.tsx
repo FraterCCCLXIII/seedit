@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAuthorComments, useAuthor } from '@bitsocialnet/bitsocial-react-hooks';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { isAuthorCommentsView, isAuthorSubmittedView } from '../../lib/utils/view-utils';
-import useWindowWidth from '../../hooks/use-window-width';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
 import Reply from '../../components/reply/';
@@ -23,8 +23,6 @@ const Author = () => {
   const params = useParams();
   const isInAuthorCommentsView = isAuthorCommentsView(location.pathname, params);
   const isInAuthorSubmittedView = isAuthorSubmittedView(location.pathname, params);
-  const isMobile = useWindowWidth() < 640;
-
   const { authorComments, error, lastCommentCid, hasMore, loadMore } = useAuthorComments({ commentCid, authorAddress });
 
   const prevErrorMessageRef = useRef<string | undefined>(undefined);
@@ -98,30 +96,32 @@ const Author = () => {
 
   return (
     <div className={styles.content}>
-      <div className={isMobile ? styles.sidebarMobile : styles.sidebarDesktop}>
+      <div {...feedShellMainProps} className={styles.mainColumn}>
+        {shouldShowErrorToUser && (
+          <div className={styles.error}>
+            <ErrorDisplay error={error} />
+          </div>
+        )}
+        <Virtuoso
+          increaseViewportBy={{ bottom: 1200, top: 600 }}
+          totalCount={authorComments?.length || 0}
+          data={virtuosoData}
+          itemContent={(index, post) => {
+            const isReply = post?.parentCid;
+            return !isReply ? <Post index={index} post={post} /> : <Reply index={index} isSingleReply={true} reply={post} />;
+          }}
+          useWindowScroll={true}
+          components={{ Footer }}
+          endReached={loadMore}
+          ref={virtuosoRef}
+          restoreStateFrom={lastVirtuosoState}
+          initialScrollTop={lastVirtuosoState?.scrollTop}
+        />
+        {virtuosoData?.length === 0 && !hasMore && <div className={styles.noPosts}>{t('nothing_found')}</div>}
+      </div>
+      <div className={styles.sidebarColumn} {...feedShellSidebarProps}>
         <AuthorSidebar />
       </div>
-      {shouldShowErrorToUser && (
-        <div className={styles.error}>
-          <ErrorDisplay error={error} />
-        </div>
-      )}
-      <Virtuoso
-        increaseViewportBy={{ bottom: 1200, top: 600 }}
-        totalCount={authorComments?.length || 0}
-        data={virtuosoData}
-        itemContent={(index, post) => {
-          const isReply = post?.parentCid;
-          return !isReply ? <Post index={index} post={post} /> : <Reply index={index} isSingleReply={true} reply={post} />;
-        }}
-        useWindowScroll={true}
-        components={{ Footer }}
-        endReached={loadMore}
-        ref={virtuosoRef}
-        restoreStateFrom={lastVirtuosoState}
-        initialScrollTop={lastVirtuosoState?.scrollTop}
-      />
-      {virtuosoData?.length === 0 && !hasMore && <div className={styles.noPosts}>{t('nothing_found')}</div>}
     </div>
   );
 };

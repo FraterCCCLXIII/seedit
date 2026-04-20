@@ -321,14 +321,14 @@ const SubplebbitDataEditor = () => {
           <Trans
             i18nKey='save_reset_changes'
             components={{
-              1: <Button type='button' key='saveSubplebbitSettingsButton' onClick={saveSubplebbitSettings} />,
-              2: <Button type='button' key='resetSubplebbitSettingsButton' onClick={() => setText(subplebbitSettings)} />,
+              1: <Button type='button' variant='neutral' key='saveSubplebbitSettingsButton' onClick={saveSubplebbitSettings} />,
+              2: <Button type='button' variant='outline' key='resetSubplebbitSettingsButton' onClick={() => setText(subplebbitSettings)} />,
             }}
           />
           <div>
             <br />
-            <Button type='button' onClick={() => navigate(`/s/${subplebbitAddress}/settings`)}>
-              return to settings
+            <Button type='button' variant='outline' onClick={() => navigate(`/s/${subplebbitAddress}/settings`)}>
+              {t('return_to_settings')}
             </Button>
           </div>
         </div>

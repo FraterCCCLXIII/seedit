@@ -8,11 +8,13 @@ import useFeedFiltersStore from '../../stores/use-feed-filters-store';
 import { useAutoSubscribeStore } from '../../stores/use-auto-subscribe-store';
 import useTimeFilter, { isValidTimeFilterName } from '../../hooks/use-time-filter';
 import useRedirectToDefaultSort from '../../hooks/use-redirect-to-default-sort';
+import useFeedResetStore from '../../stores/use-feed-reset-store';
 import FeedFooter from '../../components/feed-footer';
 import LoadingEllipsis from '../../components/loading-ellipsis';
 import Post from '../../components/post';
 import Sidebar from '../../components/sidebar';
 import { sortTypes } from '../../constants/sort-types';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import styles from './home.module.css';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
@@ -89,6 +91,12 @@ const Home = () => {
   }, [subplebbitAddresses, sortType, timeFilterSeconds, searchQuery, commentFilter]);
 
   const { feed, hasMore, loadMore, reset, subplebbitAddressesWithNewerPosts } = useFeed(feedOptions);
+
+  const setResetFunction = useFeedResetStore((state) => state.setResetFunction);
+  useEffect(() => {
+    setResetFunction(reset);
+    return () => setResetFunction(null);
+  }, [reset, setResetFunction]);
 
   useEffect(() => {
     startTransition(() => {
@@ -280,8 +288,8 @@ const Home = () => {
   }, [isCheckingSubscriptions, subplebbitAddresses, feed, safeToShowNoSubscriptions, searchQuery, accountAddress]);
 
   return (
-    <div>
-      <div className={styles.content}>
+    <div className={styles.content}>
+      <div {...feedShellMainProps}>
         {subscriptionState === 'loading' && !searchQuery ? (
           <div className={styles.feed}>
             <div className={styles.footer}>
@@ -309,11 +317,6 @@ const Home = () => {
           </div>
         ) : (
           <div className={styles.feed}>
-            {process.env.NODE_ENV !== 'production' && (
-              <button className={styles.debugButton} onClick={reset}>
-                Reset Feed
-              </button>
-            )}
             <Virtuoso
               increaseViewportBy={{ bottom: 1200, top: 1200 }}
               totalCount={feed?.length || 0}
@@ -331,9 +334,9 @@ const Home = () => {
             />
           </div>
         )}
-        <div className={styles.sidebar}>
-          <Sidebar />
-        </div>
+      </div>
+      <div className={styles.sidebar} {...feedShellSidebarProps}>
+        <Sidebar />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useScheduledReset from '../../hooks/use-scheduled-reset';
 import { copyToClipboard } from '../../lib/utils/clipboard-utils';
+import { cn } from '@/lib/utils';
 import styles from './error-display.module.css';
 
 type ErrorDetails = {
@@ -43,7 +44,15 @@ const stringifyError = (error: unknown) => {
   }
 };
 
-const ErrorDisplay = ({ error }: { error: unknown }) => {
+export type ErrorDisplayProps = {
+  error: unknown;
+  /** `bar`: full-width strip under header (feed routes). Default: compact inline block. */
+  variant?: 'inline' | 'bar';
+  /** With `variant="bar"`: span feed main column edge-to-edge (cancels `--feed-shell-main-pad-x`). */
+  fullBleed?: boolean;
+};
+
+const ErrorDisplay = ({ error, variant = 'inline', fullBleed = false }: ErrorDisplayProps) => {
   const { t } = useTranslation();
   const [feedbackMessageKey, setFeedbackMessageKey] = useState<string | null>(null);
   const errorDetails = getErrorDetails(error);
@@ -86,9 +95,15 @@ const ErrorDisplay = ({ error }: { error: unknown }) => {
 
   const shouldRender = Boolean(errorDetails?.message || errorDetails?.stack || errorDetails?.details || error);
 
+  const rootClass = cn(variant === 'bar' ? styles.errorBar : styles.error, variant === 'bar' && fullBleed && styles.errorBarFullBleed);
+
   return (
     shouldRender && (
-      <div className={styles.error}>
+      <div
+        className={rootClass}
+        role={variant === 'bar' ? 'alert' : undefined}
+        aria-live={variant === 'bar' ? 'polite' : undefined}
+      >
         {currentDisplayMessage && (
           <span
             className={classNames.join(' ')}

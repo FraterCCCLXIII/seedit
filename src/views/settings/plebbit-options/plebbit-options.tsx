@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { setAccount, useAccount, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
+import { cn } from '@/lib/utils';
+import { SettingsPage, SettingsPageActions, SettingsSection } from '../settings-section';
 import styles from './plebbit-options.module.css';
 
 interface SettingsProps {
@@ -21,15 +23,17 @@ interface SettingsProps {
 }
 
 const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: SettingsProps) => {
+  const { t } = useTranslation();
   const account = useAccount();
   const { plebbitOptions, mediaIpfsGatewayUrl } = account || {};
   const { ipfsGatewayUrls } = plebbitOptions || {};
   const ipfsGatewayUrlsDefaultValue = ipfsGatewayUrls?.join('\n');
 
   return (
-    <div className={styles.ipfsGatewaysSettings}>
-      <div className={styles.ipfsGatewaysSetting}>
+    <div className='space-y-4'>
+      <div>
         <Textarea
+          className='max-w-2xl'
           defaultValue={ipfsGatewayUrlsDefaultValue}
           ref={ipfsGatewayUrlsRef}
           autoCorrect='off'
@@ -38,9 +42,9 @@ const IPFSGatewaysSettings = ({ ipfsGatewayUrlsRef, mediaIpfsGatewayUrlRef }: Se
           rows={ipfsGatewayUrls?.length || 3}
         />
       </div>
-      <span className={styles.settingTitle}>nft profile pics gateway</span>
-      <div>
-        <Input type='text' defaultValue={mediaIpfsGatewayUrl} ref={mediaIpfsGatewayUrlRef} />
+      <div className='space-y-2'>
+        <p className='text-sm italic text-muted-foreground'>{t('nft_profile_pics_gateway')}</p>
+        <Input className='max-w-md' type='text' defaultValue={mediaIpfsGatewayUrl} ref={mediaIpfsGatewayUrlRef} />
       </div>
     </div>
   );
@@ -53,16 +57,15 @@ const PubsubProvidersSettings = ({ pubsubProvidersRef }: SettingsProps) => {
   const pubsubProvidersDefaultValue = pubsubKuboRpcClientsOptions?.join('\n');
 
   return (
-    <div className={styles.pubsubProvidersSettings}>
-      <Textarea
-        defaultValue={pubsubProvidersDefaultValue}
-        ref={pubsubProvidersRef}
-        autoCorrect='off'
-        autoComplete='off'
-        spellCheck='false'
-        rows={pubsubKuboRpcClientsOptions?.length || 3}
-      />
-    </div>
+    <Textarea
+      className='max-w-2xl'
+      defaultValue={pubsubProvidersDefaultValue}
+      ref={pubsubProvidersRef}
+      autoCorrect='off'
+      autoComplete='off'
+      spellCheck='false'
+      rows={pubsubKuboRpcClientsOptions?.length || 3}
+    />
   );
 };
 
@@ -73,20 +76,20 @@ const HttpRoutersSettings = ({ httpRoutersRef }: SettingsProps) => {
   const httpRoutersDefaultValue = httpRoutersOptions?.join('\n');
 
   return (
-    <div className={styles.httpRoutersSettings}>
-      <Textarea
-        defaultValue={httpRoutersDefaultValue}
-        ref={httpRoutersRef}
-        autoCorrect='off'
-        autoComplete='off'
-        spellCheck='false'
-        rows={httpRoutersOptions?.length || 4}
-      />
-    </div>
+    <Textarea
+      className='max-w-2xl'
+      defaultValue={httpRoutersDefaultValue}
+      ref={httpRoutersRef}
+      autoCorrect='off'
+      autoComplete='off'
+      spellCheck='false'
+      rows={httpRoutersOptions?.length || 4}
+    />
   );
 };
 
 const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRpcRef }: SettingsProps) => {
+  const { t } = useTranslation();
   const account = useAccount();
   const { plebbitOptions } = account || {};
   const { chainProviders } = plebbitOptions || {};
@@ -96,18 +99,35 @@ const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRp
   const avaxRpcDefaultValue = chainProviders?.['avax']?.urls.join('\n');
 
   return (
-    <div className={styles.blockchainProvidersSettings}>
-      <span className={styles.settingTitle}>ethereum rpc, for .eth addresses</span>
-      <div>
-        <Textarea defaultValue={ethRpcDefaultValue} ref={ethRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['eth']?.length || 3} />
-      </div>
-      <span className={styles.settingTitle}>solana rpc, for .sol addresses</span>
-      <div>
-        <Textarea defaultValue={solRpcDefaultValue} ref={solRpcRef} autoCorrect='off' autoComplete='off' spellCheck='false' rows={chainProviders?.['sol']?.length || 1} />
-      </div>
-      <span className={styles.settingTitle}>polygon rpc, for nft profile pics</span>
-      <div>
+    <div className='space-y-4'>
+      <div className='space-y-2'>
+        <p className='text-sm italic text-muted-foreground'>{t('ethereum_rpc_for_eth_addresses')}</p>
         <Textarea
+          className='max-w-2xl'
+          defaultValue={ethRpcDefaultValue}
+          ref={ethRpcRef}
+          autoCorrect='off'
+          autoComplete='off'
+          spellCheck='false'
+          rows={chainProviders?.['eth']?.length || 3}
+        />
+      </div>
+      <div className='space-y-2'>
+        <p className='text-sm italic text-muted-foreground'>{t('solana_rpc_for_sol_addresses')}</p>
+        <Textarea
+          className='max-w-2xl'
+          defaultValue={solRpcDefaultValue}
+          ref={solRpcRef}
+          autoCorrect='off'
+          autoComplete='off'
+          spellCheck='false'
+          rows={chainProviders?.['sol']?.length || 1}
+        />
+      </div>
+      <div className='space-y-2'>
+        <p className='text-sm italic text-muted-foreground'>{t('polygon_rpc_for_nft_profile_pics')}</p>
+        <Textarea
+          className='max-w-2xl'
           defaultValue={maticRpcDefaultValue}
           ref={maticRpcRef}
           autoCorrect='off'
@@ -116,9 +136,10 @@ const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRp
           rows={chainProviders?.['matic']?.length || 1}
         />
       </div>
-      <span className={styles.settingTitle}>avalanche rpc</span>
-      <div>
+      <div className='space-y-2'>
+        <p className='text-sm italic text-muted-foreground'>{t('avalanche_rpc')}</p>
         <Textarea
+          className='max-w-2xl'
           defaultValue={avaxRpcDefaultValue}
           ref={avaxRpcRef}
           autoCorrect='off'
@@ -132,30 +153,36 @@ const BlockchainProvidersSettings = ({ ethRpcRef, solRpcRef, maticRpcRef, avaxRp
 };
 
 const PlebbitRPCSettings = ({ plebbitRpcRef }: SettingsProps) => {
+  const { t } = useTranslation();
   const [showInfo, setShowInfo] = useState(false);
   const account = useAccount();
   const { plebbitOptions } = account || {};
   const { plebbitRpcClientsOptions } = plebbitOptions || {};
 
   return (
-    <div className={styles.plebbitRPCSettings}>
-      <div>
-        <Input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={plebbitRpcClientsOptions} ref={plebbitRpcRef} />
-        <Button type='button' onClick={() => setShowInfo(!showInfo)}>
-          {showInfo ? 'X' : '?'}
+    <div className='space-y-3'>
+      <div className='flex max-w-md flex-wrap items-start gap-2'>
+        <Input
+          className='min-w-0 flex-1'
+          autoCorrect='off'
+          autoCapitalize='off'
+          spellCheck='false'
+          type='text'
+          defaultValue={plebbitRpcClientsOptions}
+          ref={plebbitRpcRef}
+        />
+        <Button type='button' variant='outline' size='icon' onClick={() => setShowInfo(!showInfo)} aria-expanded={showInfo} aria-label={showInfo ? t('close') : t('help')}>
+          {showInfo ? '×' : '?'}
         </Button>
       </div>
       {showInfo && (
-        <div className={styles.plebbitRpcSettingsInfo}>
-          use a plebbit full node locally, or remotely with SSL
-          <br />
-          <ol>
-            <li>get secret auth key from the node</li>
-            <li>get IP address and port used by the node</li>
-            <li>
-              enter: <code>{`ws://<IP>:<port>/<secretAuthKey>`}</code>
-            </li>
-            <li>click save to connect</li>
+        <div className={cn(styles.plebbitRpcHelp, 'text-sm text-muted-foreground')}>
+          <p>{t('plebbit_rpc_help_intro')}</p>
+          <ol className='mt-2 list-decimal space-y-1 pl-5'>
+            <li>{t('plebbit_rpc_help_step1')}</li>
+            <li>{t('plebbit_rpc_help_step2')}</li>
+            <li>{t('plebbit_rpc_help_step3')}</li>
+            <li>{t('plebbit_rpc_help_step4')}</li>
           </ol>
         </div>
       )}
@@ -170,10 +197,17 @@ const PlebbitDataPathSettings = ({ plebbitDataPathRef }: SettingsProps) => {
   const path = plebbitRpcSettings?.plebbitOptions?.dataPath || '';
 
   return (
-    <div className={styles.plebbitDataPathSettings}>
-      <div>
-        <Input autoCorrect='off' autoCapitalize='off' spellCheck='false' type='text' defaultValue={path} disabled={!isConnectedToRpc} ref={plebbitDataPathRef} />
-      </div>
+    <div>
+      <Input
+        className='max-w-md'
+        autoCorrect='off'
+        autoCapitalize='off'
+        spellCheck='false'
+        type='text'
+        defaultValue={path}
+        disabled={!isConnectedToRpc}
+        ref={plebbitDataPathRef}
+      />
     </div>
   );
 };
@@ -266,62 +300,46 @@ const PlebbitOptions = () => {
 
     try {
       await setAccount(updatedAccount);
-      alert('Options saved, reloading...');
+      alert(t('options_saved_reloading'));
       window.location.reload();
     } catch (e) {
       if (e instanceof Error) {
-        alert('Error saving options: ' + e.message);
+        alert(t('error_saving_options', { message: e.message }));
         console.log(e);
       } else {
-        alert('Error');
+        alert(t('generic_error'));
       }
     }
   };
 
   return (
-    <div className={styles.content}>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>ipfs gateways</span>
-        <span className={styles.categorySettings}>
-          <IPFSGatewaysSettings ipfsGatewayUrlsRef={ipfsGatewayUrlsRef} mediaIpfsGatewayUrlRef={mediaIpfsGatewayUrlRef} />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>pubsub providers</span>
-        <span className={styles.categorySettings}>
-          <PubsubProvidersSettings pubsubProvidersRef={pubsubProvidersRef} />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>http routers</span>
-        <span className={styles.categorySettings}>
-          <HttpRoutersSettings httpRoutersRef={httpRoutersRef} />
-        </span>
-      </div>
-      <div className={styles.category}>
-        <span className={styles.categoryTitle}>blockchain providers</span>
-        <span className={styles.categorySettings}>
-          <BlockchainProvidersSettings ethRpcRef={ethRpcRef} solRpcRef={solRpcRef} maticRpcRef={maticRpcRef} avaxRpcRef={avaxRpcRef} />
-        </span>
-      </div>
-      <div className={`${styles.category} ${location.hash === '#plebbitRpc' ? styles.highlightedSetting : ''}`} id='plebbitRpc'>
-        <span className={styles.categoryTitle}>plebbit rpc</span>
-        <span className={styles.categorySettings}>
-          <PlebbitRPCSettings plebbitRpcRef={plebbitRpcRef} />
-        </span>
-      </div>
+    <SettingsPage>
+      <SettingsSection title={t('ipfs_gateways')}>
+        <IPFSGatewaysSettings ipfsGatewayUrlsRef={ipfsGatewayUrlsRef} mediaIpfsGatewayUrlRef={mediaIpfsGatewayUrlRef} />
+      </SettingsSection>
+      <SettingsSection title={t('pubsub_providers')}>
+        <PubsubProvidersSettings pubsubProvidersRef={pubsubProvidersRef} />
+      </SettingsSection>
+      <SettingsSection title={t('http_routers')}>
+        <HttpRoutersSettings httpRoutersRef={httpRoutersRef} />
+      </SettingsSection>
+      <SettingsSection title={t('blockchain_providers')}>
+        <BlockchainProvidersSettings ethRpcRef={ethRpcRef} solRpcRef={solRpcRef} maticRpcRef={maticRpcRef} avaxRpcRef={avaxRpcRef} />
+      </SettingsSection>
+      <SettingsSection title={t('plebbit_rpc')} id='plebbitRpc' highlighted={location.hash === '#plebbitRpc'}>
+        <PlebbitRPCSettings plebbitRpcRef={plebbitRpcRef} />
+      </SettingsSection>
       {isElectron && (
-        <div className={styles.category}>
-          <span className={styles.categoryTitle}>plebbit data path</span>
-          <span className={styles.categorySettings}>
-            <PlebbitDataPathSettings plebbitDataPathRef={plebbitDataPathRef} />
-          </span>
-        </div>
+        <SettingsSection title={t('plebbit_data_path')}>
+          <PlebbitDataPathSettings plebbitDataPathRef={plebbitDataPathRef} />
+        </SettingsSection>
       )}
-      <Button type='button' className={styles.saveOptions} onClick={handleSave}>
-        {t('save_options')}
-      </Button>
-    </div>
+      <SettingsPageActions>
+        <Button type='button' variant='neutral' onClick={handleSave}>
+          {t('save_options')}
+        </Button>
+      </SettingsPageActions>
+    </SettingsPage>
   );
 };
 

@@ -99,12 +99,11 @@
   --x-button: url('/assets/buttons/close-x-button.png');
   --x-button-hover: url('/assets/buttons/close-x-button.png');
 
-  /* Twitter-style feed shell (Primal-inspired column layout) */
+  /* docs/DESIGN.md three-column: 275px nav, 600px feed, 350px right */
   --feed-shell-site-max: 1280px;
-  --feed-shell-left-w: 200px;
-  /* Primal center column is ~640px; inner max = feed + right sidebar + gap */
-  --feed-shell-feed-max: 640px;
-  --feed-shell-center-inner-max: 1000px;
+  --feed-shell-left-w: 275px;
+  --feed-shell-feed-max: 600px;
+  --feed-shell-center-inner-max: 990px;
   --feed-shell-border: var(--border-contrast);
   --feed-shell-canvas: var(--background);
   --feed-shell-main-bg: var(--background);
@@ -114,6 +113,12 @@
   --feed-shell-font: var(--font-sans);
   --feed-shell-font-size: var(--app-font-size);
   --feed-shell-line-height: 1.5;
+
+  /* Standard document / form pages (settings, inbox, about) — align with header horizontal rhythm */
+  --page-content-padding-x: 1rem;
+  --page-content-padding-y: 1rem;
+  --page-content-padding-bottom: 2.5rem;
+  --page-content-max-width-narrow: 48rem;
 }
 
 :root .light {
@@ -218,9 +223,9 @@
   --x-button-hover: url('/assets/buttons/close-x-button-large-hover.png');
 
   --feed-shell-site-max: 1280px;
-  --feed-shell-left-w: 200px;
-  --feed-shell-feed-max: 640px;
-  --feed-shell-center-inner-max: 1000px;
+  --feed-shell-left-w: 275px;
+  --feed-shell-feed-max: 600px;
+  --feed-shell-center-inner-max: 990px;
   --feed-shell-border: var(--border-primary);
   --feed-shell-canvas: var(--background);
   --feed-shell-main-bg: var(--background);
@@ -230,4 +235,24 @@
   --feed-shell-font: var(--font-sans);
   --feed-shell-font-size: var(--app-font-size);
   --feed-shell-line-height: 1.5;
+
+  --page-content-padding-x: 1rem;
+  --page-content-padding-y: 1rem;
+  --page-content-padding-bottom: 2.5rem;
+  --page-content-max-width-narrow: 48rem;
+}
+
+/* Horizontal padding on `[data-feed-shell='main']` — keep in sync with FeedShellLayout.module.css */
+:root .dark,
+:root .light {
+  --feed-shell-main-pad-x: 12px;
+  /* Sticky header title row + tab row: same inset as feed main (see header.module.css, community-feed-header). */
+  --header-pad-x: var(--feed-shell-main-pad-x);
+}
+
+@media (min-width: 640px) {
+  :root .dark,
+  :root .light {
+    --feed-shell-main-pad-x: 16px;
+  }
 }

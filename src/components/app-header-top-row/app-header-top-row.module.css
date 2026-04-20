@@ -1,0 +1,12 @@
+/* Row 1: logo + single-line title — same vertical rhythm as tab row (header.module.css) */
+.root {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-height: var(--header-tab-row-height);
+  padding: 0 var(--header-pad-x);
+  width: 100%;
+  box-sizing: border-box;
+}

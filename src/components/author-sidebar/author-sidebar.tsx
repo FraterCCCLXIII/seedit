@@ -135,7 +135,7 @@ const AuthorSidebar = () => {
         {/*  TODO: implement functionality for subscribing to users
         {isInAuthorView && authorAddress !== userAccount?.author?.address && (
           <div className={styles.friends}>
-            <SubscribeButton address={address} />
+            <SubscribeButton address={address} pillSize='default' />
           </div>
         )} */}
         <div>

@@ -1,3 +1,12 @@
+/* Groups one or more bar errors; full bleed is handled on ErrorDisplay (`errorBarFullBleed`). */
+.feedErrorBarBleed {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  align-items: stretch;
+}
+
 .content {
   display: grid;
   grid-template-columns: 1fr;
@@ -10,31 +19,11 @@
   min-width: 0;
 }
 
-.debugButton {
-  position: fixed;
-  bottom: 80px;
-  right: 10px;
-  z-index: 1000;
-  background-color: var(--button-background-color);
-  color: #ffffff;
-  border: 1px solid var(--button-border-bottom);
-  border-radius: 3px;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  text-transform: uppercase;
-}
-
 .footer {
-  padding-left: 5px;
-  text-transform: lowercase;
-  padding-bottom: 40px;
-}
-
-.footer {
-  padding-top: 5px;
-  font-size: 12px;
+  padding: 12px 0 36px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: hsl(var(--shadcn-muted-foreground));
 }
 
 @media (max-width: 639px) {
@@ -52,10 +41,6 @@
   .content {
     display: contents;
   }
-
-  .stateString {
-    max-width: calc(100% - 305px);
-  }
 }
 
 .blockConfirm {
@@ -64,22 +49,23 @@
 
 .morePostsSuggestion a,
 .link {
-  color: hsl(var(--shadcn-primary-foreground));
-  text-decoration: none;
-  padding: 0.35rem 0.75rem;
-  background: hsl(var(--shadcn-primary));
-  border: 1px solid hsl(var(--shadcn-primary));
-  border-radius: calc(var(--shadcn-radius) - 2px);
+  display: inline;
+  padding: 0;
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: inherit;
+  color: hsl(var(--shadcn-primary));
+  background: none;
+  border: none;
+  text-decoration: none;
   cursor: pointer;
-  text-transform: lowercase;
   transition: opacity 0.15s ease;
 }
 
 .morePostsSuggestion a:hover,
 .link:hover {
-  opacity: 0.92;
+  opacity: 0.9;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .blockConfirm span {
@@ -175,7 +161,7 @@
   color: #ffffff;
   display: inline-block;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 400;
   cursor: pointer;
   border: 1px solid transparent;
   padding: 4px 12px 3px;

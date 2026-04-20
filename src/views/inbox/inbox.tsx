@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { PixelIcon } from '@/components/ui/pixel-icon';
 import { Button } from '@/components/ui/button';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { useAccount, useNotifications } from '@bitsocialnet/bitsocial-react-hooks';
+import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps } from '../../lib/feed-shell-data';
 import styles from './inbox.module.css';
 import Reply from '../../components/reply/reply';
@@ -16,28 +18,31 @@ const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
 const InboxTabs = () => {
   const { t } = useTranslation();
   const location = useLocation();
-  const isInInboxCommentRepliesView = isInboxCommentRepliesView(location.pathname);
-  const isInInboxPostRepliesView = isInboxPostRepliesView(location.pathname);
-  const isInInboxUnreadView = isInboxUnreadView(location.pathname);
-  const isInAllView = !isInInboxCommentRepliesView && !isInInboxPostRepliesView && !isInInboxUnreadView;
+  const navigate = useNavigate();
+
+  const pathValue =
+    location.pathname === '/inbox/unread' ||
+    location.pathname === '/inbox/commentreplies' ||
+    location.pathname === '/inbox/postreplies'
+      ? location.pathname
+      : '/inbox';
 
   return (
     <div className={styles.inboxTabs}>
-      <Link to='/inbox' className={isInAllView ? styles.selected : styles.choice}>
-        {t('all')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/inbox/unread' className={isInInboxUnreadView ? styles.selected : styles.choice}>
-        {t('unread')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/inbox/commentreplies' className={isInInboxCommentRepliesView ? styles.selected : styles.choice}>
-        {t('comment_replies')}
-      </Link>
-      <span className={styles.separator}>|</span>
-      <Link to='/inbox/postreplies' className={isInInboxPostRepliesView ? styles.selected : styles.choice}>
-        {t('post_replies')}
-      </Link>
+      <div className={styles.inboxSelectWrap}>
+        <select
+          className={styles.inboxNativeSelect}
+          value={pathValue}
+          onChange={(e) => navigate(e.target.value)}
+          aria-label={t('inbox_filter', 'Inbox filter')}
+        >
+          <option value='/inbox'>{t('all')}</option>
+          <option value='/inbox/unread'>{t('unread')}</option>
+          <option value='/inbox/commentreplies'>{t('comment_replies')}</option>
+          <option value='/inbox/postreplies'>{t('post_replies')}</option>
+        </select>
+        <PixelIcon glyph='chevron-down' className={styles.inboxSelectChevron} aria-hidden />
+      </div>
     </div>
   );
 };
@@ -112,35 +117,37 @@ const Inbox = () => {
   return (
     <div className={styles.content}>
       <div {...feedShellMainProps}>
-        <InboxTabs />
-        <div className={styles.markAllAsReadButton}>
-          {account && notifications.length ? (
-            <Button type='button' variant='outline' onClick={markAsRead} disabled={!unreadNotificationCount} className={styles.markAsReadButton}>
-              {t('mark_all_read')}
-            </Button>
-          ) : (
-            <div className={styles.noNotifications}>{t('nothing_found')}</div>
-          )}
-        </div>
-        {shouldShowErrorToUser && (
-          <div className={styles.error}>
-            <ErrorDisplay error={error} />
+        <StandardPageContent variant='full'>
+          <InboxTabs />
+          <div className={styles.markAllAsReadButton}>
+            {account && notifications.length ? (
+              <Button type='button' variant='outline' onClick={markAsRead} disabled={!unreadNotificationCount} className={styles.markAsReadButton}>
+                {t('mark_all_read')}
+              </Button>
+            ) : (
+              <div className={styles.noNotifications}>{t('nothing_found')}</div>
+            )}
           </div>
-        )}
-        <Virtuoso
-          increaseViewportBy={{ bottom: 1200, top: 600 }}
-          totalCount={notifications?.length || 0}
-          data={comments}
-          itemContent={(index, notification) => (
-            <div className={styles.notification}>
-              <Reply index={index} isSingleReply={true} reply={notification} isNotification={true} />
+          {shouldShowErrorToUser && (
+            <div className={styles.error}>
+              <ErrorDisplay error={error} />
             </div>
           )}
-          useWindowScroll={true}
-          ref={virtuosoRef}
-          restoreStateFrom={lastVirtuosoState}
-          initialScrollTop={lastVirtuosoState?.scrollTop}
-        />
+          <Virtuoso
+            increaseViewportBy={{ bottom: 1200, top: 600 }}
+            totalCount={notifications?.length || 0}
+            data={comments}
+            itemContent={(index, notification) => (
+              <div className={styles.notification}>
+                <Reply index={index} isSingleReply={true} reply={notification} isNotification={true} />
+              </div>
+            )}
+            useWindowScroll={true}
+            ref={virtuosoRef}
+            restoreStateFrom={lastVirtuosoState}
+            initialScrollTop={lastVirtuosoState?.scrollTop}
+          />
+        </StandardPageContent>
       </div>
     </div>
   );

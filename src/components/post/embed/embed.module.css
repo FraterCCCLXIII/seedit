@@ -43,16 +43,19 @@
   }
 }
 
+/* 16:9 player — cap width so feed embeds aren’t column- or viewport-wide (matches common embed size) */
 .videoEmbed {
-  height: 450px !important;
-  max-width: 800px !important;
-  aspect-ratio: 16/9;
+  width: min(100%, 560px);
+  max-width: 100% !important;
+  aspect-ratio: 16 / 9;
+  height: auto !important;
+  border: none;
 }
 
 @media (max-width: 640px) {
   .videoEmbed {
     width: 100% !important;
-    max-height: 250px !important;
+    max-height: none;
   }
 }
 

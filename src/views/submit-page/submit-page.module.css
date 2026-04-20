@@ -20,7 +20,6 @@
 .content h1 {
   font-size: 18px;
   font-weight: normal;
-  text-transform: lowercase;
   margin: 10px 0 !important;
 }
 
@@ -42,21 +41,44 @@
   position: relative;
   width: 500px;
   background-color: var(--background-primary);
-  border-radius: 4px;
+  border-radius: var(--shadcn-radius-control);
   padding: 5px 10px 10px 10px;
   font-size: large;
   margin-bottom: 15px;
 }
 
+.boxTitle {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  color: hsl(var(--shadcn-foreground));
+}
+
+/* Field labels (always define locally so CSS Modules export the class) */
+.boxTitleOptional,
+.boxTitleRequired {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: hsl(var(--shadcn-foreground));
+  max-width: 100%;
+  vertical-align: baseline;
+}
+
 .optional {
-  content: " (optional)";
-  color: var(--text-info);
-  font-size: smaller;
+  display: inline;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 0.8125rem;
+  font-weight: 400;
 }
 
 .boxTitleRequired::before {
-  content: "*";
-  color: var(--red);
+  content: '*';
+  color: hsl(var(--shadcn-destructive));
+  font-weight: 700;
+  margin-right: 0.125rem;
 }
 
 .boxContent {
@@ -71,11 +93,13 @@
 
 .input {
   font-size: 100%;
-  width: 492px;
+  width: 100%;
+  max-width: 492px;
   padding: 3px;
   margin: 0;
   color: var(--text);
-  font-family: var(--font-sans)
+  font-family: var(--font-sans);
+  box-sizing: border-box;
 }
 
 .inputTitle {
@@ -112,8 +136,10 @@
 
 .description {
   margin-top: 5px;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   font-size: small;
+  box-sizing: border-box;
 }
 
 .notice {
@@ -123,22 +149,161 @@
   font-size: 12px;
 }
 
+/* ——— Modal variant (flat layout, scroll body) ——— */
+.contentModal {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  color: hsl(var(--shadcn-foreground));
+}
+
+.modalHeader {
+  flex-shrink: 0;
+  padding: 14px 48px 12px 16px;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  background: hsl(var(--shadcn-background) / 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.modalTitle {
+  margin: 0 !important;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.formScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 20px;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--shadcn-muted-foreground) / 0.45) transparent;
+}
+
+.formScroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.formScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.formScroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--shadcn-muted-foreground) / 0.4);
+  border-radius: 9999px;
+}
+
+.formScroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--shadcn-muted-foreground) / 0.55);
+}
+
+.content[data-variant='modal'] .form {
+  margin: 0;
+}
+
+.content[data-variant='modal'] .formContent {
+  width: 100%;
+  max-width: none;
+}
+
+.content[data-variant='modal'] .box {
+  width: 100%;
+  max-width: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0 0 1.125rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid hsl(var(--shadcn-border) / 0.45);
+  font-size: 1rem;
+}
+
+.content[data-variant='modal'] .notice {
+  background: transparent;
+  border: none;
+  border-bottom: none;
+  border-left: 3px solid hsl(var(--shadcn-muted-foreground) / 0.35);
+  padding: 10px 0 10px 12px;
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.content[data-variant='modal'] .infobar {
+  background: hsl(var(--shadcn-muted) / 0.35);
+  border: 1px solid hsl(var(--shadcn-border));
+  border-radius: var(--shadcn-radius);
+  margin-bottom: 12px;
+}
+
+.content[data-variant='modal'] .uploadBox {
+  background: transparent;
+  border: 1px dashed hsl(var(--shadcn-border));
+  border-radius: var(--shadcn-radius);
+}
+
+/* Modal: full-width fields; module .input must not override shadcn w-full */
+.content[data-variant='modal'] .input,
+.content[data-variant='modal'] .description,
+.content[data-variant='modal'] .mediaPreview {
+  width: 100%;
+  max-width: 100%;
+}
+
+.content[data-variant='modal'] .boxSubtitle {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 0.8125rem;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.fieldLabelCapitalize {
+  text-transform: capitalize;
+}
+
+.requiredNote {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.requiredMark {
+  color: hsl(var(--shadcn-destructive));
+  font-weight: 600;
+}
+
+.content[data-variant='modal'] .submit {
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid hsl(var(--shadcn-border) / 0.35);
+}
+
+.content[data-variant='modal'] .options .option label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
 .submit {
   cursor: pointer;
   padding-top: 10px;
-}
-
-.submit button {
-  -webkit-appearance: button;
-  appearance: button;
-  padding: 2px 6px 3px;
 }
 
 .subsDescription {
   font-size: 13px;
   font-weight: normal;
   margin-top: .5em;
-  text-transform: lowercase;
 }
 
 .sub {
@@ -226,7 +391,6 @@
 }
 
 .options {
-  text-transform: lowercase;
   font-size: 15px;
 }
 
@@ -336,21 +500,18 @@
   display: inline-block;
   text-align: center;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   background-image: none;
   border: 1px solid transparent;
   white-space: nowrap;
   padding: 5px 12px 3px 12px;
-  font-size: 12px;
-  border-radius: 3px;
+  font-size: 13px;
+  border-radius: var(--shadcn-radius-control);
   margin: 3px 5px;
   background-color: var(--button-background-color);
   border-bottom: 2px solid var(--button-border-bottom);
   user-select: none;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 13px;
   filter: var(--filter80);
 }
 
@@ -371,7 +532,6 @@
   font-size: 11px;
   cursor: pointer;
   margin-left: 10px;
-  text-transform: lowercase;
   color: var(--text-primary);
   float: right;
   line-height: 18px;

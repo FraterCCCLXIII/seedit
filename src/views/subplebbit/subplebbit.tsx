@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { useAccountComments, useBlock, useFeed, useSubplebbit, type Comment } from '@bitsocialnet/bitsocial-react-hooks';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
 import { Trans, useTranslation } from 'react-i18next';
@@ -278,7 +277,8 @@ const Subplebbit = () => {
   const setResetFunction = useFeedResetStore((state) => state.setResetFunction);
   useEffect(() => {
     setResetFunction(reset);
-  }, [reset, setResetFunction, feed]);
+    return () => setResetFunction(null);
+  }, [reset, setResetFunction]);
 
   const resetTriggeredRef = useRef(false);
 
@@ -364,16 +364,11 @@ const Subplebbit = () => {
     <div className={styles.content}>
       <div {...feedShellMainProps}>
         {shouldShowErrorToUser && (
-          <div className={styles.error}>
-            <ErrorDisplay error={error} />
+          <div className={styles.feedErrorBarBleed}>
+            <ErrorDisplay error={error} variant='bar' fullBleed />
           </div>
         )}
         <div className={styles.feed}>
-          {process.env.NODE_ENV !== 'production' && (
-            <Button type='button' variant='outline' size='sm' className={styles.debugButton} onClick={reset}>
-              Reset Feed
-            </Button>
-          )}
           <Virtuoso
             increaseViewportBy={{ bottom: 1200, top: 600 }}
             totalCount={combinedFeed?.length || 0}
@@ -390,7 +385,7 @@ const Subplebbit = () => {
         </div>
       </div>
       <div className={styles.sidebar} {...feedShellSidebarProps}>
-        <Sidebar subplebbit={subplebbit} isSubCreatedButNotYetPublished={started && isSubCreatedButNotYetPublished} settings={settings} reset={reset} />
+        <Sidebar subplebbit={subplebbit} settings={settings} reset={reset} />
       </div>
     </div>
   );

@@ -1,14 +1,15 @@
 .content {
   display: flex;
   flex-direction: column;
+  min-height: 0;
   height: 100%;
   padding-bottom: 60px;
-  padding: 5px;
+  box-sizing: border-box;
 }
 
 .editor {
   width: 100%;
-  border: 1px solid var(--gray-light);
+  border: 1px solid hsl(var(--shadcn-border));
   border-radius: 5px;
   font-family: monospace;
   font-size: 14px;
@@ -20,12 +21,7 @@
   margin-top: 20px;
   font-size: 14px;
   padding-left: 10px;
-  color: var(--text);
-}
-
-.buttons button {
-  font-size: 14px;
-  cursor: pointer;
+  color: hsl(var(--shadcn-foreground));
 }
 
 .securityWarning {
@@ -104,6 +100,8 @@
 
 .securityWarning .warningButtons {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   justify-content: center;
   margin-left: auto;
   margin-right: auto;
@@ -114,50 +112,17 @@
   box-sizing: border-box;
 }
 
-.securityWarning .warningButtons button {
-  color: var(--alert-color);
-  display: inline-block;
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: 500;
-  cursor: pointer;
-  background-image: none;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  padding: 8px 12px;
-  font-size: 12px;
-  line-height: 20px;
-  border-radius: 3px;
-  flex: 1;
-  margin: 3px 5px;
-  background-color: var(--button-background-color);
-  border-bottom: 2px solid var(--button-border-bottom);
-  user-select: none;
-}
-
 @media (max-width: 640px) {
   .securityWarning .warningButtons {
     padding: 0;
+    flex-direction: column;
+    align-items: stretch;
   }
-
-  .securityWarning .warningButtons button {
-    margin: 5px 0;
-    width: 100%;
-  }
-}
-
-.securityWarning .warningButtons button:hover {
-  background-color: var(--button-background-color-hover);
-}
-
-.securityWarning .warningButtons button a {
-  color: var(--alert-color);
-  text-decoration: none;
 }
 
 .loading {
   font-size: 14px;
-  color: var(--text);
+  color: hsl(var(--shadcn-muted-foreground));
   text-align: left;
   margin: 10px 0 0 5px;
 }
@@ -165,15 +130,12 @@
 .infobar {
   width: 100%;
   box-sizing: border-box;
-  background-color: var(--background-orange);
-  border-color: var(--border-orange);
-  border-style: solid;
-  border-width: 1px;
+  background-color: hsl(var(--shadcn-muted) / 0.35);
+  border: 1px solid hsl(var(--shadcn-border));
   padding: 6px 10px;
-  color: var(--text);
+  color: hsl(var(--shadcn-foreground));
   word-wrap: break-word;
   font-size: 14px;
-  text-transform: lowercase;
 }
 
 .fallbackEditor {
@@ -181,17 +143,17 @@
   font-family: monospace;
   font-size: 14px;
   padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background-color: var(--background);
-  color: var(--text);
+  border: 1px solid hsl(var(--shadcn-border));
+  border-radius: var(--shadcn-radius-control);
+  background-color: hsl(var(--shadcn-background));
+  color: hsl(var(--shadcn-foreground));
   resize: vertical;
   white-space: pre;
   overflow-wrap: normal;
 }
 
 .error {
-  color: var(--red);
+  color: hsl(var(--shadcn-destructive));
   font-size: 12px;
   margin: 20px 10px 0 10px;
 }

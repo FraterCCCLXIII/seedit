@@ -3,9 +3,10 @@ import { HashLink } from 'react-router-hash-link';
 import useIsMobile from '../../hooks/use-is-mobile';
 import Sidebar, { Footer } from '../../components/sidebar';
 import styles from './about.module.css';
-import { useAccount, useComment, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
+import { useAccount, useSubplebbit } from '@bitsocialnet/bitsocial-react-hooks';
 import { Capacitor } from '@capacitor/core';
 import { isHomeAboutView } from '../../lib/utils/view-utils';
+import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import { useEffect } from 'react';
 
@@ -157,10 +158,9 @@ const About = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isInHomeAboutView = isHomeAboutView(location.pathname);
-  const { commentCid, subplebbitAddress } = useParams();
+  const { subplebbitAddress } = useParams();
 
   const subplebbit = useSubplebbit({ subplebbitAddress });
-  const comment = useComment({ commentCid: commentCid as string, onlyIfCached: true });
 
   useEffect(() => {
     if (!isMobile && location.pathname.endsWith('/about') && !isInHomeAboutView) {
@@ -174,15 +174,17 @@ const About = () => {
       {isMobile ? (
         isInHomeAboutView ? (
           <>
-            <Sidebar comment={comment} subplebbit={subplebbit} />
+            <Sidebar subplebbit={subplebbit} />
           </>
         ) : (
-          <Sidebar comment={comment} subplebbit={subplebbit} />
+          <Sidebar subplebbit={subplebbit} />
         )
       ) : (
         <>
           <div {...feedShellMainProps}>
-            <FAQ />
+            <StandardPageContent variant='full'>
+              <FAQ />
+            </StandardPageContent>
           </div>
           <div {...feedShellSidebarProps}>
             <Sidebar />

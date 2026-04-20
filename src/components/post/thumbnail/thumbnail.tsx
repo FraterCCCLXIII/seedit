@@ -19,7 +19,6 @@ interface ThumbnailProps {
   linkHeight?: number;
   linkWidth?: number;
   subplebbitAddress?: string;
-  toggleExpanded?: () => void;
   isPdf?: boolean;
 }
 
@@ -36,7 +35,6 @@ const Thumbnail = ({
   linkHeight,
   linkWidth,
   subplebbitAddress,
-  toggleExpanded,
   isPdf = false,
 }: ThumbnailProps) => {
   const [isNotFound, setIsNotFound] = useState(false);
@@ -163,19 +161,7 @@ const Thumbnail = ({
     <span className={`${styles.thumbnail} ${thumbnailClass}`} style={style}>
       <span className={hasLinkDimensions ? styles.transparentThumbnailWrapper : styles.thumbnailWrapper}>
         {isReply || commentMediaInfo?.type === 'webpage' ? (
-          <a
-            href={link}
-            target='_blank'
-            rel='noopener noreferrer'
-            onClick={(e) => {
-              if (e.button === 0 && isReply) {
-                e.preventDefault();
-                if (toggleExpanded && !(isReply && (noMediaLinkIcon === 'link' || noMediaLinkIcon === 'notfound'))) {
-                  toggleExpanded();
-                }
-              }
-            }}
-          >
+          <a href={link} target='_blank' rel='noopener noreferrer'>
             {mediaComponent}
           </a>
         ) : (

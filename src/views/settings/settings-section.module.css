@@ -1,0 +1,94 @@
+/* Settings list: one column, aligned with StandardPageContent narrow max-width */
+
+.page {
+  width: 100%;
+  max-width: var(--page-content-max-width-narrow);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .page {
+    gap: 0.875rem;
+  }
+}
+
+.pageActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.125rem;
+}
+
+/* Section surface: border-forward, minimal elevation (docs/DESIGN.md) */
+
+.section {
+  border-radius: var(--shadcn-radius);
+  border: 1px solid hsl(var(--shadcn-border));
+  background: hsl(var(--shadcn-card));
+  color: hsl(var(--shadcn-card-foreground));
+  overflow: hidden;
+}
+
+.sectionHighlighted {
+  box-shadow:
+    0 0 0 2px hsl(var(--shadcn-background)),
+    0 0 0 4px hsl(var(--shadcn-ring));
+}
+
+/* Title stacked above content at all breakpoints */
+.sectionInner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.625rem;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .sectionInner {
+    gap: 0.75rem;
+    padding: 1.125rem 1.25rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .sectionInner {
+    gap: 0.875rem;
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+/* docs/DESIGN.md — heading-adjacent section titles */
+.sectionLabel {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: hsl(var(--shadcn-foreground));
+  text-align: start;
+  text-transform: capitalize;
+}
+
+@media (min-width: 640px) {
+  .sectionLabel {
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+}
+
+.sectionBody {
+  min-width: 0;
+  text-transform: none;
+}
+
+/* Keep user-typed and code content casing normal */
+.sectionBody :is(input, textarea, select, option, code, pre, kbd) {
+  text-transform: none;
+}
+
+.sectionBody > :global(*):first-child {
+  margin-top: 0;
+}

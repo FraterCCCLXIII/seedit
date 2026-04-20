@@ -1,0 +1,221 @@
+/* Community strip — divider only (docs/DESIGN.md minimal chrome) */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.75rem 0 0.875rem;
+  border: none;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Inside scrollable main column: cancel shell pad; no extra horizontal inset */
+.headerFeed {
+  margin-left: calc(-1 * var(--feed-shell-main-pad-x));
+  margin-right: calc(-1 * var(--feed-shell-main-pad-x));
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Sticky shell: align horizontal inset with tab row (--header-pad-x from parent .header). No bottom rule — .tabMenuRow border-top is the single divider. */
+.headerShell {
+  margin: 0;
+  padding-left: var(--header-pad-x, 1rem);
+  padding-right: var(--header-pad-x, 1rem);
+  border-bottom: none;
+  /* Space between avatar and body matches horizontal padding */
+  column-gap: var(--header-pad-x, 1rem);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.headerShell .titleRow {
+  column-gap: var(--header-pad-x, 1rem);
+  align-items: flex-start;
+  min-width: 0;
+  width: 100%;
+}
+
+@media (max-width: 639px) {
+  .headerShell {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    padding-left: var(--header-pad-x, 1rem);
+    padding-right: var(--header-pad-x, 1rem);
+  }
+}
+
+@media (min-width: 640px) {
+  .header {
+    padding-top: 0.875rem;
+    padding-bottom: 1rem;
+    gap: 1.25rem 1.5rem;
+  }
+
+  /* Keep shell horizontal gaps tied to padding (overrides .header gap shorthand column-gap). */
+  .headerShell {
+    column-gap: var(--header-pad-x);
+  }
+
+  .headerShell .titleRow {
+    column-gap: var(--header-pad-x);
+  }
+}
+
+.avatarWrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: var(--shadcn-radius);
+  overflow: hidden;
+  background: hsl(var(--shadcn-muted) / 0.5);
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid hsl(var(--shadcn-border));
+  box-shadow: none;
+}
+
+@media (min-width: 640px) {
+  .avatarWrap {
+    width: 5.25rem;
+    height: 5.25rem;
+  }
+}
+
+.avatarWrap:hover {
+  background: hsl(var(--shadcn-accent) / 0.35);
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+.avatarIcon {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 2.25rem;
+}
+
+@media (min-width: 640px) {
+  .avatarIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 2.5rem;
+  }
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.25rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.titleLink {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  text-decoration: none;
+  color: hsl(var(--shadcn-foreground));
+  font-family: var(--font-sans);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.titleLink:hover .titlePrimary,
+.titleLink:hover .titleAddress {
+  text-decoration: none;
+  color: hsl(var(--shadcn-primary));
+}
+
+/* Human-readable name — larger, on top */
+.titlePrimary {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  color: hsl(var(--shadcn-foreground));
+}
+
+@media (min-width: 640px) {
+  .titlePrimary {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+/* s/address — smaller, below title */
+.titleAddress {
+  font-weight: 500;
+  font-size: 0.8125rem;
+  letter-spacing: -0.01em;
+  color: hsl(var(--shadcn-muted-foreground));
+}
+
+@media (min-width: 640px) {
+  .titleAddress {
+    font-size: 0.875rem;
+  }
+}
+
+.joinSlot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.meta {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.metaSep {
+  font-weight: 500;
+  color: hsl(var(--shadcn-muted-foreground) / 0.65);
+}
+
+@media (min-width: 640px) {
+  .meta {
+    font-size: 1rem;
+  }
+}

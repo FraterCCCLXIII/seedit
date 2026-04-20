@@ -2,13 +2,36 @@
   display: contents;
 }
 
-.mainColumn {
-  margin: 1rem 0.75rem 2.5rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
+/* Right edge of feed column (no right sidebar on settings — mirrors mainGrid sidebar layout stroke). */
+@media (min-width: 640px) {
+  .settingsShellMain {
+    border-right: 1px solid hsl(var(--shadcn-border));
+    box-sizing: border-box;
+    min-height: 100vh;
+  }
+}
+
+.settingsLayout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .settingsLayout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+}
+
+.settingsMain {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: var(--page-content-max-width-narrow);
 }
 
 .version a:hover {
@@ -20,7 +43,6 @@
 }
 
 .fullNodeStats {
-  text-transform: lowercase;
   cursor: pointer;
   font-size: 10px;
   color: hsl(var(--shadcn-primary));

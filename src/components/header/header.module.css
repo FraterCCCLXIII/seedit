@@ -1,11 +1,22 @@
 .header {
+  /* --header-pad-x: themes.css (matches --feed-shell-main-pad-x) */
+  /* Same vertical extent as .tabMenu li a (padding 14px + 14px + line box ≈ 1.25em at 15px) */
+  --header-tab-row-height: calc(28px + 1.25em);
+
   position: relative;
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid hsl(var(--shadcn-border));
-  background-color: hsl(var(--shadcn-muted) / 0.35);
-  font-size: 0.9375rem;
+  background-color: hsl(var(--shadcn-background) / 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 15px;
   font-weight: 400;
+  line-height: 20px;
+  /* Grid/flex: avoid min-width:auto forcing overflow past feed column */
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .container {
@@ -14,19 +25,61 @@
   align-items: stretch;
   justify-content: flex-start;
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 
-/* Row 1: logo + page title — row 2: tabs (all breakpoints) */
-.titleBand {
+/* Row 1: logo + route title — same rhythm as AppHeaderTopRow + tab row (--header-tab-row-height) */
+.titleRow {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 12px;
-  padding: 8px 12px 4px;
+  min-height: var(--header-tab-row-height);
+  padding: 0 var(--header-pad-x);
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Subplebbit feed: community strip + tabs carry chrome; hide empty branding row on desktop (logo already off in shell ≥900px). */
+@media (min-width: 900px) {
+  :global([data-feed-shell-layout]) .titleRowSubplebbitFeed {
+    display: none;
+  }
+}
+
+.container.reducedHeight .titleRow {
+  min-height: 0;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+
+.container.increasedHeight .titleRow {
+  min-height: var(--header-tab-row-height);
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.logoText {
+  height: 22px;
+  width: auto;
+  max-width: min(40vw, 7.5rem);
+  display: block;
+  flex-shrink: 0;
+  margin-left: 2px;
+  object-fit: contain;
+}
+
+.allOrModPageName {
+  flex: 1;
+  min-width: 0;
 }
 
 .pageTitleArea {
@@ -39,12 +92,61 @@
 .logoLink {
   all: unset;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: hsl(var(--shadcn-foreground));
+}
+
+.headerBackLink {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: 0.125rem;
+  margin-left: -0.125rem;
+  border-radius: calc(var(--shadcn-radius) - 4px);
+  color: hsl(var(--shadcn-foreground));
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.headerBackLink:hover {
+  background-color: hsl(var(--shadcn-accent) / 0.45);
+  color: hsl(var(--shadcn-foreground));
+}
+
+.headerBackLink:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--shadcn-background)), 0 0 0 4px hsl(var(--shadcn-ring));
+}
+
+.headerBackIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 1.25rem;
 }
 
 .logoContainer {
   position: relative;
   top: 0;
   left: 0;
+}
+
+.appLogoMark {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  display: block;
+  object-fit: cover;
+  border-radius: 0.75rem;
 }
 
 @media (min-width: 900px) {
@@ -62,39 +164,51 @@
 }
 
 @media (max-width: 640px) {
-  .reducedHeight {
-    padding-bottom: 0;
-  }
-
   .reduceSubmitPageHeight {
     margin-bottom: -5px;
   }
 }
 
-.increasedHeight .titleBand {
-  padding-top: 12px;
-}
-
+/* docs/DESIGN.md — Heading Medium (20px / 700 / 24) for route titles */
 .pageName {
-  font-weight: 600;
-  font-size: 1.125rem;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
   letter-spacing: -0.02em;
   color: hsl(var(--shadcn-foreground));
 }
 
 .pageName a {
-  color: hsl(var(--shadcn-foreground));
+  color: inherit;
   text-decoration: none;
   cursor: pointer;
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .pageName a:hover {
-  text-decoration: underline;
-  text-decoration-color: hsl(var(--shadcn-muted-foreground));
+  color: hsl(var(--shadcn-primary));
+  text-decoration: none;
+}
+
+.pageNameHeading {
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
 }
 
 .soloPageName {
   padding-left: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .submitTitle {
@@ -105,24 +219,47 @@
   color: hsl(var(--shadcn-muted-foreground));
 }
 
+/* Primary tab row: optional communities filter sits on the right */
+.tabMenuRow {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid hsl(var(--shadcn-border));
+}
+
+/* Post thread / post-about: avoid second rule between title row and slim tab row — one stroke from .header border-bottom only */
+.tabMenuRowNoTopRule {
+  border-top: none;
+}
+
+.tabMenuRow .tabMenu {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  border-top: none;
+}
+
+/* When post/pending pages omit the tab list, keep dev menu / filter aligned */
+.tabMenuRowFlexGrow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Feed header tabs — active underline matches foreground (black light / white dark), not primary blue */
 .tabMenu {
   list-style-type: none;
   white-space: nowrap;
   display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: stretch;
+  gap: 0;
   width: 100%;
   box-sizing: border-box;
-  padding: 6px 12px 10px;
+  padding: 0 var(--header-pad-x);
   margin: 0;
   flex-wrap: wrap;
-  border-top: 1px solid hsl(var(--shadcn-border) / 0.45);
-}
-
-@media (max-width: 640px) {
-  .tabMenu {
-    padding-left: 10px;
-  }
+  border-top: 1px solid hsl(var(--shadcn-border));
 }
 
 /* Tab row <li> markers — link styles from .tabMenu li a / .tabMenu .selected a */
@@ -145,48 +282,60 @@
 .tabMenu li a {
   display: inline-flex;
   align-items: center;
-  padding: 0.4rem 0.65rem;
-  border-radius: calc(var(--shadcn-radius) - 2px);
-  background-color: hsl(var(--shadcn-muted) / 0.55);
+  padding: 14px 12px;
+  border-radius: 0;
+  background-color: transparent;
   text-decoration: none;
   color: hsl(var(--shadcn-muted-foreground));
-  font-size: 0.8125rem;
+  font-size: 15px;
   font-weight: 500;
   box-sizing: border-box;
-  border: 1px solid transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .tabMenu li a:hover {
-  background-color: hsl(var(--shadcn-accent));
-  color: hsl(var(--shadcn-accent-foreground));
+  background-color: rgba(231, 233, 234, 0.1);
+  color: hsl(var(--shadcn-foreground));
 }
 
 .tabMenu .selected a {
   color: hsl(var(--shadcn-foreground));
-  background-color: hsl(var(--shadcn-background));
-  border-color: hsl(var(--shadcn-border));
-  box-shadow: 0 1px 2px hsl(var(--shadcn-foreground) / 0.06);
+  background-color: transparent;
+  font-weight: 700;
+  border-bottom-color: hsl(var(--shadcn-foreground));
 }
 
 .submitButton {
   display: inline-flex;
   align-items: center;
-  padding: 0.4rem 0.75rem;
-  border-radius: calc(var(--shadcn-radius) - 2px);
-  background-color: hsl(var(--shadcn-primary));
-  color: hsl(var(--shadcn-primary-foreground));
-  font-size: 0.8125rem;
-  font-weight: 500;
+  padding: 0.4rem 1rem;
+  border-radius: var(--shadcn-radius-control);
+  background-color: hsl(var(--shadcn-foreground));
+  color: hsl(var(--shadcn-background));
+  font-size: 15px;
+  font-weight: 400;
   text-decoration: none;
   border: 1px solid transparent;
 }
 
+:global(.dark) .submitButton {
+  background-color: hsl(0 0% 100%);
+  color: hsl(0 0% 0%);
+}
+
 .submitButton:hover {
-  opacity: 0.92;
+  background-color: hsl(var(--shadcn-foreground) / 0.88);
+}
+
+:global(.dark) .submitButton:hover {
+  background-color: hsl(0 0% 93%);
+  color: hsl(0 0% 0%);
 }
 
 .horizontalScroll {
@@ -215,6 +364,3 @@
   }
 }
 
-.lowercase {
-  text-transform: lowercase;
-}

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PixelIcon } from '@/components/ui/pixel-icon';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -77,6 +78,7 @@ const ExcludeAddressesFromChallengeInput = ({
 };
 
 const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, setSubplebbitSettingsStore, settings, showSettings }: ChallengeSettingsProps) => {
+  const { t } = useTranslation();
   const { name, options } = challenge || {};
   const challengeSettings = challengesSettings[name];
   const readOnlyFallback = isReadOnly && Object.keys(challengeSettings || {}).length === 0 && challenge;
@@ -200,17 +202,27 @@ const ChallengeSettings = ({ challenge, challengesSettings, index, isReadOnly, s
       <div className={styles.challengeDescription}>Exclude groups for challenge #{index + 1}</div>
       <div className={styles.excludeGroupSection}>
         {!isReadOnly && (
-          <Button type='button' className={`${styles.addButton} ${styles.addExclude}`} onClick={addExcludeGroup} disabled={isReadOnly}>
-            Add Group
+          <Button type='button' variant='outline' className={`${styles.addButton} ${styles.addExclude}`} onClick={addExcludeGroup} disabled={isReadOnly}>
+            {t('challenge_add_exclude_group')}
           </Button>
         )}
         {excludeArray.map((exclude: any, excludeIndex: number) => (
           <div key={excludeIndex} className={styles.excludeGroup}>
             Exclude group #{excludeIndex + 1}
-            {!isReadOnly && <span className={styles.deleteButton} onClick={() => deleteExcludeGroup(excludeIndex)} title='delete group' />}
+            {!isReadOnly ? (
+              <button
+                type='button'
+                className={styles.deleteIconBtn}
+                title={t('delete')}
+                aria-label={t('delete')}
+                onClick={() => deleteExcludeGroup(excludeIndex)}
+              >
+                <PixelIcon glyph='trash' className={styles.deleteIcon} aria-hidden />
+              </button>
+            ) : null}
             {!isReadOnly && (
-              <Button type='button' className={styles.hideCombo} onClick={() => toggleExcludeSettings(excludeIndex)} disabled={isReadOnly}>
-                {(showExcludeSettings?.[excludeIndex] ?? false) ? 'Hide' : 'Show'} Group Settings
+              <Button type='button' variant='outline' className={styles.hideCombo} onClick={() => toggleExcludeSettings(excludeIndex)} disabled={isReadOnly}>
+                {(showExcludeSettings?.[excludeIndex] ?? false) ? t('challenge_hide_group_settings') : t('challenge_show_group_settings')}
               </Button>
             )}
             {showExcludeSettings[excludeIndex] && (
@@ -497,7 +509,7 @@ const Challenges = ({
       <div className={styles.boxSubtitle}>{t('challenges_subtitle')}</div>
       <div className={styles.boxInput}>
         {!isReadOnly && (
-          <Button type='button' className={styles.addButton} onClick={handleAddChallenge} disabled={isReadOnly}>
+          <Button type='button' variant='outline' className={styles.addButton} onClick={handleAddChallenge} disabled={isReadOnly}>
             {t('add_a_challenge')}
           </Button>
         )}
@@ -505,7 +517,17 @@ const Challenges = ({
         {challenges?.map((challenge: any, index: number) => (
           <div key={index} className={styles.challenge}>
             Challenge #{index + 1}
-            {!isReadOnly && <span className={styles.deleteButton} title='delete challenge' onClick={() => (isReadOnly ? {} : handleDeleteChallenge(index))} />}
+            {!isReadOnly ? (
+              <button
+                type='button'
+                className={styles.deleteIconBtn}
+                title={t('delete')}
+                aria-label={t('delete')}
+                onClick={() => handleDeleteChallenge(index)}
+              >
+                <PixelIcon glyph='trash' className={styles.deleteIcon} aria-hidden />
+              </button>
+            ) : null}
             <br />
             {isReadOnly ? (
               <span className={styles.readOnlyChallenge}>{challenge?.name}</span>
@@ -519,7 +541,7 @@ const Challenges = ({
               </Select>
             )}
             {!isReadOnly && (
-              <Button type='button' className={styles.challengeEditButton} onClick={() => toggleSettings(index)} disabled={isReadOnly}>
+              <Button type='button' variant='outline' className={styles.challengeEditButton} onClick={() => toggleSettings(index)} disabled={isReadOnly}>
                 {showSettings[index] ? t('hide_settings') : t('show_settings')}
               </Button>
             )}

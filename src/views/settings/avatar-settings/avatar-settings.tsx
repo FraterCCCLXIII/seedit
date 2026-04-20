@@ -37,7 +37,7 @@ const AvatarPreview = ({ areSettingsShown, avatar, showSettings }: AvatarSetting
         {imageUrl && state !== 'initializing' ? (
           <img src={imageUrl} alt='' />
         ) : (
-          <span className={styles.emptyAvatar}>{areSettingsShown ? '–' + t('hide') : '+' + t('add')}</span>
+          <span className={styles.emptyAvatar}>{areSettingsShown ? '\u2013 ' + t('hide') : '+ ' + t('add')}</span>
         )}
       </div>
       {state !== 'succeeded' && account?.author?.avatar && (
@@ -123,7 +123,7 @@ const AvatarSettings = () => {
       return alert(t('missing_signature'));
     }
     setAccount({ ...account, author: { ...account?.author, avatar } });
-    alert(`saved`);
+    alert(t('saved'));
   };
 
   return (
@@ -216,7 +216,7 @@ const AvatarSettings = () => {
               defaultValue={account?.author?.avatar?.signature?.signature}
               onChange={(e) => setSignature(e.target.value)}
             />
-            <Button type='button' key='saveButton' onClick={save}>
+            <Button type='button' variant='neutral' key='saveButton' onClick={save}>
               {t('save')}
             </Button>
           </div>

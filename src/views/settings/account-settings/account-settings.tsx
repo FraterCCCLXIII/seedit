@@ -122,6 +122,7 @@ const ImportAccountButton = () => {
 };
 
 const ExportAccountButton = () => {
+  const { t } = useTranslation();
   const account = useAccount();
   const [showExportAccountOptions, setShowExportAccountOptions] = useState(false);
   const [includePlebbitOptions, setIncludePlebbitOptions] = useState(true);
@@ -185,7 +186,7 @@ const ExportAccountButton = () => {
       />
       <span className={styles.exportAccountOptions}>
         <span className={styles.exportAccountOptionsButton} onClick={() => setShowExportAccountOptions(!showExportAccountOptions)}>
-          {showExportAccountOptions ? 'hide options' : 'options'}
+          {showExportAccountOptions ? t('hide_options') : t('options')}
         </span>
       </span>
       {showExportAccountOptions && (

@@ -17,6 +17,7 @@ import PostComponent from '../../components/post';
 import Reply from '../../components/reply';
 import ReplyForm from '../../components/reply-form';
 import Sidebar from '../../components/sidebar';
+import { StandardPageContent } from '@/components/layout';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import styles from './post-page.module.css';
 import _ from 'lodash';
@@ -44,7 +45,7 @@ const SortDropdown = ({ sortBy, onSortChange }: SortDropdownProps) => {
   }, [handleGlobalClick]);
 
   return (
-    <div className={styles.spacer}>
+    <div className={styles.sortDropdownRow}>
       <span className={styles.dropdownTitle}>{t('reply_sorted_by')}: </span>
       <div
         ref={dropdownRef}
@@ -157,11 +158,14 @@ const Post = ({ post }: { post: Comment }) => {
             </div>
           )}
           {!isSingleComment && (
-            <div className={styles.menuArea}>
-              <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
-              <div className={styles.spacer} />
-              {subplebbitAddress && cid && <ReplyForm cid={cid} subplebbitAddress={subplebbitAddress} postCid={postCid} />}
-            </div>
+            <>
+              <div className={styles.commentsSortBar}>
+                <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
+              </div>
+              <div className={styles.replyComposerArea}>
+                {subplebbitAddress && cid && <ReplyForm cid={cid} subplebbitAddress={subplebbitAddress} postCid={postCid} />}
+              </div>
+            </>
           )}
           {isSingleComment && (
             <div className={styles.singleCommentInfobar}>
@@ -310,15 +314,17 @@ const PostPage = () => {
   ) : (
     <div className={styles.content}>
       <div {...feedShellMainProps}>
-        {isInPendingPostView && params?.accountCommentIndex ? <Post post={pendingPost} /> : isInPostContextView ? <PostWithContext post={post} /> : <Post post={post} />}
-        {shouldShowErrorToUser && (
-          <div className={styles.error}>
-            <ErrorDisplay error={post.error} />
-          </div>
-        )}
+        <StandardPageContent variant='full'>
+          {isInPendingPostView && params?.accountCommentIndex ? <Post post={pendingPost} /> : isInPostContextView ? <PostWithContext post={post} /> : <Post post={post} />}
+          {shouldShowErrorToUser && (
+            <div className={styles.error}>
+              <ErrorDisplay error={post.error} />
+            </div>
+          )}
+        </StandardPageContent>
       </div>
       <div className={styles.sidebar} {...feedShellSidebarProps}>
-        <Sidebar subplebbit={subplebbit} comment={post} settings={subplebbit?.settings} />
+        <Sidebar subplebbit={subplebbit} settings={subplebbit?.settings} />
       </div>
     </div>
   );

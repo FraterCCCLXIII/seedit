@@ -15,19 +15,19 @@
 
 .usertext {
   unicode-bidi: isolate;
-  font-size: small;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* Body text only — no bordered “card”; emphasis from * / _ should read as normal weight */
+.usertext em,
+.usertext i {
+  font-style: normal;
 }
 
 .markdown {
-  background-color: var(--background-markdown);
-  border: 1px solid var(--text-primary);
-  border-radius: 7px;
-  padding: 5px 10px;
-  font-weight: 400;
-  color: var(--text-markdown);
   max-width: 60em;
-  font-size: 14px;
-  line-height: 20px;
   overflow-wrap: break-word;
 }
 
@@ -48,23 +48,41 @@
   margin-bottom: 5px;
   box-sizing: border-box;
   display: inline-block;
-  max-width: 700px;
+  max-width: min(100%, 700px);
   overflow: hidden;
 }
 
+/* Direct link wrapper: shrink-wrap for img/video; full width for iframe embeds (16:9 box from .videoEmbed) */
+.mediaPreview > a {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+  vertical-align: top;
+}
+
+.mediaPreview > a:has(iframe) {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  line-height: normal;
+}
+
 .mediaPreview img {
-  /* TODO: max width should be dynamically calculated based on file dimensions from API */
-  width: 100%;
-  max-width: 600px;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 600px);
+  max-height: min(90vh, 1600px);
   background-color: var(--background-thumbnail);
   object-fit: contain;
 }
 
 .mediaPreview video {
-  /* TODO: max width should be dynamically calculated based on file dimensions from API */
-  width: 100%;
-  max-width: 700px;
-  max-height: 50vh;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 700px);
+  max-height: min(85vh, 1600px);
   background-color: var(--background-thumbnail);
   object-fit: contain;
 }
@@ -74,35 +92,20 @@
   display: block;
   border: none;
   background-color: var(--background-thumbnail);
-}
-
-/* Safari-specific fix for iframe width constraint in inline-block containers */
-@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
-  .mediaPreview iframe {
-    width: auto !important;
-  }
-}
-
-@media (min-width: 640px) {
-  .mediaPreview iframe {
-    max-width: calc(100vw - 480px) !important;
-  }
-}
-
-@media (max-width: 940px) {
-  .mediaPreview iframe {
-    max-width: 100%;
-  }
+  /* Do not use viewport-based max-width here — it overrides .videoEmbed and forces near-full-width players */
+  max-width: 100%;
 }
 
 @media (max-width: 640px) {
   .mediaPreview img {
     max-width: 100%;
+    max-height: min(80vh, 1600px);
     background-color: var(--background-thumbnail);
   }
 
   .mediaPreview video {
     max-width: 100%;
+    max-height: min(75vh, 1600px);
     background-color: var(--background-thumbnail);
   }
 

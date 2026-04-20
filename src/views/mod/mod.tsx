@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import useFeedResetStore from '../../stores/use-feed-reset-store';
 import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso';
 import { useAccountSubplebbits, useFeed } from '@bitsocialnet/bitsocial-react-hooks';
 import { useTranslation } from 'react-i18next';
@@ -64,6 +64,12 @@ const Mod = () => {
   }, [subplebbitAddresses, sortType, timeFilterSeconds, searchQuery]);
 
   const { feed, hasMore, loadMore, reset, subplebbitAddressesWithNewerPosts } = useFeed(feedOptions);
+
+  const setResetFunction = useFeedResetStore((state) => state.setResetFunction);
+  useEffect(() => {
+    setResetFunction(reset);
+    return () => setResetFunction(null);
+  }, [reset, setResetFunction]);
 
   // suggest the user to change time filter if there aren't enough posts
   const {
@@ -213,11 +219,6 @@ const Mod = () => {
           </div>
         ) : (
           <div className={styles.feed}>
-            {process.env.NODE_ENV !== 'production' && (
-              <Button type='button' variant='outline' size='sm' className={styles.debugButton} onClick={reset}>
-                Reset Feed
-              </Button>
-            )}
             <Virtuoso
               increaseViewportBy={{ bottom: 1200, top: 600 }}
               totalCount={feed?.length || 0}

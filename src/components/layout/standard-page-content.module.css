@@ -1,0 +1,36 @@
+/**
+ * Document-style pages inside the feed main column: matches shell typography and
+ * uses --page-content-* tokens from themes.css.
+ */
+.root {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--page-content-padding-y) var(--page-content-padding-x) var(--page-content-padding-bottom);
+  font-size: var(--feed-shell-font-size);
+  line-height: var(--feed-shell-line-height);
+  font-family: var(--feed-shell-font);
+  color: hsl(var(--shadcn-foreground));
+}
+
+.narrow {
+  max-width: var(--page-content-max-width-narrow);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Communities / feed-aligned lists: same chrome as `.root` but no top/side page inset (matches home feed column width) */
+.rootFeedColumn {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 0 var(--page-content-padding-bottom);
+  font-size: var(--feed-shell-font-size);
+  line-height: var(--feed-shell-line-height);
+  font-family: var(--feed-shell-font);
+  color: hsl(var(--shadcn-foreground));
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

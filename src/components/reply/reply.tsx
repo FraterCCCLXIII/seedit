@@ -28,7 +28,6 @@ import CommentEditForm from '../comment-edit-form';
 import LoadingEllipsis from '../loading-ellipsis/';
 import Markdown from '../markdown';
 import CommentTools from '../post/comment-tools';
-import ExpandButton from '../post/expand-button/';
 import Expando from '../post/expando/';
 import Flair from '../post/flair/';
 import Label from '../post/label/';
@@ -148,10 +147,9 @@ interface ReplyMediaProps {
   linkWidth: number;
   nsfw: boolean;
   spoiler: boolean;
-  toggleExpanded: () => void;
 }
 
-const ReplyMedia = ({ commentMediaInfo, content, expanded, hasThumbnail, link, linkHeight, linkWidth, nsfw, spoiler, toggleExpanded }: ReplyMediaProps) => {
+const ReplyMedia = ({ commentMediaInfo, content, expanded, hasThumbnail, link, linkHeight, linkWidth, nsfw, spoiler }: ReplyMediaProps) => {
   const { type } = commentMediaInfo || {};
   return (
     <>
@@ -167,21 +165,9 @@ const ReplyMedia = ({ commentMediaInfo, content, expanded, hasThumbnail, link, l
           link={link}
           linkHeight={linkHeight}
           linkWidth={linkWidth}
-          toggleExpanded={toggleExpanded}
           isPdf={commentMediaInfo?.type === 'pdf'}
         />
       )}
-      {type === 'iframe' ||
-        (type === 'audio' && (
-          <ExpandButton
-            commentMediaInfo={commentMediaInfo}
-            content={content}
-            expanded={expanded}
-            hasThumbnail={hasThumbnail}
-            link={link}
-            toggleExpanded={toggleExpanded}
-          />
-        ))}
       {link && (type === 'iframe' || type === 'webpage' || type === 'audio') && (
         <>
           <a href={link} target='_blank' rel='noopener noreferrer'>
@@ -191,14 +177,13 @@ const ReplyMedia = ({ commentMediaInfo, content, expanded, hasThumbnail, link, l
           <br />
         </>
       )}
-      {expanded && link && (
+      {link && (
         <Expando
           commentMediaInfo={commentMediaInfo}
           content={content}
           expanded={expanded}
           link={link}
           showContent={false}
-          toggleExpanded={toggleExpanded}
           isReply={true}
         />
       )}
@@ -367,8 +352,7 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
   const { imageUrl } = useAuthorAvatar({ author });
   const replies = useReplies(reply);
 
-  const [expanded, setExpanded] = useState(false);
-  const toggleExpanded = () => setExpanded(!expanded);
+  const expanded = true;
 
   const [isReplying, setIsReplying] = useState(false);
   const showReplyForm = () => setIsReplying(true);
@@ -525,7 +509,6 @@ const Reply = ({ cidOfReplyWithContext, depth = 0, isSingleComment, isSingleRepl
                     linkWidth={linkWidth}
                     nsfw={nsfw}
                     spoiler={spoiler}
-                    toggleExpanded={toggleExpanded}
                   />
                 )}
                 {isEditing ? (

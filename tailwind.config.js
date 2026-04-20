@@ -11,10 +11,18 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          'Helvetica',
+          'Arial',
+          'sans-serif',
+        ],
       },
       fontSize: {
-        base: ['16px', { lineHeight: '1.5' }],
+        base: ['15px', { lineHeight: '20px' }],
       },
       colors: {
         border: 'hsl(var(--shadcn-border) / <alpha-value>)',
@@ -55,6 +63,8 @@ export default {
         lg: 'var(--shadcn-radius)',
         md: 'calc(var(--shadcn-radius) - 2px)',
         sm: 'calc(var(--shadcn-radius) - 4px)',
+        control: 'var(--shadcn-radius-control)',
+        pill: 'var(--shadcn-radius-pill)',
       },
     },
   },

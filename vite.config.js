@@ -45,8 +45,9 @@ export default defineConfig({
       },
       srcDir: 'src',
       filename: 'sw.ts',
+      /* Avoid precached stale JS/CSS during local dev (join button / tokens looked “unchanged”). */
       devOptions: {
-        enabled: true,
+        enabled: false,
         type: 'module',
       },
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],

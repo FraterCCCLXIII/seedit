@@ -4,7 +4,7 @@
 
 .permissionStatus {
   font-size: 10px;
-  color: var(--text-info);
+  color: hsl(var(--shadcn-muted-foreground));
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -44,7 +44,7 @@
 
 .permissionStatusTestButton {
   font-size: 10px;
-  color: var(--link-primary);
+  color: hsl(var(--shadcn-primary));
   cursor: pointer;
   margin-left: 5px;
 }

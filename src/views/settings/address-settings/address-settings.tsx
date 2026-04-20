@@ -121,10 +121,10 @@ const AddressSettings = () => {
             value={cryptoState.cryptoAddress}
             onChange={(e) => setCryptoState((prevState) => ({ ...prevState, cryptoAddress: e.target.value }))}
           />
-          <Button type='button' className={styles.infoButton} onClick={() => setShowCryptoAddressInfo(!showCryptoAddressInfo)}>
+          <Button type='button' variant='outline' size='icon' className={styles.infoButton} onClick={() => setShowCryptoAddressInfo(!showCryptoAddressInfo)}>
             {showCryptoAddressInfo ? 'x' : '?'}
           </Button>
-          <Button type='button' className={styles.button} onClick={saveCryptoAddress}>
+          <Button type='button' variant='neutral' className={styles.button} onClick={saveCryptoAddress}>
             {t('save')}
           </Button>
           {showCryptoAddressInfo && (
@@ -161,7 +161,7 @@ const AddressSettings = () => {
           {savedCryptoAddress && <span className={styles.saved}>{t('saved')}</span>}
         </div>
         <div className={styles.checkCryptoAddress}>
-          <Button type='button' className={styles.button} onClick={checkCryptoAddress}>
+          <Button type='button' variant='neutral' className={styles.button} onClick={checkCryptoAddress}>
             {t('check')}
           </Button>{' '}
           <span className={cryptoState.resolveClass}>{cryptoState.resolveString}</span>

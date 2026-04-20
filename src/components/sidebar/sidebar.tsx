@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { Comment, useAccount, useBlock, Role, Subplebbit, useSubplebbitStats, useAccountComment, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
+import { useAccount, useBlock, Role, Subplebbit, usePlebbitRpcSettings } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
-import { getPostScore } from '../../lib/utils/post-utils';
-import { getFormattedDate, getFormattedTimeDuration, getFormattedTimeAgo } from '../../lib/utils/time-utils';
+import { getFormattedTimeDuration } from '../../lib/utils/time-utils';
 import { findSubplebbitCreator } from '../../lib/utils/user-utils';
 import {
   isAllView,
@@ -15,22 +12,18 @@ import {
   isHomeAboutView,
   isHomeView,
   isModView,
-  isPendingPostView,
   isPostPageAboutView,
-  isPostPageView,
   isSubplebbitAboutView,
   isSubplebbitSettingsView,
   isSubplebbitsView,
   isSubplebbitView,
 } from '../../lib/utils/view-utils';
-import useCommunitySubtitles from '../../hooks/use-community-subtitles';
 import useIsMobile from '../../hooks/use-is-mobile';
-import useIsSubplebbitOffline from '../../hooks/use-is-subplebbit-offline';
+import useWindowWidth from '../../hooks/use-window-width';
+import { useSubmitPostRoute } from '../../hooks/use-submit-post-route';
 import { FAQ } from '../../views/about/about';
-import LoadingEllipsis from '../loading-ellipsis';
 import Markdown from '../markdown';
 import SearchBar from '../search-bar';
-import SubscribeButton from '../subscribe-button';
 import { Version } from '../version';
 import styles from './sidebar.module.css';
 
@@ -40,9 +33,7 @@ const RulesList = ({ rules }: { rules: string[] }) => {
 
   return (
     <div className={styles.rules}>
-      <div className={styles.rulesTitle}>
-        <strong>{t('rules')}</strong>
-      </div>
+      <h2 className={styles.sidebarSectionHeading}>{t('rules')}</h2>
       <Markdown content={markdownRules} />
     </div>
   );
@@ -54,7 +45,7 @@ const ModeratorsList = ({ roles }: { roles: Record<string, Role> }) => {
 
   return (
     <div className={styles.list}>
-      <div className={styles.listTitle}>{t('moderators')}</div>
+      <h2 className={styles.sidebarSectionHeading}>{t('moderators')}</h2>
       <ul className={`${styles.listContent} ${styles.modsList}`}>
         {rolesList.map(({ address }, index) => (
           <li key={index} onClick={() => window.alert('Direct profile links are not supported yet.')}>
@@ -68,34 +59,6 @@ const ModeratorsList = ({ roles }: { roles: Record<string, Role> }) => {
   );
 };
 
-const PostInfo = ({ comment }: { comment: Comment | undefined }) => {
-  const { t, i18n } = useTranslation();
-  const { language } = i18n;
-  const { upvoteCount, downvoteCount, timestamp, state, subplebbitAddress, cid } = comment || {};
-  const postScore = getPostScore(upvoteCount, downvoteCount, state);
-  const totalVotes = upvoteCount + downvoteCount;
-  const upvotePercentage = totalVotes > 0 ? Math.round((upvoteCount / totalVotes) * 100) : 0;
-  const postDate = getFormattedDate(timestamp, language);
-
-  return (
-    <div className={styles.postInfo}>
-      <div className={styles.postDate}>
-        <span>{t('post_submitted_on', { postDate: postDate })}</span>
-      </div>
-      <div className={styles.postScore}>
-        <span className={styles.postScoreNumber}>{postScore === '•' ? '0' : postScore}</span>{' '}
-        <span className={styles.postScoreWord}>{postScore === 1 ? t('point') : t('points')}</span>{' '}
-        {`(${postScore === '?' ? '?' : `${upvotePercentage}`}% ${t('upvoted')})`}
-      </div>
-      {subplebbitAddress && cid && (
-        <div className={styles.shareLink}>
-          {t('share_link')}: <Input type='text' readOnly value={`https://seedit.app/s/${subplebbitAddress}/c/${cid}`} />
-        </div>
-      )}
-    </div>
-  );
-};
-
 const ModerationTools = ({ address }: { address?: string }) => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -104,7 +67,7 @@ const ModerationTools = ({ address }: { address?: string }) => {
 
   return (
     <div className={styles.list}>
-      <div className={styles.listTitle}>{t('moderation_tools')}</div>
+      <h2 className={styles.sidebarSectionHeading}>{t('moderation_tools')}</h2>
       <ul className={`${styles.listContent} ${styles.modsList}`}>
         <li className={`${styles.moderationTool} ${isInSubplebbitSettingsView ? styles.selectedTool : ''}`}>
           <Link className={styles.communitySettingsTool} to={`/s/${address}/settings`}>
@@ -117,8 +80,6 @@ const ModerationTools = ({ address }: { address?: string }) => {
 };
 
 interface SidebarProps {
-  comment?: Comment;
-  isSubCreatedButNotYetPublished?: boolean;
   settings?: any;
   subplebbit?: Subplebbit;
   reset?: () => void;
@@ -138,51 +99,42 @@ export const Footer = () => {
         isInSubplebbitView ? styles.subplebbitFooterMargin : ''
       }`}
     >
-      <div className={styles.footerLinks}>
-        <ul>
-          <li>
-            <Version />
-          </li>
-          <span className={styles.footerSeparator}>|</span>
-          <li>
-            <a href='https://github.com/bitsocialhq/seedit' target='_blank' rel='noopener noreferrer'>
-              github
-            </a>
-            <span className={styles.footerSeparator}>|</span>
-          </li>
-          <li>
-            <a href='https://t.me/bitsocialhq' target='_blank' rel='noopener noreferrer'>
-              telegram
-            </a>
-            <span className={styles.footerSeparator}>|</span>
-          </li>
-          <li>
-            <a href='https://x.com/bitsocialhq' target='_blank' rel='noopener noreferrer'>
-              x
-            </a>
-            <span className={styles.footerSeparator}>|</span>
-          </li>
-          <li>
-            <a href='https://bitsocial.net' target='_blank' rel='noopener noreferrer'>
-              docs
-            </a>
-          </li>
-        </ul>
-      </div>
+      <nav className={styles.footerNav}>
+        <span className={styles.footerItem}>
+          <Version />
+        </span>
+        <span className={styles.footerSeparator} aria-hidden>
+          |
+        </span>
+        <a className={styles.footerItem} href='https://github.com/bitsocialhq/seedit' target='_blank' rel='noopener noreferrer'>
+          github
+        </a>
+        <span className={styles.footerSeparator} aria-hidden>
+          |
+        </span>
+        <a className={styles.footerItem} href='https://t.me/bitsocialhq' target='_blank' rel='noopener noreferrer'>
+          telegram
+        </a>
+        <span className={styles.footerSeparator} aria-hidden>
+          |
+        </span>
+        <a className={styles.footerItem} href='https://x.com/bitsocialhq' target='_blank' rel='noopener noreferrer'>
+          x
+        </a>
+        <span className={styles.footerSeparator} aria-hidden>
+          |
+        </span>
+        <a className={styles.footerItem} href='https://bitsocial.net' target='_blank' rel='noopener noreferrer'>
+          docs
+        </a>
+      </nav>
     </div>
   );
 };
 
-const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit, reset }: SidebarProps) => {
+const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const { t } = useTranslation();
-  const { address, createdAt, description, roles, rules, title, updatedAt } = subplebbit || {};
-  const { allActiveUserCount, hourActiveUserCount } = useSubplebbitStats({ subplebbitAddress: address });
-  const { isOffline, offlineTitle } = useIsSubplebbitOffline(subplebbit || {});
-  const onlineNotice = t('users_online', { count: hourActiveUserCount || 0 });
-  const offlineNotice = updatedAt ? t('posts_last_synced', { dateAgo: getFormattedTimeAgo(updatedAt) }) : offlineTitle;
-  const onlineStatus = !isOffline ? onlineNotice : offlineNotice;
-
-  const subCreatedButNotYetPublishedStatus = <LoadingEllipsis string='Publishing community over IPFS' />;
+  const { address, createdAt, description, roles, rules, title } = subplebbit || {};
 
   const location = useLocation();
   const params = useParams();
@@ -192,24 +144,16 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
   const isInPostPageAboutView = isPostPageAboutView(location.pathname, params);
   const isInHomeView = isHomeView(location.pathname);
   const isInModView = isModView(location.pathname);
-  const isInPendingPostView = isPendingPostView(location.pathname, params);
-  const isInPostPageView = isPostPageView(location.pathname, params);
   const isInSubplebbitsView = isSubplebbitsView(location.pathname);
   const isInSubplebbitAboutView = isSubplebbitAboutView(location.pathname, params);
-  const isInSubplebbitView = isSubplebbitView(location.pathname, params);
 
-  const pendingPost = useAccountComment({ commentIndex: params?.accountCommentIndex as any });
+  const { submitRoute } = useSubmitPostRoute(address || params?.subplebbitAddress);
+  /** Left feed rail (≥900px) hosts submit under Settings; keep CTA in sidebar when the rail is hidden. */
+  const windowWidth = useWindowWidth();
+  const showSubmitInSidebar = windowWidth < 900;
 
   const subplebbitCreator = findSubplebbitCreator(roles);
   const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress({ address: subplebbitCreator })}`;
-  const submitRoute =
-    isInHomeView || isInHomeAboutView || isInAllView || isInModView || isInDomainView
-      ? '/submit'
-      : isInPendingPostView
-        ? `/s/${pendingPost?.subplebbitAddress}/submit`
-        : address || params?.subplebbitAddress
-          ? `/s/${address || params?.subplebbitAddress}/submit`
-          : '/submit';
 
   const { blocked, unblock, block } = useBlock({ address });
 
@@ -237,27 +181,6 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
   const moderatorRole = roles?.[account.author?.address]?.role;
   const isOwner = !!settings;
 
-  const [subtitle1, setSubtitle1] = useState('');
-  const [subtitle2, setSubtitle2] = useState('');
-
-  const communitySubtitles = useCommunitySubtitles();
-
-  useEffect(() => {
-    if (communitySubtitles.length >= 2) {
-      const indices = new Set<number>();
-      while (indices.size < 2) {
-        const randomIndex = Math.floor(Math.random() * communitySubtitles.length);
-        indices.add(randomIndex);
-      }
-      const [index1, index2] = Array.from(indices);
-      setSubtitle1(communitySubtitles[index1]);
-      setSubtitle2(communitySubtitles[index2]);
-    } else if (communitySubtitles.length === 1) {
-      setSubtitle1(communitySubtitles[0]);
-      setSubtitle2('');
-    }
-  }, [communitySubtitles]);
-
   const isConnectedToRpc = usePlebbitRpcSettings()?.state === 'connected';
   const navigate = useNavigate();
   const handleCreateCommunity = () => {
@@ -276,17 +199,35 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
   const isMobile = useIsMobile();
 
   return (
-    <div className={cn(isMobile ? styles.mobileSidebar : styles.sidebar, 'rounded-xl border border-border bg-card px-4 pb-12 pt-4 text-card-foreground shadow-sm')}>
+    <div className={cn(isMobile ? styles.mobileSidebar : styles.sidebar, styles.sidebarChrome, 'text-foreground')}>
       <div className={styles.searchBarWrapper}>
         <SearchBar />
       </div>
-      <div>
-        {(isInPostPageView || isInPendingPostView) && <PostInfo comment={comment} />}
-        {(isInSubplebbitView || isInHomeView || isInAllView || isInModView || isInDomainView || isInPendingPostView) && (
-          <Link to={submitRoute} className={cn(buttonVariants({ variant: 'default' }), 'mb-3 w-full justify-center shadow-sm no-underline', styles.cta)}>
-            {t('submit_post')}
-          </Link>
-        )}
+        <div>
+        <div className={styles.ctaStack}>
+          {showSubmitInSidebar && (
+            <button
+              type='button'
+              className={cn(styles.ctaBase, styles.ctaPrimary)}
+              onClick={() => navigate(submitRoute, { state: { backgroundLocation: location } })}
+            >
+              {t('submit_post')}
+            </button>
+          )}
+          {isInSubplebbitsView && (
+            <a
+              href='https://github.com/bitsocialhq/lists'
+              target='_blank'
+              rel='noopener noreferrer'
+              className={cn(styles.ctaBase, styles.ctaSecondaryLink)}
+            >
+              {t('submit_community')}
+            </a>
+          )}
+          <button type='button' className={cn(styles.ctaBase, styles.ctaOutline)} onClick={handleCreateCommunity}>
+            {t('create_your_community')}
+          </button>
+        </div>
         {!isInHomeView &&
           !isInHomeAboutView &&
           !isInAllView &&
@@ -295,84 +236,56 @@ const Sidebar = ({ comment, isSubCreatedButNotYetPublished, settings, subplebbit
           !isInHomeAboutView &&
           !isInDomainView &&
           !isInPostPageAboutView && (
-            <div className={styles.titleBox}>
-              <Link className={styles.title} to={`/s/${address}`}>
-                {subplebbit?.address}
-              </Link>
-              <div className={styles.subscribeContainer}>
-                <span className={styles.subscribeButton}>
-                  <SubscribeButton address={address} />
-                </span>
-                <span className={styles.subscribers}>{t('members_count', { count: allActiveUserCount })}</span>
-              </div>
-              <div className={styles.onlineLine}>
-                <span className={`${styles.onlineIndicator} ${!isOffline ? styles.online : styles.offline}`} title={!isOffline ? t('online') : t('offline')} />
-                <span>{isSubCreatedButNotYetPublished ? subCreatedButNotYetPublishedStatus : onlineStatus}</span>
-                {moderatorRole && (
+            <section className={styles.communityPanel} aria-label={subplebbit?.address}>
+              {moderatorRole ? (
+                <div className={styles.moderatorLine}>
                   <div className={styles.moderatorStatus}>
                     {moderatorRole === 'moderator' ? t('you_are_moderator') : moderatorRole === 'admin' ? t('you_are_admin') : t('you_are_owner')}
                   </div>
-                )}
-              </div>
-              {description && description.length > 0 && (
-                <div>
-                  {title && title.length > 0 && (
-                    <div className={styles.descriptionTitle}>
-                      <strong>{title}</strong>
-                    </div>
-                  )}
+                </div>
+              ) : null}
+              {description && description.length > 0 ? (
+                <div className={styles.aboutBlock}>
+                  {title && title.length > 0 ? (
+                    <h2 className={styles.sidebarSectionHeading}>{title}</h2>
+                  ) : null}
                   <div className={styles.description}>
                     <Markdown content={description} />
                   </div>
                 </div>
-              )}
-              {rules && rules.length > 0 && <RulesList rules={rules} />}
+              ) : null}
+              {rules && rules.length > 0 ? <RulesList rules={rules} /> : null}
               <div className={styles.bottom}>
-                {t('created_by', { creatorAddress: '' })}
-                <span>{`u/${creatorAddress}`}</span>
-                {createdAt && <span className={styles.age}> {t('community_for', { date: getFormattedTimeDuration(createdAt) })}</span>}
+                <div className={styles.bottomMeta}>
+                  <span className={styles.bottomMetaPrimary}>
+                    {t('created_by', {
+                      creatorAddress: creatorAddress === 'anonymous' ? 'anonymous' : `u/${creatorAddress}`,
+                    })}
+                  </span>
+                  {createdAt ? <span className={styles.bottomMetaSecondary}>{t('community_for', { date: getFormattedTimeDuration(createdAt) })}</span> : null}
+                </div>
                 <div className={styles.bottomButtons}>
                   {showBlockConfirm ? (
                     <span className={styles.blockConfirm}>
                       {t('are_you_sure')}{' '}
-                      <span className={styles.confirmButton} onClick={handleBlock}>
+                      <button type='button' className={styles.confirmButton} onClick={handleBlock}>
                         {t('yes')}
-                      </span>
+                      </button>
                       {' / '}
-                      <span className={styles.cancelButton} onClick={cancelBlock}>
+                      <button type='button' className={styles.cancelButton} onClick={cancelBlock}>
                         {t('no')}
-                      </span>
+                      </button>
                     </span>
                   ) : (
-                    <span className={styles.blockSub} onClick={blockConfirm}>
+                    <button type='button' className={styles.blockSub} onClick={blockConfirm}>
                       {blocked ? t('unblock_community') : t('block_community')}
-                    </span>
+                    </button>
                   )}
                 </div>
               </div>
-            </div>
+            </section>
           )}
         {(moderatorRole || isOwner) && <ModerationTools address={address} />}
-        {isInSubplebbitsView && (
-          <a
-            href='https://github.com/bitsocialhq/lists'
-            target='_blank'
-            rel='noopener noreferrer'
-            className={cn(buttonVariants({ variant: 'secondary' }), 'mb-3 w-full justify-center shadow-sm no-underline', styles.cta)}
-          >
-            {t('submit_community')}
-          </a>
-        )}
-        <Button type='button' variant='outline' className={cn('mb-3 w-full justify-center font-medium', styles.cta)} onClick={handleCreateCommunity}>
-          {t('create_your_community')}
-        </Button>
-        <div className={styles.communitySubtitles}>
-          <span className={styles.createCommunityImage}>
-            <img src='assets/sprout/sprout-2.png' alt='' />
-          </span>
-          {subtitle1 && <div className={styles.createCommunitySubtitle}>{subtitle1}</div>}
-          {subtitle2 && <div className={styles.createCommunitySubtitle}>{subtitle2}</div>}
-        </div>
         {roles && Object.keys(roles).length > 0 && <ModeratorsList roles={roles} />}
         {(!(isMobile && isInHomeAboutView) || isInSubplebbitAboutView || isInPostPageAboutView) && <Footer />}
         {address && !(moderatorRole || isOwner) && (

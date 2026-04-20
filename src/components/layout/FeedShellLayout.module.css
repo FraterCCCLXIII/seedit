@@ -35,10 +35,10 @@
   overflow-y: auto;
   box-sizing: border-box;
   margin: 0;
-  padding: 12px 10px 16px 0;
+  /* docs/DESIGN.md .sidebar-left — balanced horizontal inset so items don’t hug edges */
+  padding: 12px 14px 20px 14px;
   background-color: hsl(var(--shadcn-background));
   -webkit-overflow-scrolling: touch;
-  /* Divider belongs on the rail so it stays visible regardless of center column stacking */
   border-right: 1px solid hsl(var(--shadcn-border));
 }
 
@@ -56,12 +56,11 @@
   max-width: var(--feed-shell-center-inner-max);
   min-height: 100vh;
   box-sizing: border-box;
-  /* Left edge: divider is on .leftRailFixed (900px+); avoid double line */
   border-left: none;
-  border-right: 1px solid hsl(var(--shadcn-border));
+  border-right: none;
   font-family: var(--feed-shell-font);
   font-size: var(--feed-shell-font-size);
-  line-height: var(--feed-shell-line-height);
+  line-height: 1.33;
   background-color: hsl(var(--shadcn-background));
   color: hsl(var(--shadcn-foreground));
 }
@@ -77,12 +76,17 @@
  */
 .mainGrid {
   display: grid;
-  grid-template-columns: minmax(0, var(--feed-shell-feed-max)) 300px;
+  /* docs/DESIGN.md: 600px feed + 350px sidebar when right column exists */
+  grid-template-columns: minmax(0, var(--feed-shell-feed-max)) minmax(0, 350px);
   grid-template-rows: auto 1fr;
   align-items: start;
-  column-gap: 1.5rem;
+  column-gap: 0;
   width: 100%;
   box-sizing: border-box;
+}
+
+.mainGrid:not(:has([data-feed-shell='sidebar'])) {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .headerArea {
@@ -90,6 +94,9 @@
   grid-row: 1;
   min-width: 0;
   width: 100%;
+  max-width: 100%;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .mainGrid :global([data-feed-shell='main']) {
@@ -121,16 +128,21 @@
   .headerArea {
     grid-column: 1;
     grid-row: 1;
+    padding: 0 12px;
+    border-bottom: 1px solid hsl(var(--shadcn-border));
   }
 
   .mainGrid :global([data-feed-shell='main']) {
     grid-column: 1;
     grid-row: 2;
+    padding: 0 var(--feed-shell-main-pad-x);
+    border-right: none;
   }
 
   .mainGrid :global([data-feed-shell='sidebar']) {
     grid-column: 1;
     grid-row: 3;
+    padding: 12px 12px 24px;
   }
 
   .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='main']) {
@@ -140,23 +152,33 @@
 
 @media (min-width: 640px) {
   .mainGrid {
-    padding: 1rem 1rem 0;
+    padding: 0;
     max-width: var(--feed-shell-center-inner-max);
     margin-inline: auto;
   }
 
-  /* Vertical rule between feed and sidebar (gap alone had no visible line) */
-  .mainGrid:has([data-feed-shell='sidebar']) {
-    column-gap: 0;
+  /* Align header strip with main column: same right stroke as feed vs sidebar */
+  .mainGrid:has([data-feed-shell='sidebar']) .headerArea,
+  .mainGrid:has([data-settings-shell]) .headerArea {
+    border-right: 1px solid hsl(var(--shadcn-border));
+    box-sizing: border-box;
   }
 
+  /* docs/DESIGN.md .main-content — vertical rules around the feed column */
   .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='main']) {
-    padding-right: 1.5rem;
+    border-right: 1px solid hsl(var(--shadcn-border));
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 0 var(--feed-shell-main-pad-x);
   }
 
+  .mainGrid:not(:has([data-feed-shell='sidebar'])) :global([data-feed-shell='main']) {
+    padding: 0 var(--feed-shell-main-pad-x);
+  }
+
+  /* docs/DESIGN.md .sidebar-right — 12px 24px */
   .mainGrid:has([data-feed-shell='sidebar']) :global([data-feed-shell='sidebar']) {
-    border-left: 1px solid hsl(var(--shadcn-border));
-    padding-left: 1.5rem;
+    padding: 12px 24px 24px 16px;
     box-sizing: border-box;
   }
 }
