@@ -97,3 +97,13 @@ If uncertain, ask the developer before adding an entry.
 - **Impact:** Every subscription to a remote subplebbit via RPC fails; communities list / infobar hooks surface `ZodError`; `failed plebbit.createCommunity(cachedCommunity)` may also appear when cache is involved.
 - **Mitigation:** (1) **Align versions:** use the repo’s pinned `@plebbit/plebbit-js` + `@bitsocialnet/bitsocial-react-hooks` together; rebuild or reinstall the **desktop** app so the process on `ws://localhost:9138` is not an older packaged RPC. Do not point the web app at 9138 while a **different** Seedit/Plebbit binary (older plebbit-js) owns that port. (2) **Workaround for browser-only dev:** clear **Plebbit RPC** in Settings → Network, save, reload, and rely on **IPFS gateways + pubsub** so the client does not use RPC for subplebbit updates (works when the subplebbit is reachable via gateways).
 - **Status:** confirmed
+
+### `useAccountComment` crashed when no account + empty CID map (`undefined.accountCommentIndex`)
+
+- **Date:** 2026-04-20
+- **Observed by:** Codex
+- **Context:** `@bitsocialnet/bitsocial-react-hooks` `useAccountComment` / `useAccountComments` (CID branch): optional chaining on `commentCidToAccountComment?.accountId === accountId` is **true** when **both** sides are `undefined`, then the code reads `commentCidToAccountComment.accountCommentIndex` on a missing mapping → **TypeError** (e.g. `FeedNavRail` → `useSubmitPostRoute` while logged out).
+- **What was surprising:** `undefined === undefined` in the guard does not imply the mapping object exists.
+- **Impact:** White screen / root error boundary; navigation rail fails on common routes.
+- **Mitigation:** `scripts/patch-bitsocial-react-hooks-esm.cjs` postinstall patch rewrites the guard to `commentCidToAccountComment && commentCidToAccountComment.accountId === accountId` in `dist/hooks/accounts/accounts.js`. Re-run **`yarn install`** (or `node scripts/patch-bitsocial-react-hooks-esm.cjs`) after upgrading `@bitsocialnet/bitsocial-react-hooks` and **re-apply** the patch if the dist output changes. Prefer fixing upstream in bitsocial-react-hooks when bumping the tarball.
+- **Status:** confirmed

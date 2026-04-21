@@ -1,14 +1,7 @@
 import { useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useAccountComment } from '@bitsocialnet/bitsocial-react-hooks';
-import {
-  isAllView,
-  isDomainView,
-  isHomeAboutView,
-  isHomeView,
-  isModView,
-  isPendingPostView,
-} from '../lib/utils/view-utils';
+import { isAllView, isDomainView, isHomeAboutView, isHomeView, isModView, isPendingPostView } from '../lib/utils/view-utils';
 
 /**
  * Resolves `/submit` vs `/s/:address/submit` for the submit-post flow (modal + background location).
@@ -16,7 +9,11 @@ import {
 export function useSubmitPostRoute(subplebbitAddressFromPage?: string) {
   const location = useLocation();
   const params = useParams();
-  const pendingPost = useAccountComment({ commentIndex: params?.accountCommentIndex as any });
+  const rawAccountCommentIndex = params?.accountCommentIndex;
+  const commentIndexFromRoute = rawAccountCommentIndex !== undefined && rawAccountCommentIndex !== '' ? Number(rawAccountCommentIndex) : undefined;
+  const pendingPost = useAccountComment(
+    typeof commentIndexFromRoute === 'number' && !Number.isNaN(commentIndexFromRoute) ? { commentIndex: commentIndexFromRoute } : undefined,
+  );
 
   const isInHomeView = isHomeView(location.pathname);
   const isInHomeAboutView = isHomeAboutView(location.pathname);
@@ -38,16 +35,7 @@ export function useSubmitPostRoute(subplebbitAddressFromPage?: string) {
       return `/s/${resolvedAddress}/submit`;
     }
     return '/submit';
-  }, [
-    isInHomeView,
-    isInHomeAboutView,
-    isInAllView,
-    isInModView,
-    isInDomainView,
-    isInPendingPostView,
-    pendingPost?.subplebbitAddress,
-    resolvedAddress,
-  ]);
+  }, [isInHomeView, isInHomeAboutView, isInAllView, isInModView, isInDomainView, isInPendingPostView, pendingPost?.subplebbitAddress, resolvedAddress]);
 
   return { submitRoute };
 }

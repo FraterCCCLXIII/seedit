@@ -98,6 +98,62 @@ const patchLegacyAccountMigration = () => {
   appliedHardeningPatches += 1;
 };
 
+/**
+ * When `commentCidToAccountComment` is missing but `accountId` is also undefined,
+ * `(commentCidToAccountComment?.accountId) === accountId` is true (`undefined === undefined`),
+ * and the next line reads `commentCidToAccountComment.accountCommentIndex` → crash.
+ * Guard with a truthy check on the mapping object (see upstream accounts.ts).
+ */
+const patchUseAccountCommentCidMappingGuard = () => {
+  const accountsPath = path.join(packageDistPath, 'hooks', 'accounts', 'accounts.js');
+
+  if (!fs.existsSync(accountsPath)) {
+    return;
+  }
+
+  const source = fs.readFileSync(accountsPath, 'utf8');
+
+  const needleUseAccountComments = `            const mappedIndex = (commentCidToAccountComment === null || commentCidToAccountComment === void 0 ? void 0 : commentCidToAccountComment.accountId) === accountId
+                ? commentCidToAccountComment.accountCommentIndex
+                : undefined;`;
+  const replacementUseAccountComments = `            const mappedIndex = commentCidToAccountComment && commentCidToAccountComment.accountId === accountId
+                ? commentCidToAccountComment.accountCommentIndex
+                : undefined;`;
+
+  const needleUseAccountComment = `    const resolvedCommentIndex = typeof normalizedCommentIndex === "number" && !Number.isNaN(normalizedCommentIndex)
+        ? normalizedCommentIndex
+        : (commentCidToAccountComment === null || commentCidToAccountComment === void 0 ? void 0 : commentCidToAccountComment.accountId) === accountId
+            ? commentCidToAccountComment.accountCommentIndex
+            : undefined;`;
+  const replacementUseAccountComment = `    const resolvedCommentIndex = typeof normalizedCommentIndex === "number" && !Number.isNaN(normalizedCommentIndex)
+        ? normalizedCommentIndex
+        : commentCidToAccountComment && commentCidToAccountComment.accountId === accountId
+            ? commentCidToAccountComment.accountCommentIndex
+            : undefined;`;
+
+  let next = source;
+  let patches = 0;
+
+  if (next.includes(needleUseAccountComments)) {
+    next = next.replace(needleUseAccountComments, replacementUseAccountComments);
+    patches += 1;
+  } else if (!next.includes('const mappedIndex = commentCidToAccountComment && commentCidToAccountComment.accountId')) {
+    console.warn(`${logPrefix} Skip: useAccountComments CID mapping guard patch location not found.`);
+  }
+
+  if (next.includes(needleUseAccountComment)) {
+    next = next.replace(needleUseAccountComment, replacementUseAccountComment);
+    patches += 1;
+  } else if (!next.includes('commentCidToAccountComment && commentCidToAccountComment.accountId === accountId')) {
+    console.warn(`${logPrefix} Skip: useAccountComment resolved index guard patch location not found.`);
+  }
+
+  if (patches > 0 && next !== source) {
+    fs.writeFileSync(accountsPath, next, 'utf8');
+    appliedHardeningPatches += patches;
+  }
+};
+
 const patchAccountsCommunitiesHardening = () => {
   const accountsActionsInternalPath = path.join(packageDistPath, 'stores', 'accounts', 'accounts-actions-internal.js');
   const accountsUtilsPath = path.join(packageDistPath, 'stores', 'accounts', 'utils.js');
@@ -152,6 +208,7 @@ const walk = (currentPath) => {
 
 walk(packageDistPath);
 patchLegacyAccountMigration();
+patchUseAccountCommentCidMappingGuard();
 patchAccountsCommunitiesHardening();
 
 if (!touchedFiles && !appliedHardeningPatches) {

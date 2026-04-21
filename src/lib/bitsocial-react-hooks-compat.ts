@@ -1,8 +1,8 @@
+import assert from 'assert';
 import { useMemo } from 'react';
 import {
   deleteCommunity as deleteCommunityBase,
   setAccount as setAccountBase,
-  useAccountComment as useAccountCommentBase,
   useAccountCommunities as useAccountCommunitiesBase,
   useCommunities as useCommunitiesBase,
   useCommunitiesStates as useCommunitiesStatesBase,
@@ -13,8 +13,10 @@ import {
   usePublishCommunityEdit as usePublishCommunityEditBase,
   useSubscribe as useSubscribeBase,
 } from '@bitsocialnet/bitsocial-react-hooks/dist/index.js';
+import { useAccountId } from '@bitsocialnet/bitsocial-react-hooks/dist/hooks/accounts/accounts.js';
 import type {
   Account,
+  AccountComment,
   AccountCommunity,
   Community,
   PublishCommunityEditOptions,
@@ -259,16 +261,69 @@ export const setAccount = async (account: Account): Promise<void> => {
   await setAccountBase(normalizeAccountForSet(account));
 };
 
+/**
+ * Local implementation: do not delegate to `dist/index.js` useAccountComment — Vite's optimized dep
+ * bundle can still ship the buggy `undefined === undefined` CID guard from an unpatched/cached copy.
+ * Mirrors `hooks/accounts/accounts.ts` with a truthy check on `commentCidToAccountComment` before
+ * reading `accountCommentIndex`.
+ */
+function getAccountCommentsStates(accountComments: AccountComment[]): Array<'pending' | 'failed' | 'succeeded'> {
+  const now = Math.round(Date.now() / 1000);
+  const expiryTime = now - 60 * 20;
+  const states: Array<'pending' | 'failed' | 'succeeded'> = [];
+  for (const accountComment of accountComments) {
+    let state: 'pending' | 'failed' | 'succeeded' = 'succeeded';
+    if (!accountComment.cid) {
+      const ac = accountComment;
+      const resolvedPublishFailed = (ac.publishingState === 'failed' && ac.state === 'stopped') || ac.error != null || (Array.isArray(ac.errors) && ac.errors.length > 0);
+      if (resolvedPublishFailed) {
+        state = 'failed';
+      } else if (accountComment.timestamp > expiryTime) {
+        state = 'pending';
+      } else {
+        state = 'failed';
+      }
+    }
+    states.push(state);
+  }
+  return states;
+}
+
 export const useAccountComment = (options?: UseAccountCommentOptions): UseAccountCommentResult => {
-  // Always call the base hook (it handles missing commentIndex/commentCid). An early return here
-  // skipped hooks and broke Rules of Hooks when routes changed (e.g. after create community → /s/...).
-  const result = useAccountCommentBase(options);
+  assert(!options || typeof options === 'object', `useAccountComment options argument '${options}' not an object`);
+  const opts = options ?? {};
+  const { commentIndex, commentCid, accountName } = opts;
+  const accountId = useAccountId(accountName);
+  const commentCidToAccountComment = accountsStore((state) => state.commentCidsToAccountsComments[commentCid || '']);
+  const accountComments = accountsStore((state) => state.accountsComments[accountId || '']);
+  const normalizedCommentIndex = commentIndex === undefined ? undefined : Number(commentIndex);
+  const resolvedCommentIndex =
+    typeof normalizedCommentIndex === 'number' && !Number.isNaN(normalizedCommentIndex)
+      ? normalizedCommentIndex
+      : commentCidToAccountComment && commentCidToAccountComment.accountId === accountId
+        ? commentCidToAccountComment.accountCommentIndex
+        : undefined;
+  const storedAccountComment = useMemo(() => {
+    if (typeof resolvedCommentIndex !== 'number') {
+      return undefined;
+    }
+    return accountComments?.[resolvedCommentIndex];
+  }, [accountComments, resolvedCommentIndex]);
+  const accountComment = (storedAccountComment || {}) as Partial<AccountComment> & {
+    error?: Error;
+    errors?: Error[];
+  };
+  const state = storedAccountComment ? getAccountCommentsStates([storedAccountComment])[0] : 'initializing';
 
   return useMemo(
-    () => ({
-      ...result,
-      refresh: async () => {},
-    }),
-    [result],
+    () =>
+      ({
+        ...accountComment,
+        state,
+        error: accountComment.error,
+        errors: accountComment.errors || [],
+        refresh: async () => {},
+      }) as UseAccountCommentResult,
+    [accountComment, state],
   );
 };
