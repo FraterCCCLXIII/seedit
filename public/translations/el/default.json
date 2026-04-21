@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "Σκοτεινός",
   "light": "Φωτεινό",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "αποθηκευμένο",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Χρήστης από τουλάχιστον {{time}}",
   "post_karma": "καρμα δημοσιεύσεων",
   "comment_karma": "καρμα σχολίων",

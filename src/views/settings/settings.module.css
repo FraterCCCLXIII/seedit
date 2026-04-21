@@ -22,8 +22,8 @@
 @media (min-width: 640px) {
   .settingsLayout {
     flex-direction: row;
-    align-items: flex-start;
-    gap: 1.5rem;
+    align-items: stretch;
+    gap: 2rem;
   }
 }
 
@@ -32,6 +32,14 @@
   min-width: 0;
   width: 100%;
   max-width: var(--page-content-max-width-narrow);
+  box-sizing: border-box;
+  padding: var(--page-content-padding-y) var(--page-content-padding-x) var(--page-content-padding-bottom);
+}
+
+@media (min-width: 640px) {
+  .settingsMain {
+    padding-left: 0;
+  }
 }
 
 .version a:hover {

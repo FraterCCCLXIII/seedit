@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "暗い",
   "light": "明るい",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "保存済み",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "少なくとも{{time}}からのユーザー",
   "post_karma": "ポストカルマ",
   "comment_karma": "コメントカルマ",

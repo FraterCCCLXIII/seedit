@@ -241,11 +241,7 @@ const Settings = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const settingsPageLabel = isInSettingsPlebbitOptionsView
-    ? t('plebbit_options')
-    : isInSettingsContentOptionsView
-      ? t('content_options')
-      : _.startCase(t('preferences'));
+  const settingsPageLabel = isInSettingsPlebbitOptionsView ? t('plebbit_options') : isInSettingsContentOptionsView ? t('content_options') : _.startCase(t('preferences'));
   const documentTitle = `${settingsPageLabel} - Seedit`;
   useEffect(() => {
     document.title = documentTitle;
@@ -254,7 +250,7 @@ const Settings = () => {
   return (
     <div className={styles.content}>
       <div {...feedShellMainProps} className={styles.settingsShellMain} data-settings-shell>
-        <StandardPageContent variant='full'>
+        <StandardPageContent variant='flush'>
           <div className={styles.settingsLayout}>
             <SettingsNav />
             <div className={styles.settingsMain}>

@@ -1,9 +1,27 @@
 /* Left rail for settings — same vocabulary as FeedNavRail (docs/DESIGN.md) */
 
+.column {
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--page-content-padding-y) var(--page-content-padding-x) 0;
+}
+
+/* docs/DESIGN.md — Heading Medium (20px / 700 / 24), aligned with shell route titles */
+.title {
+  margin: 0 0 0.75rem;
+  padding: 0;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  color: hsl(var(--shadcn-foreground));
+}
+
 .root {
   flex-shrink: 0;
   width: 100%;
-  padding-inline: 4px;
+  padding-inline: 0;
   box-sizing: border-box;
 }
 
@@ -18,10 +36,36 @@
 }
 
 @media (min-width: 640px) {
+  /*
+   * Full-height rail (border) on `.column`; sticky only on `.stickyBlock` (title + nav).
+   * Sticky on the whole column fails when the column stretches to document height.
+   */
+  .column {
+    width: auto;
+    align-self: stretch;
+    /* At least the visible content column; grows with the main pane when it’s taller. */
+    min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    padding: var(--page-content-padding-y) 1.25rem var(--page-content-padding-bottom) var(--page-content-padding-x);
+    margin-right: 0.125rem;
+    border-right: 1px solid hsl(var(--shadcn-border));
+    box-sizing: border-box;
+  }
+
+  .stickyBlock {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: hsl(var(--shadcn-background));
+  }
+
+  .title {
+    margin-bottom: 1rem;
+  }
+
   /* In settings row layout, width:100% would consume the whole flex row and collapse .settingsMain */
   .root {
     width: auto;
-    padding-inline: 8px;
   }
 
   .list {
@@ -41,6 +85,14 @@
 
   .link {
     width: 100%;
+  }
+}
+
+@media (max-width: 639px) {
+  .column {
+    padding-bottom: var(--page-content-padding-y);
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid hsl(var(--shadcn-border));
   }
 }
 

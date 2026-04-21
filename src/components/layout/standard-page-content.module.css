@@ -12,6 +12,17 @@
   color: hsl(var(--shadcn-foreground));
 }
 
+/* No outer inset — children apply `--page-content-padding-*` (e.g. settings two-column layout). */
+.rootFlush {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  font-size: var(--feed-shell-font-size);
+  line-height: var(--feed-shell-line-height);
+  font-family: var(--feed-shell-font);
+  color: hsl(var(--shadcn-foreground));
+}
+
 .narrow {
   max-width: var(--page-content-max-width-narrow);
   margin-left: auto;

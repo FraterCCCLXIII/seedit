@@ -98,7 +98,7 @@ const AccountDataEditor = () => {
   if (!showEditor) {
     return (
       <div {...feedShellMainProps} className={settingsShellStyles.settingsShellMain} data-settings-shell>
-        <StandardPageContent variant='full'>
+        <StandardPageContent variant='flush'>
           <div className={settingsShellStyles.settingsLayout}>
             <SettingsNav />
             <div className={settingsShellStyles.settingsMain}>
@@ -128,81 +128,81 @@ const AccountDataEditor = () => {
 
   return (
     <div {...feedShellMainProps} className={settingsShellStyles.settingsShellMain} data-settings-shell>
-      <StandardPageContent variant='full'>
+      <StandardPageContent variant='flush'>
         <div className={settingsShellStyles.settingsLayout}>
           <SettingsNav />
           <div className={cn(settingsShellStyles.settingsMain, styles.content)}>
-          <EditorErrorBoundary
-        fallback={
-          <FallbackEditor
-            value={text}
-            onChange={(value) => {
-              setText(value);
-              if (currentError) {
-                setCurrentError(undefined);
+            <EditorErrorBoundary
+              fallback={
+                <FallbackEditor
+                  value={text}
+                  onChange={(value) => {
+                    setText(value);
+                    if (currentError) {
+                      setCurrentError(undefined);
+                    }
+                  }}
+                  height={isMobile ? 'calc(80vh - 95px)' : 'calc(90vh - 77px)'}
+                />
               }
-            }}
-            height={isMobile ? 'calc(80vh - 95px)' : 'calc(90vh - 77px)'}
-          />
-        }
-      >
-        <Suspense
-          fallback={
-            <div className={styles.loading}>
-              <LoadingEllipsis string={t('loading_editor')} />
+            >
+              <Suspense
+                fallback={
+                  <div className={styles.loading}>
+                    <LoadingEllipsis string={t('loading_editor')} />
+                  </div>
+                }
+              >
+                <LazyAceEditor
+                  mode='json'
+                  theme={theme === 'dark' ? 'tomorrow_night' : 'github'}
+                  value={text}
+                  onChange={(value) => {
+                    setText(value);
+                    if (currentError) {
+                      setCurrentError(undefined);
+                    }
+                  }}
+                  name='ACCOUNT_DATA_EDITOR'
+                  editorProps={{ $blockScrolling: true }}
+                  className={styles.editor}
+                  width='100%'
+                  height={isMobile ? 'calc(80vh - 95px)' : 'calc(90vh - 77px)'}
+                  setOptions={{
+                    useWorker: false,
+                    enableBasicAutocompletion: false,
+                    enableLiveAutocompletion: false,
+                    enableSnippets: false,
+                    showPrintMargin: false,
+                    highlightActiveLine: true,
+                    showGutter: true,
+                    foldStyle: 'markbeginend',
+                    showFoldWidgets: true,
+                  }}
+                  fontSize={14}
+                />
+              </Suspense>
+            </EditorErrorBoundary>
+            {currentError && (
+              <div className={styles.error}>
+                <ErrorDisplay error={currentError} />
+              </div>
+            )}
+            <div className={styles.buttons}>
+              <Trans
+                i18nKey='save_reset_changes'
+                components={{
+                  1: <Button type='button' variant='neutral' key='saveAccountButton' onClick={saveAccount} />,
+                  2: <Button type='button' variant='outline' key='resetAccountButton' onClick={() => setText(accountJson)} />,
+                }}
+              />
+              <div>
+                <br />
+                <Button type='button' variant='outline' onClick={() => navigate('/settings')}>
+                  {t('return_to_settings')}
+                </Button>
+              </div>
             </div>
-          }
-        >
-          <LazyAceEditor
-            mode='json'
-            theme={theme === 'dark' ? 'tomorrow_night' : 'github'}
-            value={text}
-            onChange={(value) => {
-              setText(value);
-              if (currentError) {
-                setCurrentError(undefined);
-              }
-            }}
-            name='ACCOUNT_DATA_EDITOR'
-            editorProps={{ $blockScrolling: true }}
-            className={styles.editor}
-            width='100%'
-            height={isMobile ? 'calc(80vh - 95px)' : 'calc(90vh - 77px)'}
-            setOptions={{
-              useWorker: false,
-              enableBasicAutocompletion: false,
-              enableLiveAutocompletion: false,
-              enableSnippets: false,
-              showPrintMargin: false,
-              highlightActiveLine: true,
-              showGutter: true,
-              foldStyle: 'markbeginend',
-              showFoldWidgets: true,
-            }}
-            fontSize={14}
-          />
-        </Suspense>
-          </EditorErrorBoundary>
-          {currentError && (
-            <div className={styles.error}>
-              <ErrorDisplay error={currentError} />
-            </div>
-          )}
-          <div className={styles.buttons}>
-            <Trans
-              i18nKey='save_reset_changes'
-              components={{
-                1: <Button type='button' variant='neutral' key='saveAccountButton' onClick={saveAccount} />,
-                2: <Button type='button' variant='outline' key='resetAccountButton' onClick={() => setText(accountJson)} />,
-              }}
-            />
-            <div>
-              <br />
-              <Button type='button' variant='outline' onClick={() => navigate('/settings')}>
-                {t('return_to_settings')}
-              </Button>
-            </div>
-          </div>
           </div>
         </div>
       </StandardPageContent>

@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "অন্ধকার",
   "light": "আলো",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "সংরক্ষিত",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "কমপক্ষে {{time}} থেকে ব্যবহারকারী",
   "post_karma": "পোস্ট কর্মা",
   "comment_karma": "মন্তব্য কর্মা",

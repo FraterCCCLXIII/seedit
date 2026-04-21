@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "Mørk",
   "light": "Lys",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "gemt",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Bruger siden mindst {{time}}",
   "post_karma": "indlægskarma",
   "comment_karma": "kommentarkarma",

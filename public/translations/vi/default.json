@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "Tối",
   "light": "Sáng",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "đã lưu",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Người dùng ít nhất từ {{time}}",
   "post_karma": "karma bài viết",
   "comment_karma": "karma bình luận",

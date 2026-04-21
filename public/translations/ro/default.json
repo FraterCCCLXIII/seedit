@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "Întunecat",
   "light": "Luminos",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "salvat",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Utilizator din cel puțin {{time}}",
   "post_karma": "karma postărilor",
   "comment_karma": "karma comentariilor",

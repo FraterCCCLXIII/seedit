@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "暗",
   "light": "浅色",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "已保存",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "至少从{{time}}开始的用户",
   "post_karma": "帖子声望",
   "comment_karma": "评论声望",

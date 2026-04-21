@@ -462,6 +462,11 @@ const Header = () => {
   const headerTabItems = useHeaderTabItems();
   const showAboutTab = (!isMobile && (isInHomeView || isInHomeAboutView)) || (isMobile && (isInHomeView || isInHomeAboutView || isInSubplebbitView || isInPostPageView));
 
+  /* Settings uses in-page {@link SettingsNav}; shell header was only a duplicate title strip. */
+  if (isInSettingsView) {
+    return null;
+  }
+
   return (
     <div className={styles.header}>
       <div className={`${styles.container} ${isInSubmitView && isInSubplebbitSubmitView && !isInSubplebbitView && isMobile && styles.reduceSubmitPageHeight}`}>

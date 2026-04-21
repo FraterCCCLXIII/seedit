@@ -36,7 +36,7 @@ const FeedNavAccountMenu = ({ isCompact = false }: FeedNavAccountMenuProps) => {
 
   const shortAddress = account?.author?.shortAddress;
   const displayLabel = account?.author?.displayName || shortAddress;
-  const triggerLabel = shortAddress ? `u/${shortAddress}` : displayLabel || t('preferences');
+  const triggerLabel = shortAddress ? `u/${shortAddress}` : displayLabel || t('feed_nav_settings', { defaultValue: 'Settings' });
 
   const accountRows = accounts.filter((a) => a?.author?.shortAddress);
 
@@ -110,7 +110,7 @@ const FeedNavAccountMenu = ({ isCompact = false }: FeedNavAccountMenuProps) => {
                   className='block rounded-control px-2 py-2 text-sm hover:bg-accent hover:text-accent-foreground'
                   onClick={() => setOpen(false)}
                 >
-                  {t('overview')}
+                  {t('feed_nav_profile', { defaultValue: 'Profile' })}
                 </Link>
                 <Link
                   role='menuitem'
@@ -118,7 +118,7 @@ const FeedNavAccountMenu = ({ isCompact = false }: FeedNavAccountMenuProps) => {
                   className='block rounded-control px-2 py-2 text-sm hover:bg-accent hover:text-accent-foreground'
                   onClick={() => setOpen(false)}
                 >
-                  {t('preferences')}
+                  {t('feed_nav_settings', { defaultValue: 'Settings' })}
                 </Link>
               </div>
             </div>

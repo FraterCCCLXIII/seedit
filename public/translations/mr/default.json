@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "गडद",
   "light": "पांढरा",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "साचला",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "किमान {{time}} पासून वापरकर्ता",
   "post_karma": "पोस्ट कर्मा",
   "comment_karma": "कॉमेंट कर्मा",

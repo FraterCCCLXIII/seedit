@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "Sötét",
   "light": "Világos",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "elmentve",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Felhasználó legalább {{time}} óta",
   "post_karma": "poszt karma",
   "comment_karma": "hozzászólás-karma",

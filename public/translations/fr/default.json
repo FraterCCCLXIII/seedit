@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "sombre",
   "light": "clair",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "enregistré",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Utilisateur depuis au moins {{time}}",
   "post_karma": "karma des publications",
   "comment_karma": "karma des commentaires",

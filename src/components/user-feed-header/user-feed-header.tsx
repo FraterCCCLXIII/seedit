@@ -187,7 +187,7 @@ const UserFeedHeader = ({ placement = 'shell' }: UserFeedHeaderProps) => {
   const showAuthorOverflow = !isProfile && Boolean(authorAddress) && Boolean(pageAuthor?.address) && pageAuthor?.address !== account?.author?.address;
 
   return (
-    <header className={cn(styles.header, placement === 'shell' ? styles.headerShell : undefined)} aria-label={isProfile ? t('profile') : t('overview')}>
+    <header className={cn(styles.header, placement === 'shell' ? styles.headerShell : undefined)} aria-label={t('overview')}>
       <Link to={titleHref} className={styles.avatarWrap}>
         {avatarUrl && !avatarFailed ? (
           <img src={avatarUrl} alt='' className={styles.avatarImg} onError={() => setAvatarFailed(true)} />

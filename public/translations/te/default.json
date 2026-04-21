@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "ముదురు",
   "light": "తెలుపు",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "భద్రపరచబడినది",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "కనీసం {{time}} నుండి వాడుకరి",
   "post_karma": "పోస్ట్ కర్మా",
   "comment_karma": "వ్యాఖ్య కర్మా",

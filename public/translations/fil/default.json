@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "Madilim",
   "light": "Maliwanag",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "itinago",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Gumagamit mula noong hindi bababa sa {{time}}",
   "post_karma": "karma ng post",
   "comment_karma": "karma ng komento",

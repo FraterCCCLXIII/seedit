@@ -1,7 +1,7 @@
 {
   "about": "About",
   "comments": "Comments",
-  "preferences": "Preferences",
+  "preferences": "Settings",
   "submit": "Submit",
   "dark": "Errët",
   "light": "I ndritur",
@@ -106,7 +106,7 @@
   "downvoted": "Downvoted",
   "hidden": "Hidden",
   "saved": "i ruajtur",
-  "overview": "Overview",
+  "overview": "Profile",
   "user_since": "Përdorues që nga të paktën {{time}}",
   "post_karma": "karma e postimeve",
   "comment_karma": "karma e komenteve",
