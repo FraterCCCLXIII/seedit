@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { PixelIcon } from '@/components/ui/pixel-icon';
+import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { useAccount, useNotifications } from '@bitsocialnet/bitsocial-react-hooks';
 import { StandardPageContent } from '@/components/layout';
-import { feedShellMainProps } from '../../lib/feed-shell-data';
+import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
+import Sidebar from '../../components/sidebar';
+import { cn } from '@/lib/utils';
 import styles from './inbox.module.css';
+import { InboxFilterDropdown } from './inbox-filter-dropdown';
 import Reply from '../../components/reply/reply';
 import { isInboxCommentRepliesView, isInboxPostRepliesView, isInboxUnreadView } from '../../lib/utils/view-utils';
 import { useTranslation } from 'react-i18next';
@@ -14,38 +16,6 @@ import _ from 'lodash';
 import ErrorDisplay from '../../components/error-display';
 
 const lastVirtuosoStates: { [key: string]: StateSnapshot } = {};
-
-const InboxTabs = () => {
-  const { t } = useTranslation();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const pathValue =
-    location.pathname === '/inbox/unread' ||
-    location.pathname === '/inbox/commentreplies' ||
-    location.pathname === '/inbox/postreplies'
-      ? location.pathname
-      : '/inbox';
-
-  return (
-    <div className={styles.inboxTabs}>
-      <div className={styles.inboxSelectWrap}>
-        <select
-          className={styles.inboxNativeSelect}
-          value={pathValue}
-          onChange={(e) => navigate(e.target.value)}
-          aria-label={t('inbox_filter', 'Inbox filter')}
-        >
-          <option value='/inbox'>{t('all')}</option>
-          <option value='/inbox/unread'>{t('unread')}</option>
-          <option value='/inbox/commentreplies'>{t('comment_replies')}</option>
-          <option value='/inbox/postreplies'>{t('post_replies')}</option>
-        </select>
-        <PixelIcon glyph='chevron-down' className={styles.inboxSelectChevron} aria-hidden />
-      </div>
-    </div>
-  );
-};
 
 const Inbox = () => {
   const { t } = useTranslation();
@@ -91,7 +61,7 @@ const Inbox = () => {
   }, [unreadNotificationCount]);
 
   const documentTitle = useMemo(() => {
-    let title = _.startCase(t('inbox'));
+    let title = t('feed_nav_inbox');
     if (isInInboxUnreadView) {
       title += ` - ${_.startCase(t('unread'))}`;
     } else if (isInInboxCommentRepliesView) {
@@ -114,13 +84,19 @@ const Inbox = () => {
     }
   }, [error, comments]);
 
+  const hasNotificationRows = Boolean(account && notifications.length);
+
   return (
     <div className={styles.content}>
       <div {...feedShellMainProps}>
-        <StandardPageContent variant='full'>
-          <InboxTabs />
-          <div className={styles.markAllAsReadButton}>
-            {account && notifications.length ? (
+        <StandardPageContent variant='feedColumn'>
+          <div className={styles.inboxToolbar}>
+            <div className={styles.inboxTabs}>
+              <InboxFilterDropdown />
+            </div>
+          </div>
+          <div className={cn(styles.markAllAsReadButton, !hasNotificationRows && styles.markAllAsReadButtonCentered)}>
+            {hasNotificationRows ? (
               <Button type='button' variant='outline' onClick={markAsRead} disabled={!unreadNotificationCount} className={styles.markAsReadButton}>
                 {t('mark_all_read')}
               </Button>
@@ -135,7 +111,7 @@ const Inbox = () => {
           )}
           <Virtuoso
             increaseViewportBy={{ bottom: 1200, top: 600 }}
-            totalCount={notifications?.length || 0}
+            totalCount={comments?.length || 0}
             data={comments}
             itemContent={(index, notification) => (
               <div className={styles.notification}>
@@ -148,6 +124,9 @@ const Inbox = () => {
             initialScrollTop={lastVirtuosoState?.scrollTop}
           />
         </StandardPageContent>
+      </div>
+      <div className={styles.sidebar} {...feedShellSidebarProps}>
+        <Sidebar />
       </div>
     </div>
   );

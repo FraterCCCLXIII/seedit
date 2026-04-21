@@ -58,11 +58,14 @@
   line-height: 20px;
 }
 
-.about hr {
+/* Match header / feed chrome — single hairline, theme border token */
+.about hr,
+.aboutHr {
   border: 0;
-  color: transparent;
-  background: #c5c1ad;
-  height: 2px;
+  border-top: 1px solid hsl(var(--shadcn-border));
+  background: none;
+  height: 0;
+  margin: 1.25em 0;
   padding: 0;
 }
 

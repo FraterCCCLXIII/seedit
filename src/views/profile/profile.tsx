@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { HashLink } from 'react-router-hash-link';
 import { Outlet, useParams } from 'react-router-dom';
 import { StateSnapshot, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
+import { autoUpdate, flip, FloatingFocusManager, FloatingPortal, offset, shift, useClick, useDismiss, useFloating, useInteractions, useRole } from '@floating-ui/react';
 import { useAccount, useAccountComments, useAccountVotes, useComment, type AccountPublicationsFilter } from '@bitsocialnet/bitsocial-react-hooks';
 import AuthorFeedSidebar from '../../components/author-feed-sidebar';
 import Post from '../../components/post';
 import Reply from '../../components/reply';
 import { StandardPageContent } from '@/components/layout';
+import { PixelIcon } from '@/components/ui/pixel-icon';
+import { cn } from '@/lib/utils';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import styles from './profile.module.css';
 import ErrorDisplay from '../../components/error-display';
@@ -23,49 +26,71 @@ type SortDropdownProps = {
 
 const SortDropdown = ({ onSortChange }: SortDropdownProps) => {
   const { t } = useTranslation();
-  const sortLabels: string[] = sortTypes.map((sortType) => t(sortType));
   const [selectedSort, setSelectedSort] = useState<string>(sortTypes[0]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const dropdownItemsRef = useRef<HTMLDivElement>(null);
-  const dropChoicesClass = isDropdownOpen ? styles.dropChoicesVisible : styles.dropChoicesHidden;
+  const [open, setOpen] = useState(false);
+  const baseId = useId();
+  const labelId = `${baseId}-sort-label`;
+  const menuId = `${baseId}-sort-menu`;
 
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node) &&
-      dropdownItemsRef.current &&
-      !dropdownItemsRef.current.contains(event.target as Node)
-    ) {
-      setIsDropdownOpen(false);
-    }
-  }, []);
+  const { refs, floatingStyles, context } = useFloating({
+    open,
+    onOpenChange: setOpen,
+    placement: 'bottom-start',
+    middleware: [offset(6), flip({ fallbackAxisSideDirection: 'start' }), shift({ padding: 8 })],
+    whileElementsMounted: autoUpdate,
+  });
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [handleClickOutside]);
+  const click = useClick(context);
+  const dismiss = useDismiss(context);
+  const role = useRole(context, { role: 'menu' });
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
 
-  const handleSortChange = (sortType: string) => {
+  const pickSort = (sortType: string) => {
     setSelectedSort(sortType);
-    setIsDropdownOpen(false);
+    setOpen(false);
     onSortChange(sortType);
   };
 
   return (
-    <div className={styles.sortDropdown}>
-      <span className={styles.dropdownTitle}>{t('sorted_by')}: </span>
-      <div className={styles.dropdown} onClick={() => setIsDropdownOpen(!isDropdownOpen)} ref={dropdownRef}>
-        <span className={styles.selected}>{t(selectedSort)}</span>
-      </div>
-      <div className={`${styles.dropChoices} ${dropChoicesClass}`} ref={dropdownItemsRef}>
-        {sortLabels.map((label, index) => (
-          <div key={index} className={styles.filter} onClick={() => handleSortChange(sortTypes[index])}>
-            {label}
-          </div>
-        ))}
+    <div className={styles.sortToolbar}>
+      <div className={styles.sortRow}>
+        <span className={styles.sortLabel} id={labelId}>
+          {t('reply_sorted_by')}
+          <span className={styles.sortLabelColon} aria-hidden>
+            :
+          </span>
+        </span>
+        <button
+          type='button'
+          ref={refs.setReference}
+          className={styles.sortTrigger}
+          aria-haspopup='menu'
+          aria-expanded={open}
+          aria-controls={open ? menuId : undefined}
+          aria-labelledby={labelId}
+          {...getReferenceProps()}
+        >
+          <span className={styles.sortTriggerValue}>{t(selectedSort)}</span>
+          <span className={cn(styles.sortChevron, open && styles.sortChevronOpen)} aria-hidden />
+        </button>
+        {open && (
+          <FloatingPortal>
+            <FloatingFocusManager context={context} modal={false}>
+              <div id={menuId} ref={refs.setFloating} className={styles.sortMenu} style={floatingStyles} role='menu' aria-labelledby={labelId} {...getFloatingProps()}>
+                {sortTypes.map((sortType) => (
+                  <div
+                    key={sortType}
+                    role='menuitem'
+                    className={cn(styles.sortMenuItem, selectedSort === sortType && styles.sortMenuItemSelected)}
+                    onClick={() => pickSort(sortType)}
+                  >
+                    {t(sortType)}
+                  </div>
+                ))}
+              </div>
+            </FloatingFocusManager>
+          </FloatingPortal>
+        )}
       </div>
     </div>
   );
@@ -336,21 +361,21 @@ const Profile = () => {
   }, []);
 
   const infobar = showInfobar && (
-    <div className={styles.infobar}>
+    <div className={styles.infobar} role='status'>
       <div className={styles.infoContent}>
         <Trans
           i18nKey='profile_info'
           values={{ shortAddress: account?.author?.shortAddress }}
           components={{
-            1: <HashLink key='displayNameLink' to='/settings#displayName' />,
-            2: <HashLink key='exportAccountLink' to='/settings#exportAccount' />,
-            3: <HashLink key='newUsersLink' to='/about#newUsers' />,
+            1: <HashLink key='displayNameLink' className={styles.infobarLink} to='/settings#displayName' />,
+            2: <HashLink key='exportAccountLink' className={styles.infobarLink} to='/settings#exportAccount' />,
+            3: <HashLink key='newUsersLink' className={styles.infobarLink} to='/about#newUsers' />,
           }}
         />
       </div>
-      <span className={styles.closeButton} onClick={handleCloseInfobar}>
-        ✕
-      </span>
+      <button type='button' className={styles.infobarDismiss} onClick={handleCloseInfobar} aria-label={t('close')}>
+        <PixelIcon glyph='times' className={styles.infobarDismissIcon} aria-hidden />
+      </button>
     </div>
   );
 
@@ -358,7 +383,7 @@ const Profile = () => {
     <div className={styles.content}>
       <div {...feedShellMainProps} className={styles.mainColumn}>
         {infobar}
-        <StandardPageContent variant='full'>
+        <StandardPageContent variant='feedColumn'>
           <Outlet />
         </StandardPageContent>
       </div>

@@ -21,8 +21,6 @@ import {
   type ParamsType,
 } from '../../lib/utils/view-utils';
 import useIsMobile from '../../hooks/use-is-mobile';
-import useWindowWidth from '../../hooks/use-window-width';
-import { useSubmitPostRoute } from '../../hooks/use-submit-post-route';
 import { FAQ } from '../../views/about/about';
 import Markdown from '../markdown';
 import SearchBar from '../search-bar';
@@ -140,22 +138,12 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const isInSubplebbitAboutView = isSubplebbitAboutView(location.pathname, params);
   const isInSubplebbitView = isSubplebbitView(location.pathname, params);
 
-  const { submitRoute } = useSubmitPostRoute(address || params?.subplebbitAddress);
-  /** Left feed rail (≥900px) hosts submit under Settings; 640–899px use sidebar CTA. Below 640px the nav rail still has New Post — omit duplicate sidebar submit. */
-  const windowWidth = useWindowWidth();
   const isMobile = useIsMobile();
-  const showSubmitInSidebar = !isMobile && windowWidth < 900;
-  /** Wide layout + subplebbit route: submit is in the rail and create-community is in ctaStackBottom — skip empty wrapper. */
-  const showCtaStack = showSubmitInSidebar || isInSubplebbitsView || !isInSubplebbitView;
+  /** Subplebbit pages use `ctaStackBottom` for create-community; elsewhere show list CTAs when not on a single community. */
+  const showCtaStack = isInSubplebbitsView || !isInSubplebbitView;
 
   const showSidebarCommunityPanel =
-    !isInHomeView &&
-    !isInHomeAboutView &&
-    !isInAllView &&
-    !isInModView &&
-    !isInSubplebbitsView &&
-    !isInDomainView &&
-    !isInPostPageAboutView;
+    Boolean(address) && !isInHomeView && !isInHomeAboutView && !isInAllView && !isInModView && !isInSubplebbitsView && !isInDomainView && !isInPostPageAboutView;
 
   const subplebbitCreator = findSubplebbitCreator(roles);
   const creatorAddress = subplebbitCreator === 'anonymous' ? 'anonymous' : `${Plebbit.getShortAddress({ address: subplebbitCreator })}`;
@@ -187,11 +175,7 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
   const isOwner = !!settings;
 
   const showReadOnlyCommunitySettings = !!(address && !(moderatorRole || isOwner));
-  const showCommunityChromeCard =
-    showSidebarCommunityPanel ||
-    !!(moderatorRole || isOwner) ||
-    (roles && Object.keys(roles).length > 0) ||
-    showReadOnlyCommunitySettings;
+  const showCommunityChromeCard = showSidebarCommunityPanel || !!(moderatorRole || isOwner) || (roles && Object.keys(roles).length > 0) || showReadOnlyCommunitySettings;
 
   const isConnectedToRpc = usePlebbitRpcSettings()?.state === 'connected';
   const navigate = useNavigate();
@@ -211,25 +195,11 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
       <div className={styles.searchBarWrapper}>
         <SearchBar />
       </div>
-        <div>
+      <div>
         {showCtaStack ? (
           <div className={styles.ctaStack}>
-            {showSubmitInSidebar && (
-              <button
-                type='button'
-                className={cn(styles.ctaBase, styles.ctaPrimary)}
-                onClick={() => navigate(submitRoute, { state: { backgroundLocation: location } })}
-              >
-                {t('submit_post')}
-              </button>
-            )}
             {isInSubplebbitsView && (
-              <a
-                href='https://github.com/bitsocialhq/lists'
-                target='_blank'
-                rel='noopener noreferrer'
-                className={cn(styles.ctaBase, styles.ctaSecondaryLink)}
-              >
+              <a href='https://github.com/bitsocialhq/lists' target='_blank' rel='noopener noreferrer' className={cn(styles.ctaBase, styles.ctaSecondaryLink)}>
                 {t('submit_community')}
               </a>
             )}
@@ -253,9 +223,7 @@ const Sidebar = ({ settings, subplebbit, reset }: SidebarProps) => {
                 ) : null}
                 {description && description.length > 0 ? (
                   <div className={styles.aboutBlock}>
-                    {title && title.length > 0 ? (
-                      <h2 className={styles.sidebarSectionHeading}>{title}</h2>
-                    ) : null}
+                    {title && title.length > 0 ? <h2 className={styles.sidebarSectionHeading}>{title}</h2> : null}
                     <div className={styles.description}>
                       <Markdown content={description} />
                     </div>

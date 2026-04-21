@@ -64,7 +64,7 @@ const FeedNavAccountMenu = ({ isCompact = false }: FeedNavAccountMenuProps) => {
             <div
               ref={refs.setFloating}
               style={floatingStyles}
-              className='z-[100] min-w-[13rem] rounded-2xl border border-border bg-popover p-1 text-popover-foreground shadow-[0_0_0_1px_rgba(255,255,255,0.08)] outline-none dark:shadow-[0_0_0_1px_rgba(255,255,255,0.15)]'
+              className='z-[100] min-w-[13rem] rounded-2xl border border-border bg-popover p-1 text-popover-foreground shadow-none outline-none'
               {...getFloatingProps()}
             >
               <div className='max-h-[min(60vh,18rem)] overflow-y-auto' role='none'>

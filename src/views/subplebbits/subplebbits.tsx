@@ -1,17 +1,9 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Subplebbit as SubplebbitType, useAccount, useAccountSubplebbits, useSubplebbits, useSubplebbitStats } from '@bitsocialnet/bitsocial-react-hooks';
+import { Subplebbit as SubplebbitType, useAccount, useSubplebbits, useSubplebbitStats } from '@bitsocialnet/bitsocial-react-hooks';
 import styles from './subplebbits.module.css';
 import { getFormattedTimeDuration } from '../../lib/utils/time-utils';
-import {
-  isSubplebbitsView,
-  isSubplebbitsSubscriberView,
-  isSubplebbitsModeratorView,
-  isSubplebbitsAdminView,
-  isSubplebbitsOwnerView,
-  isSubplebbitsVoteView,
-} from '../../lib/utils/view-utils';
 import useErrorStore from '../../stores/use-error-store';
 import { useDefaultSubplebbitAddresses, useDefaultSubplebbits } from '../../hooks/use-default-subplebbits';
 import useDisplayedSubscriptions from '../../hooks/use-displayed-subscriptions';
@@ -42,36 +34,20 @@ const NoCommunitiesMessage = () => {
 
 const Infobar = () => {
   const account = useAccount();
-  const { accountSubplebbits, error: accountSubplebbitsError } = useAccountSubplebbits();
-  const { setError } = useErrorStore();
-
-  useEffect(() => {
-    setError('Infobar_useAccountSubplebbits', accountSubplebbitsError);
-  }, [accountSubplebbitsError, setError]);
-
   const subscriptions = account?.subscriptions || [];
   const { t } = useTranslation();
   const location = useLocation();
 
-  const isInSubplebbitsSubscriberView = isSubplebbitsSubscriberView(location.pathname);
-  const isInSubplebbitsModeratorView = isSubplebbitsModeratorView(location.pathname);
-  const isInSubplebbitsAdminView = isSubplebbitsAdminView(location.pathname);
-  const isInSubplebbitsOwnerView = isSubplebbitsOwnerView(location.pathname);
+  const isMyCommunities = location.pathname === '/communities';
 
-  // Check if we're filtering by any tag
   const urlParams = new URLSearchParams(location.search);
   const currentTag = urlParams.get('tag');
 
-  // Get base path without search params
   const basePath = location.pathname;
 
-  let mainInfobarText;
-  if (isInSubplebbitsSubscriberView) {
-    mainInfobarText = subscriptions.length === 0 ? t('not_subscribed') : t('below_subscribed');
-  } else if (isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView) {
-    mainInfobarText = Object.keys(accountSubplebbits).length > 0 ? t('below_moderator_access') : t('not_moderator');
-  } else if (subscriptions.length === 0 && Object.keys(accountSubplebbits).length === 0) {
-    mainInfobarText = t('not_subscriber_nor_moderator');
+  let mainInfobarText: string | undefined;
+  if (isMyCommunities) {
+    mainInfobarText = subscriptions.length === 0 ? t('not_subscribed') : undefined;
   }
 
   return (
@@ -119,11 +95,7 @@ const Subplebbit = ({ subplebbit, tags, isUnsubscribed, onUnsubscribe }: Subpleb
   const isNsfw = tags?.some((tag) => nsfwTags.includes(tag));
   const communityPath = `/s/${address}`;
   const displayAddress = address?.includes('.') ? address : shortAddress;
-  const hasBadgeRow =
-    Boolean(userRole || isUserOwner) ||
-    isNsfw ||
-    (isOffline && !isOnlineStatusLoading) ||
-    Boolean(tags && tags.length > 0);
+  const hasBadgeRow = Boolean(userRole || isUserOwner) || isNsfw || (isOffline && !isOnlineStatusLoading) || Boolean(tags && tags.length > 0);
 
   const isMobile = useIsMobile();
   const descriptionText =
@@ -219,51 +191,6 @@ const Subplebbit = ({ subplebbit, tags, isUnsubscribed, onUnsubscribe }: Subpleb
   );
 };
 
-const AccountSubplebbits = ({ viewRole }: { viewRole: string }) => {
-  const account = useAccount();
-  const { accountSubplebbits, error: accountSubplebbitsError } = useAccountSubplebbits();
-  const { setError } = useErrorStore();
-  const location = useLocation();
-  const defaultSubplebbits = useDefaultSubplebbits();
-
-  useEffect(() => {
-    setError('AccountSubplebbits_useAccountSubplebbits', accountSubplebbitsError);
-  }, [accountSubplebbitsError, setError, viewRole]);
-
-  const urlParams = new URLSearchParams(location.search);
-  const currentTag = urlParams.get('tag');
-
-  const subplebbitElements = Object.values(accountSubplebbits)
-    .filter((subplebbit: any) => {
-      const isUserOwner = subplebbit.settings !== undefined;
-      const userRole = (subplebbit as any).roles?.[account?.author?.address]?.role;
-      return isUserOwner || userRole === viewRole;
-    })
-    .filter((subplebbitData: any) => {
-      if (currentTag) {
-        const tags = defaultSubplebbits.find((defaultSub) => defaultSub.address === (subplebbitData as any).address)?.tags;
-
-        if (currentTag === 'nsfw') {
-          return tags?.some((tag) => nsfwTags.includes(tag));
-        } else {
-          return tags?.includes(currentTag);
-        }
-      }
-      return true;
-    })
-    .map((subplebbitData) => {
-      const tags = defaultSubplebbits.find((defaultSub) => defaultSub.address === (subplebbitData as any).address)?.tags;
-      return (
-        <Subplebbit key={(subplebbitData as any).address} subplebbit={subplebbitData} tags={tags} />
-      );
-    });
-
-  if (subplebbitElements.length === 0) {
-    return <NoCommunitiesMessage />;
-  }
-  return <>{subplebbitElements}</>;
-};
-
 const SubscriberSubplebbits = () => {
   const account = useAccount();
   const { setError } = useErrorStore();
@@ -357,72 +284,8 @@ const AllDefaultSubplebbits = () => {
     })
     .map((subplebbitData) => {
       const tags = defaultSubplebbitsList.find((defaultSub) => defaultSub.address === (subplebbitData as any).address)?.tags;
-      return (
-        <Subplebbit key={(subplebbitData as any).address} subplebbit={subplebbitData} tags={tags} />
-      );
+      return <Subplebbit key={(subplebbitData as any).address} subplebbit={subplebbitData} tags={tags} />;
     });
-
-  if (subplebbitElements.length === 0) {
-    return <NoCommunitiesMessage />;
-  }
-  return <>{subplebbitElements}</>;
-};
-
-const AllAccountSubplebbits = () => {
-  const account = useAccount();
-  const { accountSubplebbits, error: accountSubplebbitsError } = useAccountSubplebbits();
-  const { setError } = useErrorStore();
-  const location = useLocation();
-  const defaultSubplebbits = useDefaultSubplebbits();
-
-  useEffect(() => {
-    setError('AllAccountSubplebbits_useAccountSubplebbits', accountSubplebbitsError);
-  }, [accountSubplebbitsError, setError]);
-
-  const urlParams = new URLSearchParams(location.search);
-  const currentTag = urlParams.get('tag');
-
-  const getAllAccountRelatedAddresses = useCallback(() => {
-    const accountAddrs = Object.keys(accountSubplebbits);
-    const subs = account?.subscriptions ? [...account.subscriptions].reverse() : [];
-    return Array.from(new Set([...accountAddrs, ...subs]));
-  }, [accountSubplebbits, account?.subscriptions]);
-
-  const { list: displayedAddresses, isUnsubscribed, handleUnsubscribe } = useDisplayedSubscriptions(getAllAccountRelatedAddresses, [account?.author?.address]);
-
-  const { subplebbits, error: subplebbitsError } = useSubplebbits({ subplebbitAddresses: displayedAddresses });
-
-  useEffect(() => {
-    setError('AllAccountSubplebbits_useSubplebbits', subplebbitsError);
-  }, [subplebbitsError, setError]);
-
-  const subplebbitElements = Object.values(subplebbits ?? {})
-    .filter((subplebbit): subplebbit is SubplebbitType => Boolean(subplebbit))
-    .filter((subplebbitData) => {
-      if (currentTag) {
-        const tags = defaultSubplebbits.find((defaultSub) => defaultSub.address === (subplebbitData as any).address)?.tags;
-
-        if (currentTag === 'nsfw') {
-          return tags?.some((tag) => nsfwTags.includes(tag));
-        } else {
-          return tags?.includes(currentTag);
-        }
-      }
-      return true;
-    })
-    .map((subplebbitData) => {
-      const tags = defaultSubplebbits.find((defaultSub) => defaultSub.address === (subplebbitData as any).address)?.tags;
-      return subplebbitData ? (
-        <Subplebbit
-          key={subplebbitData.address}
-          subplebbit={subplebbitData}
-          tags={tags}
-          isUnsubscribed={isUnsubscribed(subplebbitData.address)}
-          onUnsubscribe={handleUnsubscribe}
-        />
-      ) : null;
-    })
-    .filter(Boolean);
 
   if (subplebbitElements.length === 0) {
     return <NoCommunitiesMessage />;
@@ -449,45 +312,18 @@ const Subplebbits = () => {
     });
   }, [errors]);
 
-  const isInSubplebbitsSubscriberView = isSubplebbitsSubscriberView(location.pathname);
-  const isInSubplebbitsModeratorView = isSubplebbitsModeratorView(location.pathname);
-  const isInSubplebbitsAdminView = isSubplebbitsAdminView(location.pathname);
-  const isInSubplebbitsOwnerView = isSubplebbitsOwnerView(location.pathname);
-  const isInSubplebbitsVoteView = isSubplebbitsVoteView(location.pathname);
-  const isInSubplebbitsView =
-    isSubplebbitsView(location.pathname) &&
-    !isInSubplebbitsSubscriberView &&
-    !isInSubplebbitsModeratorView &&
-    !isInSubplebbitsAdminView &&
-    !isInSubplebbitsOwnerView &&
-    !isInSubplebbitsVoteView;
-
-  let viewRole = 'subscriber';
-  if (isInSubplebbitsModeratorView) {
-    viewRole = 'moderator';
-  } else if (isInSubplebbitsAdminView) {
-    viewRole = 'admin';
-  } else if (isInSubplebbitsOwnerView) {
-    viewRole = 'owner';
-  }
+  const isMyCommunities = location.pathname === '/communities';
+  const isAllCommunities = location.pathname === '/communities/all';
 
   const documentTitle = useMemo(() => {
     let title = t('communities').charAt(0).toUpperCase() + t('communities').slice(1);
-    if (isInSubplebbitsVoteView) {
-      title += ` - ${_.startCase(t('vote'))}`;
-    } else if (isInSubplebbitsSubscriberView) {
-      title += ` - ${_.startCase(t('subscriber'))}`;
-    } else if (isInSubplebbitsModeratorView) {
-      title += ` - ${_.startCase(t('moderator'))}`;
-    } else if (isInSubplebbitsAdminView) {
-      title += ` - ${_.startCase(t('admin'))}`;
-    } else if (isInSubplebbitsOwnerView) {
-      title += ` - ${_.startCase(t('owner'))}`;
-    } else if (isInSubplebbitsView) {
-      title += ` - ${_.startCase(t('all'))}`;
+    if (isAllCommunities) {
+      title += ` - ${_.startCase(t('all_communities'))}`;
+    } else if (isMyCommunities) {
+      title += ` - ${_.startCase(t('my_communities'))}`;
     }
     return `${title} - Seedit`;
-  }, [isInSubplebbitsSubscriberView, isInSubplebbitsModeratorView, isInSubplebbitsAdminView, isInSubplebbitsOwnerView, isInSubplebbitsView, isInSubplebbitsVoteView, t]);
+  }, [isAllCommunities, isMyCommunities, t]);
 
   useEffect(() => {
     document.title = documentTitle;
@@ -498,22 +334,10 @@ const Subplebbits = () => {
     Object.entries(errors).forEach(([source, errorObj]) => {
       if (!errorObj) return;
 
-      if (
-        source === 'Infobar_useAccountSubplebbits' &&
-        (isInSubplebbitsView || isInSubplebbitsSubscriberView || isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView)
-      ) {
+      if (source === 'SubscriberSubplebbits_useSubplebbits' && isMyCommunities) {
         errorsToDisplay.push(<ErrorDisplay key={source} error={errorObj} variant='bar' fullBleed />);
-      } else if (source === 'AccountSubplebbits_useAccountSubplebbits' && (isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView)) {
+      } else if (source === 'AllDefaultSubplebbits_useSubplebbits' && isAllCommunities) {
         errorsToDisplay.push(<ErrorDisplay key={source} error={errorObj} variant='bar' fullBleed />);
-      } else if (source === 'SubscriberSubplebbits_useSubplebbits' && isInSubplebbitsSubscriberView) {
-        errorsToDisplay.push(<ErrorDisplay key={source} error={errorObj} variant='bar' fullBleed />);
-      } else if (source === 'AllDefaultSubplebbits_useSubplebbits' && isInSubplebbitsVoteView) {
-        errorsToDisplay.push(<ErrorDisplay key={source} error={errorObj} variant='bar' fullBleed />);
-      } else if (source === 'AllAccountSubplebbits_useAccountSubplebbits' && isInSubplebbitsView) {
-        errorsToDisplay.push(<ErrorDisplay key={source} error={errorObj} variant='bar' fullBleed />);
-      } else if (source === 'AllAccountSubplebbits_useSubplebbits' && isInSubplebbitsView) {
-        // Avoid duplicate key if both errors from AllAccountSubplebbits are present
-        errorsToDisplay.push(<ErrorDisplay key={`${source}_subplebbits`} error={errorObj} variant='bar' fullBleed />);
       }
     });
     return errorsToDisplay;
@@ -531,10 +355,8 @@ const Subplebbits = () => {
         ) : null}
         <StandardPageContent variant='feedColumn'>
           <Infobar />
-          {isInSubplebbitsVoteView && <AllDefaultSubplebbits />}
-          {(isInSubplebbitsModeratorView || isInSubplebbitsAdminView || isInSubplebbitsOwnerView) && <AccountSubplebbits viewRole={viewRole} />}
-          {isInSubplebbitsSubscriberView && <SubscriberSubplebbits />}
-          {isInSubplebbitsView && <AllAccountSubplebbits />}
+          {isAllCommunities && <AllDefaultSubplebbits />}
+          {isMyCommunities && <SubscriberSubplebbits />}
         </StandardPageContent>
       </div>
       <div className={styles.sidebar} {...feedShellSidebarProps}>

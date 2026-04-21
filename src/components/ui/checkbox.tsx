@@ -10,15 +10,15 @@ const Checkbox = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps<'i
     <input type='checkbox' ref={ref} className='peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0' {...props} />
     <span
       className={cn(
-        'pointer-events-none flex h-4 w-4 items-center justify-center rounded-[2px] border border-border bg-background shadow-sm',
+        'pointer-events-none box-border flex h-4 w-4 items-center justify-center rounded-[2px] border border-border bg-background p-[2px] shadow-sm',
         'peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background',
         'peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
         'peer-checked:border-foreground peer-checked:bg-foreground peer-checked:text-background',
-        'peer-checked:[&>i]:opacity-100',
+        'peer-checked:[&>svg]:opacity-100',
       )}
       aria-hidden
     >
-      <PixelIcon glyph='check' className='text-xs opacity-0 transition-opacity' />
+      <PixelIcon glyph='check' className='h-2.5 w-2.5 opacity-0 transition-opacity' strokeWidth={2.5} />
     </span>
   </span>
 ));

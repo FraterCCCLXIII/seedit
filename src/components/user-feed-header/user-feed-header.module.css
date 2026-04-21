@@ -225,15 +225,7 @@
   font-size: 0.8125rem;
   line-height: 1.35;
   box-sizing: border-box;
-  box-shadow:
-    0 4px 16px -4px hsl(0 0% 0% / 0.2),
-    0 0 0 1px hsl(0 0% 100% / 0.06);
-}
-
-:global(.dark) .overflowMenu {
-  box-shadow:
-    0 4px 16px -4px hsl(0 0% 0% / 0.45),
-    0 0 0 1px hsl(0 0% 100% / 0.1);
+  box-shadow: none;
 }
 
 .overflowMenuHint {
@@ -268,16 +260,36 @@
 }
 
 .settingsLink {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: hsl(var(--shadcn-primary));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  color: hsl(var(--shadcn-muted-foreground));
   text-decoration: none;
-  border-radius: calc(var(--shadcn-radius) - 2px);
-  padding: 0.35rem 0.65rem;
+  border-radius: var(--shadcn-radius-control);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .settingsLink:hover {
-  text-decoration: underline;
+  background-color: hsl(var(--shadcn-accent) / 0.35);
+  color: hsl(var(--shadcn-foreground));
+}
+
+.settingsLink:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px hsl(var(--shadcn-background)),
+    0 0 0 4px hsl(var(--shadcn-ring));
+}
+
+.settingsIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
 }
 
 .meta {

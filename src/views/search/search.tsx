@@ -15,7 +15,6 @@ import { sortTypes } from '../../constants/sort-types';
 import { feedShellMainProps, feedShellSidebarProps } from '../../lib/feed-shell-data';
 import { StandardPageContent } from '@/components/layout';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import styles from '../home/home.module.css';
 
 const VALID_TABS = ['posts', 'users', 'communities'] as const;
@@ -207,10 +206,7 @@ function SearchCommunitiesPanel({ query }: { query: string }) {
   const account = useAccount();
   const subplebbitAddresses = useMemo(() => account?.subscriptions || [], [account?.subscriptions]);
   const defaultSubplebbitAddresses = useDefaultSubplebbitAddresses();
-  const combined = useMemo(
-    () => Array.from(new Set([...subplebbitAddresses, ...defaultSubplebbitAddresses])),
-    [subplebbitAddresses, defaultSubplebbitAddresses],
-  );
+  const combined = useMemo(() => Array.from(new Set([...subplebbitAddresses, ...defaultSubplebbitAddresses])), [subplebbitAddresses, defaultSubplebbitAddresses]);
   const filtered = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase();
@@ -260,25 +256,10 @@ function SearchUsersPanel({ query }: { query: string }) {
 
 const SearchPage = () => {
   const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const q = searchParams.get('q') || '';
   const tabParam = searchParams.get('tab') || 'posts';
   const activeTab: SearchTab = VALID_TABS.includes(tabParam as SearchTab) ? (tabParam as SearchTab) : 'posts';
-
-  const handleTabChange = useCallback(
-    (value: string) => {
-      setSearchParams(
-        (prev) => {
-          const next = new URLSearchParams(prev);
-          next.set('tab', value);
-          if (q) next.set('q', q);
-          return next;
-        },
-        { replace: true },
-      );
-    },
-    [setSearchParams, q],
-  );
 
   useEffect(() => {
     const title = q ? `${t('search_page_title')}: ${q}` : t('search_page_title');
@@ -288,25 +269,11 @@ const SearchPage = () => {
   return (
     <div className={styles.content}>
       <div {...feedShellMainProps}>
-        <StandardPageContent variant='full'>
-          <h1 className='mb-2 text-lg font-semibold text-foreground'>{t('search_page_title')}</h1>
-          {q ? <p className='mb-4 text-sm text-muted-foreground'>{t('search_results_for', { query: q })}</p> : null}
-          <Tabs value={activeTab} onValueChange={handleTabChange} className='w-full'>
-            <TabsList className='mb-4 flex w-full flex-wrap justify-start gap-1'>
-              <TabsTrigger value='posts'>{t('search_scope_posts')}</TabsTrigger>
-              <TabsTrigger value='users'>{t('search_scope_users')}</TabsTrigger>
-              <TabsTrigger value='communities'>{t('search_scope_communities')}</TabsTrigger>
-            </TabsList>
-            <TabsContent value='posts' className='mt-0'>
-              {q.trim() ? <SearchPostsPanel searchQuery={q} /> : <p className='text-sm text-muted-foreground'>{t('search_enter_query')}</p>}
-            </TabsContent>
-            <TabsContent value='users' className='mt-0'>
-              <SearchUsersPanel query={q} />
-            </TabsContent>
-            <TabsContent value='communities' className='mt-0'>
-              <SearchCommunitiesPanel query={q} />
-            </TabsContent>
-          </Tabs>
+        <StandardPageContent variant='feedColumn' stack>
+          {q ? <p className='text-sm text-muted-foreground'>{t('search_results_for', { query: q })}</p> : null}
+          {activeTab === 'posts' ? q.trim() ? <SearchPostsPanel searchQuery={q} /> : <p className='text-sm text-muted-foreground'>{t('search_enter_query')}</p> : null}
+          {activeTab === 'users' ? <SearchUsersPanel query={q} /> : null}
+          {activeTab === 'communities' ? <SearchCommunitiesPanel query={q} /> : null}
         </StandardPageContent>
       </div>
       <div className={styles.sidebar} {...feedShellSidebarProps}>

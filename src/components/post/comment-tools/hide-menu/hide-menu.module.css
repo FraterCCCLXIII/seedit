@@ -75,15 +75,7 @@
   font-size: 0.8125rem;
   line-height: 1.35;
   box-sizing: border-box;
-  box-shadow:
-    0 4px 16px -4px hsl(0 0% 0% / 0.2),
-    0 0 0 1px hsl(0 0% 100% / 0.06);
-}
-
-:global(.dark) .menu {
-  box-shadow:
-    0 4px 16px -4px hsl(0 0% 0% / 0.45),
-    0 0 0 1px hsl(0 0% 100% / 0.1);
+  box-shadow: none;
 }
 
 .menuItem {

@@ -66,16 +66,8 @@
   background-color: hsl(var(--shadcn-popover));
   padding: 4px;
   color: hsl(var(--shadcn-popover-foreground));
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
   outline: none;
-}
-
-:global(.dark) .menuPanel {
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.15),
-    0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .menuItem {

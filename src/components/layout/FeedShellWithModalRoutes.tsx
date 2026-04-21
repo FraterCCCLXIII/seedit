@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import AboutView from '../../views/about';
 import UserAbout from '../../views/user-about/user-about';
 import All from '../../views/all';
@@ -39,14 +39,15 @@ const FeedShellWithModalRoutes = () => {
         <Route path='/settings/content-options' element={<Settings />} />
         <Route path='/settings/account-data' element={<AccountDataEditor />} />
 
+        <Route path='/communities/all' element={<Subplebbits />} />
         <Route path='/communities' element={<Subplebbits />} />
-        <Route path='/communities/subscriber' element={<Subplebbits />} />
-        <Route path='/communities/moderator' element={<Subplebbits />} />
-        <Route path='/communities/admin' element={<Subplebbits />} />
-        <Route path='/communities/owner' element={<Subplebbits />} />
-        <Route path='/communities/vote' element={<Subplebbits />} />
-        <Route path='/communities/vote/passing' element={<Subplebbits />} />
-        <Route path='/communities/vote/rejecting' element={<Subplebbits />} />
+        <Route path='/communities/subscriber' element={<Navigate to='/communities' replace />} />
+        <Route path='/communities/moderator' element={<Navigate to='/communities' replace />} />
+        <Route path='/communities/admin' element={<Navigate to='/communities' replace />} />
+        <Route path='/communities/owner' element={<Navigate to='/communities' replace />} />
+        <Route path='/communities/vote' element={<Navigate to='/communities/all' replace />} />
+        <Route path='/communities/vote/passing' element={<Navigate to='/communities/all' replace />} />
+        <Route path='/communities/vote/rejecting' element={<Navigate to='/communities/all' replace />} />
         <Route path='/communities/create' element={<SubplebbitSettings />} />
 
         <Route path='/about' element={<AboutView />} />

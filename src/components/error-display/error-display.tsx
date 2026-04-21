@@ -44,6 +44,20 @@ const stringifyError = (error: unknown) => {
   }
 };
 
+/** Strip redundant `error:` / `err:` prefixes from upstream so UI is not `Error: error: …`. Sentence-case leading letter when needed. */
+const normalizeErrorMessageForDisplay = (message: string): string => {
+  let m = message.trim();
+  for (let i = 0; i < 4; i += 1) {
+    const next = m.replace(/^(error|err):\s*/i, '').trim();
+    if (next === m) break;
+    m = next;
+  }
+  if (m.length > 0 && /^[a-z]/.test(m[0])) {
+    return m[0].toUpperCase() + m.slice(1);
+  }
+  return m;
+};
+
 export type ErrorDisplayProps = {
   error: unknown;
   /** `bar`: full-width strip under header (feed routes). Default: compact inline block. */
@@ -60,7 +74,8 @@ const ErrorDisplay = ({ error, variant = 'inline', fullBleed = false }: ErrorDis
   const resetFeedback = useCallback(() => setFeedbackMessageKey(null), []);
   const [scheduleFeedbackReset] = useScheduledReset(resetFeedback, 1500);
 
-  const originalDisplayMessage = errorDetails?.message ? `${t('error')}: ${errorDetails.message}` : null;
+  const normalizedMessage = errorDetails?.message ? normalizeErrorMessageForDisplay(errorDetails.message) : '';
+  const originalDisplayMessage = normalizedMessage ? `${t('generic_error')}: ${normalizedMessage}` : null;
 
   const handleMessageClick = async () => {
     if (!errorDetails?.message || feedbackMessageKey) return;
@@ -99,11 +114,7 @@ const ErrorDisplay = ({ error, variant = 'inline', fullBleed = false }: ErrorDis
 
   return (
     shouldRender && (
-      <div
-        className={rootClass}
-        role={variant === 'bar' ? 'alert' : undefined}
-        aria-live={variant === 'bar' ? 'polite' : undefined}
-      >
+      <div className={rootClass} role={variant === 'bar' ? 'alert' : undefined} aria-live={variant === 'bar' ? 'polite' : undefined}>
         {currentDisplayMessage && (
           <span
             className={classNames.join(' ')}

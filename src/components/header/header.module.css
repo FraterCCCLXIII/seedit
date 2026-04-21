@@ -50,22 +50,14 @@
   }
 }
 
-.logo {
-  width: 40px;
-  height: 40px;
-  display: block;
-  flex-shrink: 0;
-  object-fit: contain;
-}
-
-.logoText {
+/* Pixel wordmark — replaces sprout + separate text SVG */
+.headerWordmark {
   height: 22px;
   width: auto;
-  max-width: min(40vw, 7.5rem);
+  max-width: min(55vw, 10rem);
   display: block;
-  flex-shrink: 0;
-  margin-left: 2px;
-  object-fit: contain;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .allOrModPageName {
@@ -125,11 +117,16 @@
   left: 0;
 }
 
-.appLogoMark {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  display: block;
+/* Wordmark / rail avatar: left nav carries home on small viewports (matches `useIsMobile` / width < 640). */
+@media (max-width: 639px) {
+  .logoContainer {
+    display: none;
+  }
+
+  /* Avoid an empty chrome row when the only title content was the logo (e.g. community shell under 900px wide). */
+  .titleRow:not(:has(.headerBackLink)):not(:has(.pageName)):not(:has(.allOrModPageName)) {
+    display: none;
+  }
 }
 
 .avatar {
@@ -138,12 +135,6 @@
   display: block;
   object-fit: cover;
   border-radius: 0.75rem;
-}
-
-@media (min-width: 900px) {
-  :global([data-feed-shell-layout]) .logoContainer {
-    display: none;
-  }
 }
 
 .wordmark {
@@ -249,8 +240,97 @@
   box-sizing: border-box;
   padding: 0 var(--header-chrome-pad-x);
   margin: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-width: 0;
   border-top: 1px solid hsl(var(--shadcn-border));
+}
+
+/* Offscreen duplicate list for measuring tab widths (overflow → ⋯ menu). */
+.tabMenuOffscreenMeasure {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  visibility: hidden;
+  pointer-events: none;
+  width: max-content;
+  max-width: none;
+  border: none;
+  margin: 0;
+  flex-wrap: nowrap;
+}
+
+.tabOverflowTrigger {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 14px 12px;
+  cursor: pointer;
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 1.125rem;
+  line-height: 1;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  border-radius: calc(var(--shadcn-radius) - 4px);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.tabOverflowTrigger:hover {
+  background-color: rgba(231, 233, 234, 0.1);
+  color: hsl(var(--shadcn-foreground));
+}
+
+.tabOverflowTrigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--shadcn-background)), 0 0 0 4px hsl(var(--shadcn-ring));
+}
+
+.tabOverflowDots {
+  display: block;
+  transform: translateY(1px);
+}
+
+.tabOverflowMenu {
+  z-index: 100;
+  min-width: 10rem;
+  padding: 4px;
+  border-radius: var(--shadcn-radius-control);
+  border: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-popover));
+  color: hsl(var(--shadcn-popover-foreground));
+  font-size: 0.875rem;
+  line-height: 1.35;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.tabOverflowMenuItem {
+  display: block;
+  padding: 8px 10px;
+  border-radius: calc(var(--shadcn-radius-control) - 2px);
+  color: hsl(var(--shadcn-popover-foreground));
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tabOverflowMenuItem:hover {
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
+}
+
+.tabOverflowMenuItemSelected {
+  font-weight: 700;
+  background-color: hsl(var(--shadcn-accent) / 0.35);
+  color: hsl(var(--shadcn-accent-foreground));
+}
+
+/* Home /home about: no title row above tabs — drop orphan top rule; .header border-bottom still divides chrome from feed */
+.tabMenuNoTopRule {
+  border-top: none;
 }
 
 /* No tab chrome (e.g. 404): avoid a second rule under the title — .header border-bottom is enough */
@@ -275,6 +355,7 @@
   align-items: center;
   margin: 0;
   line-height: 1.25;
+  flex-shrink: 0;
 }
 
 .tabMenu li a {
@@ -334,19 +415,6 @@
 :global(.dark) .submitButton:hover {
   background-color: hsl(0 0% 93%);
   color: hsl(0 0% 0%);
-}
-
-.horizontalScroll {
-  display: flex;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  gap: 6px;
-  padding-bottom: 8px;
-}
-
-.horizontalScroll::-webkit-scrollbar {
-  display: none;
 }
 
 @media (min-width: 640px) {

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import FeedNavRail from './FeedNavRail';
+import { FeedShellLayoutProvider } from './feed-shell-layout-context';
 import styles from './FeedShellLayout.module.css';
 
 export type FeedShellLayoutProps = {
@@ -16,22 +17,24 @@ export type FeedShellLayoutProps = {
  */
 const FeedShellLayout = ({ stickyHeader, header, children }: FeedShellLayoutProps) => {
   return (
-    <div className={styles.shell} data-feed-shell-layout>
-      <div className={styles.leftRailColumn}>
-        <aside className={styles.leftRailSticky}>
-          <FeedNavRail />
-        </aside>
-      </div>
-      <div className={styles.center}>
-        <div className={cn(styles.centerInner, 'bg-background text-foreground')}>
-          {stickyHeader ? <div className={styles.stickyHeaderSlot}>{stickyHeader}</div> : null}
-          <div className={styles.mainGrid}>
-            <div className={styles.headerArea}>{header}</div>
-            {children}
+    <FeedShellLayoutProvider value={true}>
+      <div className={styles.shell} data-feed-shell-layout>
+        <div className={styles.leftRailColumn}>
+          <aside className={styles.leftRailSticky}>
+            <FeedNavRail />
+          </aside>
+        </div>
+        <div className={styles.center}>
+          <div className={cn(styles.centerInner, 'bg-background text-foreground')}>
+            {stickyHeader ? <div className={styles.stickyHeaderSlot}>{stickyHeader}</div> : null}
+            <div className={styles.mainGrid}>
+              <div className={styles.headerArea}>{header}</div>
+              {children}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </FeedShellLayoutProvider>
   );
 };
 

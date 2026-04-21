@@ -16,15 +16,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { PixelIcon } from '@/components/ui/pixel-icon';
-import {
-  useAccount,
-  useAccountComments,
-  useAuthor,
-  useAuthorAvatar,
-  useAuthorComments,
-  useComment,
-  useBlock,
-} from '@bitsocialnet/bitsocial-react-hooks';
+import { useAccount, useAccountComments, useAuthor, useAuthorAvatar, useAuthorComments, useComment, useBlock } from '@bitsocialnet/bitsocial-react-hooks';
 import Plebbit from '@plebbit/plebbit-js';
 import { cn } from '@/lib/utils';
 import { getOldestAccountHistoryTimestamp } from '@/lib/utils/account-history-utils';
@@ -111,13 +103,7 @@ const AuthorOverflowMenu = ({ authorAddress }: AuthorOverflowMenuProps) => {
       {open && (
         <FloatingPortal>
           <FloatingFocusManager context={context} modal={false}>
-            <div
-              id={menuPanelId}
-              className={styles.overflowDropdown}
-              ref={refs.setFloating}
-              style={floatingStyles}
-              {...getFloatingProps()}
-            >
+            <div id={menuPanelId} className={styles.overflowDropdown} ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
               <div className={styles.overflowMenu} role='presentation'>
                 {confirmBlock ? (
                   <>
@@ -170,7 +156,7 @@ const UserFeedHeader = ({ placement = 'shell' }: UserFeedHeaderProps) => {
     commentCid: isProfile ? undefined : commentCid,
   });
 
-  const pageAuthor = isProfile ? account?.author : authorRecord?.author ?? comment?.author;
+  const pageAuthor = isProfile ? account?.author : (authorRecord?.author ?? comment?.author);
 
   const { imageUrl: avatarUrl } = useAuthorAvatar({ author: pageAuthor });
   const [avatarFailed, setAvatarFailed] = useState(false);
@@ -189,31 +175,19 @@ const UserFeedHeader = ({ placement = 'shell' }: UserFeedHeaderProps) => {
   const postKarmaShown = postScore + 1;
 
   const authorOldestCommentTimestamp = authorComments?.length
-    ? Math.min(
-        ...authorComments
-          .filter((c): c is NonNullable<typeof c> => c != null)
-          .map((c) => c.timestamp),
-      )
+    ? Math.min(...authorComments.filter((c): c is NonNullable<typeof c> => c != null).map((c) => c.timestamp))
     : Math.floor(Date.now() / 1000);
   const oldestCommentTimestamp = isProfile ? profileOldestAccountTimestamp : authorOldestCommentTimestamp;
 
   const profileHref = '/profile';
-  const authorHref =
-    authorAddress && commentCid ? `/u/${authorAddress}/c/${commentCid}` : authorAddress ? `/u/${authorAddress}` : profileHref;
+  const authorHref = authorAddress && commentCid ? `/u/${authorAddress}/c/${commentCid}` : authorAddress ? `/u/${authorAddress}` : profileHref;
 
   const titleHref = isProfile ? profileHref : authorHref;
 
-  const showAuthorOverflow =
-    !isProfile &&
-    Boolean(authorAddress) &&
-    Boolean(pageAuthor?.address) &&
-    pageAuthor?.address !== account?.author?.address;
+  const showAuthorOverflow = !isProfile && Boolean(authorAddress) && Boolean(pageAuthor?.address) && pageAuthor?.address !== account?.author?.address;
 
   return (
-    <header
-      className={cn(styles.header, placement === 'shell' ? styles.headerShell : undefined)}
-      aria-label={isProfile ? t('profile') : t('overview')}
-    >
+    <header className={cn(styles.header, placement === 'shell' ? styles.headerShell : undefined)} aria-label={isProfile ? t('profile') : t('overview')}>
       <Link to={titleHref} className={styles.avatarWrap}>
         {avatarUrl && !avatarFailed ? (
           <img src={avatarUrl} alt='' className={styles.avatarImg} onError={() => setAvatarFailed(true)} />
@@ -232,8 +206,8 @@ const UserFeedHeader = ({ placement = 'shell' }: UserFeedHeaderProps) => {
           {(isProfile || showAuthorOverflow) && (
             <div className={styles.actionSlot}>
               {isProfile ? (
-                <Link to='/settings' className={styles.settingsLink}>
-                  {t('preferences')}
+                <Link to='/settings' className={styles.settingsLink} aria-label={t('preferences')}>
+                  <PixelIcon glyph='cog' className={styles.settingsIcon} aria-hidden />
                 </Link>
               ) : authorAddress ? (
                 <AuthorOverflowMenu authorAddress={authorAddress} />

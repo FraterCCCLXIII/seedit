@@ -13,29 +13,71 @@
   min-width: 0;
 }
 
+/* New-account tip — full-width strip under header tabs (matches error-bar / inbox toolbar rhythm) */
 .infobar {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
   box-sizing: border-box;
-  background-color: var(--background-orange);
-  border-color: var(--border-orange);
-  border-style: solid;
-  border-width: 1px;
-  margin: 0px 5px 5px 0px;
-  padding: 6px 10px;
+  margin: 0;
+  padding: 0.625rem var(--header-chrome-pad-x);
+  border: none;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-muted) / 0.4);
   color: hsl(var(--shadcn-foreground));
-  font-size: 14px;
+  font-size: var(--feed-shell-font-size);
+  line-height: 1.45;
+  font-family: var(--font-sans);
 }
 
 .infoContent {
-  word-wrap: break-word;
-  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.infobar a {
-  color: var(--text-primary);
+.infobarLink {
+  color: hsl(var(--shadcn-primary));
+  font-weight: 500;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.infobarLink:hover {
   text-decoration: underline;
+}
+
+.infobarDismiss {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: -0.125rem -0.25rem -0.125rem 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--shadcn-radius-control);
+  background: transparent;
+  color: hsl(var(--shadcn-muted-foreground));
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.infobarDismiss:hover {
+  background-color: hsl(var(--shadcn-accent) / 0.45);
+  color: hsl(var(--shadcn-foreground));
+}
+
+.infobarDismiss:focus-visible {
+  outline: 2px solid hsl(var(--shadcn-ring));
+  outline-offset: 2px;
+}
+
+.infobarDismissIcon {
+  width: 1rem;
+  height: 1rem;
 }
 
 div[data-viewport-type="window"] {
@@ -62,69 +104,135 @@ div[data-viewport-type="window"] {
   }
 }
 
-.sortDropdown {
-  border-bottom: 1px dotted gray;
-  padding: 5px 10px;
-  margin: 5px;
-  margin-top: 0;
-  overflow: hidden;
-  font-size: larger;
+/* Sort control — same pattern as post-page comment-sort-dropdown (Floating UI menu) */
+.sortToolbar {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem var(--header-chrome-pad-x) 0.625rem;
+  border-bottom: 1px solid hsl(var(--shadcn-border));
 }
 
-.dropdownTitle {
-  color: hsl(var(--shadcn-foreground)) !important;
+.sortRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
 }
 
-.dropdown {
-  display: inline;
-  position: relative;
+.sortLabel {
+  color: hsl(var(--shadcn-muted-foreground));
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.sortLabelColon {
+  font-weight: 600;
+}
+
+.sortTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--shadcn-radius-control);
+  border: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-background));
+  color: hsl(var(--shadcn-foreground));
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   cursor: pointer;
+  font-family: inherit;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.selected {
-  position: relative;
-  background: none no-repeat scroll center right;
-  background-image: url("/assets/buttons/droparrowgray.gif");
-  padding-right: 21px;
-  text-decoration: underline;
-  color: gray;
-  font-weight: bold;
+.sortTrigger:hover {
+  background-color: hsl(var(--shadcn-accent) / 0.35);
+  border-color: hsl(var(--shadcn-border));
 }
 
-.dropChoices {
-  margin-top: 2px;
-  position: absolute;
-  left: 90px;
-  border: 1px solid gray;
-  z-index: 100;
-  background-color: var(--background);
-  white-space: nowrap;
-  line-height: normal;
-  margin-top: 3px;
+.sortTrigger:focus {
+  outline: none;
 }
 
-.filter {
+.sortTrigger:focus-visible {
+  box-shadow:
+    0 0 0 2px hsl(var(--shadcn-background)),
+    0 0 0 4px hsl(var(--shadcn-ring));
+}
+
+.sortTriggerValue {
+  flex: 1;
+  text-align: left;
+}
+
+.sortChevron {
+  display: block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: -0.15rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.65;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.sortChevronOpen {
+  margin-top: 0.1rem;
+  transform: rotate(-135deg);
+}
+
+.sortMenu {
+  z-index: 50;
+  outline: none;
+  min-width: 10rem;
+  padding: 4px;
+  border-radius: var(--shadcn-radius-control);
+  border: 1px solid hsl(var(--shadcn-border));
+  background-color: hsl(var(--shadcn-popover));
+  color: hsl(var(--shadcn-popover-foreground));
+  font-size: 0.875rem;
+  line-height: 1.35;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.sortMenuItem {
   cursor: pointer;
-  padding: 2px 3px 1px 3px;
-  display: block;
-  color: var(--text-primary);
+  padding: 8px 10px;
+  border-radius: calc(var(--shadcn-radius-control) - 2px);
+  color: hsl(var(--shadcn-popover-foreground));
 }
 
-.filter:hover {
-  background-color: var(--background-primary);
+.sortMenuItem:hover {
+  background-color: hsl(var(--shadcn-accent));
+  color: hsl(var(--shadcn-accent-foreground));
 }
 
-.dropChoicesHidden {
-  display: none;
+.sortMenuItemSelected {
+  font-weight: 600;
+  background-color: hsl(var(--shadcn-accent) / 0.35);
+  color: hsl(var(--shadcn-accent-foreground));
 }
 
-.dropChoicesVisible {
-  display: block;
+.sortMenuItemSelected:hover {
+  background-color: hsl(var(--shadcn-accent));
 }
 
 .pagination {
   font-size: 12px;
   margin-top: 10px;
+  padding: 0 var(--header-chrome-pad-x) 1rem;
+  box-sizing: border-box;
 }
 
 .pagination .button {
@@ -152,17 +260,12 @@ div[data-viewport-type="window"] {
   color: hsl(var(--shadcn-muted-foreground));
   font-size: 13px;
   font-family: var(--font-sans);
-}
-
-.closeButton {
-  cursor: pointer;
-  font-size: 12px;
-  margin-right: -3px;
-  margin-top: -3px;
+  padding: 1rem var(--header-chrome-pad-x);
+  box-sizing: border-box;
 }
 
 .error {
-  padding-left: 10px;
-  font-size: 12px;
-  padding-bottom: 10px;
+  padding: 0.5rem var(--header-chrome-pad-x) 0.75rem;
+  box-sizing: border-box;
+  font-size: 13px;
 }

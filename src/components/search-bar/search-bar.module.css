@@ -134,15 +134,7 @@
   border: 1px solid hsl(var(--shadcn-border));
   background-color: hsl(var(--shadcn-popover));
   color: hsl(var(--shadcn-popover-foreground));
-  box-shadow:
-    0 4px 16px -4px hsl(0 0% 0% / 0.2),
-    0 0 0 1px hsl(0 0% 100% / 0.08);
-}
-
-:global(.dark) .suggestionsList {
-  box-shadow:
-    0 4px 16px -4px hsl(0 0% 0% / 0.45),
-    0 0 0 1px hsl(0 0% 100% / 0.12);
+  box-shadow: none;
 }
 
 .suggestionsList::-webkit-scrollbar {

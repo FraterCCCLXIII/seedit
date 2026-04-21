@@ -54,7 +54,7 @@ export const FAQ = () => {
           {window.electronApi?.isElectron ? 'on this desktop app' : isAndroid ? 'on this mobile app' : `on this web app, ${window.location.hostname}`}, not on a server).
           You can back up your account in the <Link to='/settings#exportAccount'>preferences</Link>. There are no global rules or admins on Seedit, each community has its
           own rules and moderators, so please be sure to read the rules of the community you are joining. You can connect peer-to-peer to any community by using the
-          search bar, or you can check out the <Link to='/communities/vote'>default community list</Link>.
+          search bar, or you can check out the <Link to='/communities/all'>default community list</Link>.
         </p>
         <hr />
         <h3 id='whatIsSeedit'>What is Seedit and how does it work?</h3>
@@ -104,7 +104,7 @@ export const FAQ = () => {
         <hr />
         <h3 id='defaultList'>How can others find my community?</h3>
         <p>
-          In the near future, it will be possible to submit your community to the <Link to='/communities/vote'>default community list</Link> by clicking on the "submit
+          In the near future, it will be possible to submit your community to the <Link to='/communities/all'>default community list</Link> by clicking on the "submit
           your community" button in the sidebar.{' '}
           <a href='https://www.coingecko.com/en/coins/plebbit' target='_blank' rel='noopener noreferrer'>
             Plebbit ($PLEB)
@@ -143,7 +143,7 @@ export const FAQ = () => {
       </div>
       {isInHomeAboutView && isMobile && (
         <>
-          <hr />
+          <hr className={styles.aboutHr} />
           <div id='usefulLinks' className={styles.aboutFooter}>
             <Footer />
           </div>

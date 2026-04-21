@@ -86,7 +86,7 @@ const FeedNavRail = () => {
           isCompactRail,
           inboxLabel,
           <Link to='/inbox' className={cn(styles.navItem, inboxOn && styles.navItemActive)} aria-current={inboxOn ? 'page' : undefined}>
-            <PixelIcon glyph='envelope' className={styles.navIcon} aria-hidden />
+            <PixelIcon glyph='bell' className={styles.navIcon} aria-hidden />
             <span className={styles.navLabel}>{inboxLabel}</span>
           </Link>,
         )}

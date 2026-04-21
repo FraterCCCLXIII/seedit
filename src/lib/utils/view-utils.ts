@@ -53,11 +53,7 @@ export const isAuthorSubmittedView = (pathname: string, params: ParamsType): boo
 
 /** `/u/:authorAddress/c/:commentCid/about` — profile “About” for another user */
 export const isAuthorAboutView = (pathname: string, params: ParamsType): boolean => {
-  return Boolean(
-    params.authorAddress &&
-      params.commentCid &&
-      pathname === `/u/${params.authorAddress}/c/${params.commentCid}/about`,
-  );
+  return Boolean(params.authorAddress && params.commentCid && pathname === `/u/${params.authorAddress}/c/${params.commentCid}/about`);
 };
 
 export const isProfileAboutView = (pathname: string): boolean => {
@@ -90,6 +86,10 @@ export const isHomeAboutView = (pathname: string): boolean => {
 
 export const isInboxView = (pathname: string): boolean => {
   return pathname.startsWith('/inbox');
+};
+
+export const isSearchView = (pathname: string): boolean => {
+  return pathname === '/search';
 };
 
 export const isInboxCommentRepliesView = (pathname: string): boolean => {
@@ -213,32 +213,4 @@ export const isSubplebbitSubmitView = (pathname: string, params: ParamsType): bo
 
 export const isSubplebbitsView = (pathname: string): boolean => {
   return pathname.startsWith('/communities');
-};
-
-export const isSubplebbitsSubscriberView = (pathname: string): boolean => {
-  return pathname === '/communities/subscriber';
-};
-
-export const isSubplebbitsModeratorView = (pathname: string): boolean => {
-  return pathname === '/communities/moderator';
-};
-
-export const isSubplebbitsAdminView = (pathname: string): boolean => {
-  return pathname === '/communities/admin';
-};
-
-export const isSubplebbitsOwnerView = (pathname: string): boolean => {
-  return pathname === '/communities/owner';
-};
-
-export const isSubplebbitsVoteView = (pathname: string): boolean => {
-  return pathname.startsWith('/communities/vote');
-};
-
-export const isSubplebbitsVotePassingView = (pathname: string): boolean => {
-  return pathname === '/communities/vote/passing';
-};
-
-export const isSubplebbitsVoteRejectingView = (pathname: string): boolean => {
-  return pathname === '/communities/vote/rejecting';
 };

@@ -194,8 +194,14 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
-    scrollbar-gutter: stable;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+}
+
+/* WebKit: hide scrollbar on sticky right sidebar (selector is global attribute from feedShellSidebarProps) */
+:global([data-feed-shell='sidebar']::-webkit-scrollbar) {
+  display: none;
 }
 
 /* Narrow desktop/tablet: no fixed strip above the shell main column */

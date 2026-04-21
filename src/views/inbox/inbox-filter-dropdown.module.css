@@ -1,26 +1,15 @@
-.row {
-  display: flex;
-  flex-wrap: wrap;
+.root {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem 0.75rem;
-}
-
-.label {
-  color: hsl(var(--shadcn-muted-foreground));
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-}
-
-.labelColon {
-  font-weight: 600;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .trigger {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  max-width: 100%;
   min-height: 2.25rem;
   padding: 0.35rem 0.65rem;
   border-radius: var(--shadcn-radius-control);
@@ -54,7 +43,9 @@
 }
 
 .triggerValue {
-  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-align: left;
 }
 
